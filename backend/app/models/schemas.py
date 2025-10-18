@@ -40,3 +40,25 @@ class HealthResponse(BaseModel):
     """Health check response"""
     status: str = Field(..., description="API status")
     version: str = Field(..., description="API version")
+
+
+class StoredMetadata(BaseModel):
+    project: str
+    user_story_title: str
+    user_story: str
+    count: int
+    created_at: str
+    status: str
+
+
+class AdoptResponse(BaseModel):
+    status: str
+    result: dict
+
+
+class AdoptRequest(BaseModel):
+    """Request model for adopting test cases (selective adoption)"""
+    user_story: str
+    num_test_cases: Optional[int] = 5
+    # Optional explicit subset of test cases to adopt. If provided, backend will persist these.
+    test_cases: Optional[List[TestCase]] = None

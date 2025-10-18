@@ -1,266 +1,164 @@
-# 🤖 AI Test Case Generator
-
-Prototype for AI-based test case generation from user stories (Master Thesis Project – SDE26)
-
-A full-stack application that leverages AI to automatically generate comprehensive test cases from user stories. This tool helps QA teams and developers quickly create test scenarios, improving testing coverage and efficiency.
-
-## 🎯 Features
-
-- **AI-Powered Generation**: Uses OpenAI's GPT models to generate intelligent test cases
-- **User-Friendly Dashboard**: Clean React interface for inputting user stories
-- **Comprehensive Test Cases**: Generates test cases with titles, descriptions, steps, preconditions, and expected results
-- **Flexible Configuration**: Customize the number of test cases to generate
-- **Docker Support**: Easy deployment with Docker and Docker Compose
-- **RESTful API**: FastAPI backend with OpenAPI documentation
-- **Mock Mode**: Works without API keys for development and testing
-
-## 🏗️ Architecture
-
-```
-├── backend/              # FastAPI Python backend
-│   ├── app/
-│   │   ├── api/         # API routes
-│   │   ├── models/      # Data models
-│   │   ├── services/    # Business logic
-│   │   └── main.py      # Application entry point
-│   ├── tests/           # Backend tests
-│   ├── Dockerfile
-│   └── requirements.txt
-│
-├── frontend/            # React frontend
-│   ├── src/
-│   │   ├── components/  # React components
-│   │   ├── services/    # API services
-│   │   ├── App.jsx      # Main application
-│   │   └── main.jsx     # Entry point
-│   ├── Dockerfile
-│   ├── package.json
-│   └── vite.config.js
-│
-└── docker-compose.yml   # Docker orchestration
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Node.js** (v18 or higher)
-- **Python** (v3.11 or higher)
-- **Docker** and **Docker Compose** (optional, for containerized deployment)
-- **OpenAI API Key** (optional, works in mock mode without it)
-
-### Option 1: Local Development
-
-#### Backend Setup
-
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
-
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Configure environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit .env and add your OPENAI_API_KEY (optional)
-   ```
-
-5. Run the backend:
-   ```bash
-   python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-   ```
-
-6. Access API documentation:
-   - Swagger UI: http://localhost:8000/api/docs
-   - ReDoc: http://localhost:8000/api/redoc
-
-#### Frontend Setup
-
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Configure environment variables (optional):
-   ```bash
-   cp .env.example .env
-   ```
+# ki-testfall-generator
+Prototype for AI-based test case optimization (Master Thesis Project – SDE26)
+# Projekt: KI-gestützte Testfall-Optimierung
 
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
+**Version:** 0.2  
+**Autorin:** Fadime Konuk  
+**Studiengang:** SDE26  
+**Semester:** 3 (Master Thesis Project)
 
-5. Open your browser:
-   - Frontend: http://localhost:5173
+---
 
-### Option 2: Docker Deployment
+## 1) Erweiterte funktionale Anforderungen (aus Sicht der Umsetzung)
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Fati26-Knk/ki-testfall-generator.git
-   cd ki-testfall-generator
-   ```
+Diese Anforderungen beschreiben, **wie** der Prototyp umgesetzt werden soll und **welche Funktionen** er im Detail enthalten muss. Sie beziehen sich auf die Benutzerinteraktion, UI-Elemente, Datenflüsse und KI-basierte Testfall-Generierung.
 
-2. Create environment file (optional):
-   ```bash
-   echo "OPENAI_API_KEY=your_api_key_here" > .env
-   ```
+### FR-01 – Eingabemaske (Dashboard)
+Es soll ein Dashboard bereitgestellt werden, auf dem Nutzer:innen verschiedene **Input-Felder** ausfüllen können, um Testfälle zu generieren.  
+Die Eingabefelder umfassen mindestens:
+- **Titel der User Story** (Textfeld)
+- **Beschreibung der User Story** (mehrzeiliges Textfeld)
+- _optional:_ **Akzeptanzkriterien**, **Systemkomponente**, **Priorität**
+- **Button „Testfälle generieren“**
 
-3. Build and run with Docker Compose:
-   ```bash
-   docker-compose up --build
-   ```
-
-4. Access the application:
-   - Frontend: http://localhost
-   - Backend API: http://localhost:8000
-   - API Documentation: http://localhost:8000/api/docs
-
-## 📖 Usage
-
-1. **Enter a User Story**: Type or paste your user story in the text area
-   - Example: "As a user, I want to log in to the system so that I can access my dashboard"
-
-2. **Set Number of Test Cases**: Choose how many test cases to generate (1-20)
-
-3. **Generate**: Click the "Generate Test Cases" button
-
-4. **Review Results**: The generated test cases will appear below with:
-   - Test case title and priority
-   - Description
-   - Preconditions
-   - Step-by-step instructions
-   - Expected results
-
-## 🔧 Configuration
-
-### Backend Configuration (`.env`)
-
-```env
-# OpenAI API Configuration
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-3.5-turbo
+Beim Klick auf den Button ruft das System den KI-Service auf, der aus der Beschreibung automatisch Testfälle erzeugt.
 
-# CORS Configuration
-CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+### FR-02 – KI-gestützte Testfallgenerierung
+Die KI soll aus der User-Story-Beschreibung automatisch eine **variable Anzahl** an Testfällen generieren – abhängig von:
+- der **Länge und Komplexität** der User Story,
+- den vorhandenen **Akzeptanzkriterien**,
+- optionalen Zusatzinformationen (**Systemkomponente**, **Risikostufe**).
 
-# Server Configuration
-HOST=0.0.0.0
-PORT=8000
-```
+Jeder generierte Testfall soll enthalten:
+- **Titel**
+- **Vorbedingung (Precondition)**
+- **Aktionen (Steps)**
+- **Erwartetes Ergebnis (Expected Result)**
 
-### Frontend Configuration (`.env`)
+Das System verwendet ein **LLM** (z. B. GPT oder lokales Modell), um diese Felder aus dem Text der User Story zu extrahieren oder zu generieren.
 
-```env
-# API Configuration
-VITE_API_URL=http://localhost:8000/api/v1
-```
+### FR-03 – Automatische Organisation und Ordnerstruktur
+Wird eine User Story verarbeitet, soll automatisch ein **Ordner** erstellt werden, der den **Titel der User Story** trägt. Alle zugehörigen Testfälle werden innerhalb dieses Ordners gespeichert.
 
-## 🧪 Testing
+Die Testfälle können innerhalb des Systems in **Hauptordner** verschoben werden (z. B. pro Projekt oder Release). Diese Hauptordner sind **manuell benennbar** und dienen der **Strukturierung**.
 
-### Backend Tests
+---
 
-```bash
-cd backend
-pytest tests/ -v
-```
+### FR-04 – Testplan-Verwaltung
+Es soll eine eigene **Testplan-Seite** geben, auf der alle erstellten Testfälle angezeigt, gefiltert und bearbeitet werden können.
 
-### Run All Tests
+**Funktionen:**
+- Auswahl einzelner Testfälle  
+- Bearbeiten von Titel, Vorbedingung, Aktion und erwartetem Ergebnis  
+- Löschen oder Verschieben von Testfällen  
+- Markieren von Testfällen als *„Übernommen“*, *„Zu prüfen“*, *„Verworfen“*
 
-```bash
-cd backend
-pytest tests/ --cov=app
-```
+Wenn eine User Story auf dem Dashboard verarbeitet wurde, kann sie mit einem Button **„merken“** markiert werden.  
+Markierte User Stories erscheinen automatisch im **Testplan** als *„bereit zur Bearbeitung“*.
 
-## 📚 API Documentation
+---
 
-The API provides the following endpoints:
-
-### `GET /`
-Root endpoint with API information
-
-### `GET /api/v1/health`
-Health check endpoint
-
-### `POST /api/v1/generate-test-cases`
-Generate test cases from a user story
-
-**Request Body:**
-```json
-{
-  "user_story": "As a user, I want to...",
-  "num_test_cases": 5
-}
-```
-
-**Response:**
-```json
-{
-  "user_story": "As a user, I want to...",
-  "test_cases": [
-    {
-      "title": "Test Case Title",
-      "description": "What this test validates",
-      "preconditions": ["Precondition 1"],
-      "steps": ["Step 1", "Step 2"],
-      "expected_result": "Expected outcome",
-      "priority": "High"
-    }
-  ],
-  "generated_count": 5
-}
-```
-
-## 🛠️ Tech Stack
-
-### Backend
-- **FastAPI**: Modern, fast web framework for building APIs
-- **Python 3.11**: Programming language
-- **Pydantic**: Data validation using Python type annotations
-- **OpenAI API**: LLM integration for test case generation
-- **Uvicorn**: ASGI server
-
-### Frontend
-- **React 18**: UI library
-- **Vite**: Build tool and dev server
-- **Axios**: HTTP client
-- **CSS3**: Styling
-
-### DevOps
-- **Docker**: Containerization
-- **Docker Compose**: Multi-container orchestration
-- **Nginx**: Web server for production
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📝 License
-
-This project is part of a Master Thesis Project (SDE26).
-
-## 👥 Author
-
-Master Thesis Project – SDE26
-
-## 🙏 Acknowledgments
-
-- OpenAI for providing the GPT API
-- FastAPI for the excellent web framework
-- React team for the UI library
+### FR-05 – Nachverfolgung (Traceability)
+Für jede User Story wird im System festgehalten:
+- Welche Testfälle daraus generiert wurden  
+- In welchem Ordner/Testplan diese liegen  
+- Ob sie manuell verändert wurden  
+
+Damit entsteht eine einfache **Traceability** zwischen *User Story ↔ Testfälle ↔ Testplan*.
+
+### FR-06 – Exportfunktionen
+Die generierten und bearbeiteten Testfälle können exportiert werden:
+- als **CSV- oder Excel-Datei**
+- im Format, das in **Jira** oder **Azure DevOps Test Plans** importiert werden kann
+
+Der Export enthält alle relevanten Felder:
+- **Titel**
+- **Vorbedingung**
+- **Aktionen**
+- **Erwartetes Ergebnis**
+- **Status**
+- **Quelle der User Story**
+
+---
+
+### FR-07 – Dashboard & Usability
+Das Dashboard dient als zentrale Steuerzentrale des Systems und bietet:
+- eine klare Übersicht über eingegebene **User Stories**
+- einen **Fortschrittsindikator** (*„in Bearbeitung“*, *„fertig generiert“*)
+- **einfache Bedienung** (Button-basiert)
+- **strukturierte Ansicht** der generierten Testfälle mit Checkboxen zur Auswahl
+
+---
+
+### FR-08 – Erweiterte Projektstruktur
+Das System soll es ermöglichen, mehrere **Projekte** zu verwalten.  
+Jedes Projekt hat eigene User Stories, Testfälle und Testpläne.
+
+Innerhalb eines Projekts:
+- können User Stories **hinzugefügt, generiert oder gelöscht** werden
+- werden Testfälle **automatisch in die zugehörigen Ordner** abgelegt
+- können **Hauptordner (Projektordner)** individuell benannt werden
+
+---
+
+### FR-09 – KI-Parametersteuerung (optional)
+Fortgeschrittene Nutzer:innen sollen einstellen können:
+- **Anzahl der zu generierenden Testfälle**
+- **Detaillierungsgrad** (z. B. nur positive Fälle oder auch negative Szenarien)
+- **Modellwahl** (z. B. GPT‑4, LLaMA, lokale Instanz)
+
+### FR-10 – Interaktives Auswahl- und Merksystem für Testfälle
+Nach der Eingabe einer **User Story** im Dashboard und dem Klick auf **„Testfälle generieren“** werden automatisch mehrere KI-generierte Testfälle angezeigt.  
+
+Der/die Nutzer:in kann:
+
+1. **Testfälle einzeln auswählen oder abwählen** (Checkbox oder Toggle).  
+   - Wird ein Testfall ausgewählt, gilt er als *genehmigt* oder *relevant*.  
+   - Wird ein Testfall abgewählt, wird er im Hintergrund als *verworfen* markiert.  
+
+2. **Gesamte User Story merken**  
+   - Mit einem separaten Button **„User Story merken“** kann die gesamte US gespeichert werden, auch wenn keine Auswahl erfolgt ist.  
+   - In diesem Fall werden **alle generierten Testfälle automatisch übernommen.**  
+
+3. **Automatische Synchronisation mit dem Testplan**  
+   - Sobald ein Testfall oder eine US markiert wurde, legt das System automatisch einen **Ordner im Testplan** an, dessen Name dem **Titel der User Story** entspricht.  
+   - Alle ausgewählten (oder im Fall einer „gemerkten“ US: alle) Testfälle werden in diesen Ordner kopiert.  
+   - Der Ordner wird als *„neu angelegt“* markiert und kann später im Testplan bearbeitet oder verschoben werden.  
+
+4. **Reversibilität (Abwahl-Logik)**  
+   - Wenn ein Testfall im Dashboard wieder **abgewählt** wird, wird dieser automatisch **aus dem zugehörigen Testplan-Ordner entfernt**.  
+   - Wenn eine gesamte US **„entmerkt“** wird, wird der zugehörige Ordner im Testplan **gelöscht oder als „inaktiv“ markiert.**  
+
+5. **Statusanzeige**  
+   - Dashboard zeigt an, ob eine User Story bereits im Testplan vorhanden ist (*„Synchronisiert“*, *„In Arbeit“*, *„Nicht übernommen“*).  
+   - Testplan zeigt umgekehrt an, aus welcher US ein Testfall stammt (z. B. *„Quelle: US-123 – Login Feature“*).  
+
+---
+
+#### Beispiel-Szenario
+> Du gibst im Dashboard eine User Story *„Als Benutzer möchte ich mich einloggen“* ein.  
+> Nach Klick auf **„Generieren“** erstellt die KI fünf Testfälle.  
+> Du wählst drei davon aus und klickst auf **„Übernehmen“**.  
+> → Das System erstellt automatisch im Testplan den Ordner **„US – Login“** und legt dort die drei gewählten Testfälle ab.  
+> Wenn du später im Dashboard einen weiteren Testfall abwählst, verschwindet dieser auch aus dem Testplan-Ordner.  
+> Wenn du stattdessen auf **„US merken“** klickst, kopiert das System automatisch alle fünf Testfälle in den Testplan.
+
+---
+
+### FR-11 – Automatische Aktualisierung & Nachverfolgung
+- Das System speichert für jede US:  
+  - **Erstellungsdatum**, **ausgewählte Testfälle**, **Änderungsverlauf**  
+  - **Synchronisierungsstatus** (z. B. *neu*, *aktualisiert*, *gelöscht*)  
+- Änderungen an Testfällen (Titel, Aktion, erwartetes Ergebnis) werden im Testplan-Modul nachverfolgt und mit der ursprünglichen US verknüpft.  
+
+---
+
+## 2) Zusammenfassung der Interaktion
+**Ablauf (Use-Flow):**
+1. Nutzer:in öffnet das Dashboard.  
+2. Gibt Titel und Beschreibung einer User Story ein.  
+3. Klickt auf **„Testfälle generieren“** → KI erzeugt Testfälle.  
+4. Die generierten Testfälle erscheinen in einem automatisch erstellten Ordner.  
+5. Nutzer:in kann Testfälle markieren, bearbeiten oder in Hauptordner verschieben.  
+6. Markierte User Stories erscheinen im Testplan.  
+7. Export in Jira/Azure ist möglich.
