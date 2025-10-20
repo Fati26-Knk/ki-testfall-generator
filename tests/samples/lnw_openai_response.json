@@ -1,0 +1,126 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 Import von Leistungsnachweisen",
+      "description": "Überprüfen des Imports von Leistungsnachweisen in KidWeb",
+      "type": "functional",
+      "preconditions": [
+        "FMI-Daten verfügbar",
+        "KidWeb-Zugriff"
+      ],
+      "steps": [
+        "1. Leistungsnachweise in KidWeb importieren",
+        "2. Überprüfen, ob alle Daten korrekt übernommen wurden"
+      ],
+      "expected_result": "Erfolgreicher Import der Leistungsnachweise",
+      "priority": "High"
+    },
+    {
+      "title": "TC-2 Stammdatenprüfung für Integrationskind",
+      "description": "Durchführung der Stammdatenprüfung für ein Integrationskind in KidWeb",
+      "type": "functional",
+      "preconditions": [
+        "Integrationskind erstellt",
+        "KidWeb-Zugriff"
+      ],
+      "steps": [
+        "1. Stammdaten des Integrationskinds prüfen",
+        "2. Sicherstellen, dass alle erforderlichen Felder ausgefüllt sind"
+      ],
+      "expected_result": "Erfolgreiche Prüfung der Stammdaten des Integrationskinds",
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 Automatische Korrektur des Felds 'Integrationskind'",
+      "description": "Testen der automatischen Korrekturfunktion für das Feld 'Integrationskind'",
+      "type": "functional",
+      "preconditions": [
+        "Feld 'Integrationskind' fehlerhaft",
+        "KidWeb-Zugriff"
+      ],
+      "steps": [
+        "1. Feld 'Integrationskind' mit fehlerhaften Daten prüfen",
+        "2. Trigger für automatische Korrektur auslösen"
+      ],
+      "expected_result": "Erfolgreiche automatische Korrektur des Felds 'Integrationskind'",
+      "priority": "Medium"
+    },
+    {
+      "title": "TC-4 Verrechnung von Leistungsnachweisen",
+      "description": "Durchführung der Verrechnung von Leistungsnachweisen in KidWeb",
+      "type": "functional",
+      "preconditions": [
+        "Leistungsnachweise importiert",
+        "Stammdaten geprüft"
+      ],
+      "steps": [
+        "1. Verrechnungsprozess starten",
+        "2. Überprüfen der erstellten Rechnung"
+      ],
+      "expected_result": "Erfolgreiche Verrechnung der Leistungsnachweise",
+      "priority": "High"
+    },
+    {
+      "title": "TC-5 Sicherheitsüberprüfung bei Leistungsnachweisimport",
+      "description": "Überprüfen der Sicherheitsmaßnahmen beim Import von Leistungsnachweisen",
+      "type": "security",
+      "preconditions": [
+        "FMI-Daten verfügbar",
+        "KidWeb-Zugriff"
+      ],
+      "steps": [
+        "1. Versuch eines nicht autorisierten Imports",
+        "2. Überprüfen, ob Zugriff abgelehnt wird"
+      ],
+      "expected_result": "Nicht autorisierter Import wird abgelehnt",
+      "priority": "High"
+    },
+    {
+      "title": "TC-6 Performance-Test für Stammdatenprüfung",
+      "description": "Durchführung eines Performance-Tests für die Stammdatenprüfung in KidWeb",
+      "type": "performance",
+      "preconditions": [
+        "Große Menge an Stammdaten vorhanden",
+        "KidWeb-Zugriff"
+      ],
+      "steps": [
+        "1. Durchführung der Stammdatenprüfung mit großer Datenmenge",
+        "2. Messung der Antwortzeit"
+      ],
+      "expected_result": "Stabile Performance bei der Verarbeitung großer Datenmengen",
+      "priority": "Medium"
+    },
+    {
+      "title": "TC-7 Integrationstest für automatische Korrektur",
+      "description": "Durchführung eines Integrationstests für die automatische Korrektur des Felds 'Integrationskind'",
+      "type": "integration",
+      "preconditions": [
+        "Feld 'Integrationskind' fehlerhaft",
+        "KidWeb-Zugriff"
+      ],
+      "steps": [
+        "1. Trigger für automatische Korrektur auslösen",
+        "2. Überprüfen, ob korrigierte Daten in anderen Systemen aktualisiert werden"
+      ],
+      "expected_result": "Erfolgreiche Integration der automatischen Korrektur in andere Systeme",
+      "priority": "High"
+    },
+    {
+      "title": "TC-8 Datengetriebener Test für Verrechnung",
+      "description": "Durchführung eines datengetriebenen Tests für die Verrechnung von Leistungsnachweisen",
+      "type": "data-driven",
+      "preconditions": [
+        "Leistungsnachweise importiert",
+        "Stammdaten geprüft"
+      ],
+      "steps": [
+        "1. Verrechnungsprozess mit verschiedenen Datensätzen durchführen",
+        "2. Überprüfen der Rechnungsgenauigkeit"
+      ],
+      "expected_result": "Korrekte Verrechnung basierend auf den verschiedenen Datensätzen",
+      "priority": "High"
+    }
+  ],
+  "generated_count": 8,
+  "generated_by": "openai"
+}
