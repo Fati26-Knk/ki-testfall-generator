@@ -1,41 +1,49 @@
 {
   "test_cases": [
     {
-      "title": "TC-1 Modal schließt sich bei Klick auf 'Abbrechen' und Daten bleiben unverändert",
-      "description": "Das Modal soll sich schließen, wenn auf 'Abbrechen' geklickt wird, und die Daten dürfen nicht verändert werden.",
+      "title": "TC-1 Teste das Hinzufügen einer weiteren Reihe mit denselben 3 Feldern",
+      "description": "Der Benutzer klickt auf 'Komponente hinzufügen' und es sollte eine neue Reihe mit den gleichen 3 Feldern erscheinen.",
       "type": "functional",
-      "preconditions": [
-        "Step 3 - EVV Umgebung"
-      ],
+      "preconditions": [],
       "steps": [
-        "1. Öffne das Modal",
-        "2. Klicke auf 'Abbrechen'",
-        "3. Überprüfe, ob das Modal geschlossen ist und die Daten unverändert sind"
+        "Klick auf 'Komponente hinzufügen'",
+        "Überprüfe, ob eine neue Reihe mit den gleichen 3 Feldern erscheint"
       ],
-      "expected_result": "Das Modal schließt sich, und die Daten bleiben unverändert.",
+      "expected_result": "Eine neue Reihe mit den gleichen 3 Feldern wird hinzugefügt.",
       "covers": [],
       "priority": "High",
       "user_story": "Umgebung: Step 3 - EVV",
       "_globalIdx": 33
     },
     {
-      "title": "TC-2 Modal schließt sich bei Klick auf 'Speichern' und Daten werden aktualisiert",
-      "description": "Das Modal soll sich schließen, wenn auf 'Speichern' geklickt wird, und die Daten sollen aktualisiert oder hinzugefügt werden.",
+      "title": "TC-2 Teste das Löschen einer Reihe",
+      "description": "Der Benutzer klickt auf 'Komponente entfernen' und die entsprechende Reihe sollte gelöscht werden.",
       "type": "functional",
-      "preconditions": [
-        "Step 3 - EVV Umgebung"
-      ],
+      "preconditions": [],
       "steps": [
-        "1. Öffne das Modal",
-        "2. Füge neue Daten hinzu oder aktualisiere bestehende Daten",
-        "3. Klicke auf 'Speichern'",
-        "4. Überprüfe, ob das Modal geschlossen ist und die Daten erfolgreich aktualisiert oder hinzugefügt wurden"
+        "Klick auf 'Komponente entfernen' in einer vorhandenen Reihe",
+        "Überprüfe, ob die entsprechende Reihe gelöscht wird"
       ],
-      "expected_result": "Das Modal schließt sich, und die Daten werden aktualisiert oder hinzugefügt.",
+      "expected_result": "Die ausgewählte Reihe wird gelöscht.",
       "covers": [],
       "priority": "High",
       "user_story": "Umgebung: Step 3 - EVV",
       "_globalIdx": 34
+    },
+    {
+      "title": "TC-3 Teste das beliebig oft Angeben der 3 Felder",
+      "description": "Der Benutzer gibt die 3 Felder mehrmals an und überprüft, ob sie beliebig oft angegeben werden können.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "Gib die 3 Felder mehrmals an",
+        "Überprüfe, ob die 3 Felder jedes Mal korrekt angezeigt werden"
+      ],
+      "expected_result": "Die 3 Felder können beliebig oft angegeben werden.",
+      "covers": [],
+      "priority": "Medium",
+      "user_story": "Umgebung: Step 3 - EVV",
+      "_globalIdx": 35
     }
   ]
 }

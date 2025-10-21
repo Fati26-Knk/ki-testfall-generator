@@ -1,0 +1,66 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 Anzeigen der weiteren Felder bei Auswahl 'Ja' beim Radiobutton",
+      "description": "Überprüfe, ob die weiteren Felder nur angezeigt werden, wenn 'Ja' beim Radiobutton ausgewählt ist",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Wähle 'Ja' beim Radiobutton aus",
+        "2. Überprüfe, ob die weiteren Felder sichtbar sind"
+      ],
+      "expected_result": "Die weiteren Felder werden nur angezeigt, wenn 'Ja' beim Radiobutton ausgewählt ist",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV -2",
+      "_globalIdx": 33
+    },
+    {
+      "title": "TC-2 Automatische Berechnung des Jahreswerts bei Anlagen über 30 MW",
+      "description": "Überprüfe, ob der Jahreswert automatisch berechnet wird bei Anlagen über 30 MW",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Gebe Monatswerte für Anlagen über 30 MW ein",
+        "2. Überprüfe den berechneten Jahreswert"
+      ],
+      "expected_result": "Der Jahreswert wird automatisch berechnet",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV -2",
+      "_globalIdx": 34
+    },
+    {
+      "title": "TC-3 Automatische Berechnung der Jahresmenge und Sperren des Eingabefelds bei Anlagen unter 30 MW",
+      "description": "Überprüfe die automatische Berechnung der Jahresmenge und das Sperren des Eingabefelds bei Anlagen unter 30 MW",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Gebe Monatswerte für Anlagen unter 30 MW ein",
+        "2. Überprüfe die automatisch berechnete Jahresmenge",
+        "3. Versuche, das Eingabefeld für die Jahresmenge zu bearbeiten"
+      ],
+      "expected_result": "Die Jahresmenge wird automatisch berechnet und das Eingabefeld ist gesperrt",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV -2",
+      "_globalIdx": 35
+    },
+    {
+      "title": "TC-4 Überschreibung der manuellen Eingabe der Jahresmenge durch automatisierte Berechnung",
+      "description": "Überprüfe, ob die manuelle Eingabe der Jahresmenge durch automatisierte Berechnung überschrieben wird",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Gebe eine manuelle Jahresmenge ein",
+        "2. Gebe Monatswerte ein",
+        "3. Überprüfe die automatisch berechnete Jahresmenge"
+      ],
+      "expected_result": "Die manuelle Eingabe der Jahresmenge wird durch automatisierte Berechnung überschrieben",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV -2",
+      "_globalIdx": 36
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 import api from '../services/api';
 import TestCaseCard from './TestCaseCard';
 import Toast from './Toast';
+import * as XLSX from 'xlsx';
 
 function EditableTestCase({ testCase, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -611,6 +612,73 @@ export default function TestPlan() {
       setToast({ message: 'Löschen fehlgeschlagen', type: 'error' });
     }
   }
+  
+  function exportUserStory(usTitle, testCases) {
+    try {
+      // Erstelle Excel-Daten im JIRA/Azure DevOps kompatiblen Format
+      const excelData = [];
+      
+      // Nur Testfälle Header (JIRA/Azure DevOps Standard)
+      excelData.push([
+        'Test Case ID',
+        'Title',
+        'Description',
+        'Preconditions',
+        'Test Steps',
+        'Expected Result',
+        'Priority',
+        'User Story'
+      ]);
+      
+      // Testfälle
+      testCases.forEach((tc, index) => {
+        const preconditions = (tc.preconditions || []).join('\n');
+        const steps = (tc.steps || []).map((step, i) => `${i + 1}. ${step}`).join('\n');
+        
+        excelData.push([
+          `TC-${index + 1}`,
+          tc.title || '',
+          tc.description || '',
+          preconditions,
+          steps,
+          tc.expected_result || '',
+          tc.priority || 'Medium',
+          usTitle
+        ]);
+      });
+      
+      // Erstelle Worksheet mit korrekter UTF-8 Kodierung
+      const ws = XLSX.utils.aoa_to_sheet(excelData);
+      
+      // Setze Spaltenbreiten für bessere Lesbarkeit
+      ws['!cols'] = [
+        { wch: 12 },  // Test Case ID
+        { wch: 35 },  // Title
+        { wch: 45 },  // Description
+        { wch: 35 },  // Preconditions
+        { wch: 45 },  // Test Steps
+        { wch: 45 },  // Expected Result
+        { wch: 12 },  // Priority
+        { wch: 30 }   // User Story
+      ];
+      
+      // Erstelle Workbook
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Test Cases');
+      
+      // Bereinige Dateiname (ersetze ungültige Zeichen)
+      const sanitizedUsTitle = usTitle.replace(/[<>:"/\\|?*]/g, '-');
+      const filename = `${sanitizedUsTitle}_TestCases.xlsx`;
+      
+      // Exportiere als Excel mit UTF-8 Unterstützung für Umlaute
+      XLSX.writeFile(wb, filename, { bookType: 'xlsx', type: 'binary' });
+      
+      setToast({ message: `${testCases.length} Testfälle als Excel exportiert`, type: 'success' });
+    } catch (e) {
+      console.error('exportUserStory error:', e);
+      setToast({ message: 'Export fehlgeschlagen', type: 'error' });
+    }
+  }
 
   return (
     <div>
@@ -801,25 +869,46 @@ export default function TestPlan() {
                                 ({(projectUsTestCases[us] || []).length} Testfälle)
                               </span>
                             </span>
-                            <button
-                              title="User Story aus Projekt löschen"
-                              style={{ 
-                                background: '#fee2e2', 
-                                color: '#b91c1c', 
-                                border: 'none', 
-                                borderRadius: 4, 
-                                padding: '6px 12px', 
-                                cursor: 'pointer', 
-                                fontSize: 14,
-                                fontWeight: 600,
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteUserStoryFromProject(us);
-                              }}
-                            >
-                              🗑️ Löschen
-                            </button>
+                            <div style={{ display: 'flex', gap: 8 }}>
+                              <button
+                                title="User Story mit Testfällen exportieren"
+                                style={{ 
+                                  background: '#dbeafe', 
+                                  color: '#1e40af', 
+                                  border: 'none', 
+                                  borderRadius: 4, 
+                                  padding: '6px 12px', 
+                                  cursor: 'pointer', 
+                                  fontSize: 14,
+                                  fontWeight: 600,
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  exportUserStory(us, projectUsTestCases[us] || []);
+                                }}
+                              >
+                                📥 Export
+                              </button>
+                              <button
+                                title="User Story aus Projekt löschen"
+                                style={{ 
+                                  background: '#fee2e2', 
+                                  color: '#b91c1c', 
+                                  border: 'none', 
+                                  borderRadius: 4, 
+                                  padding: '6px 12px', 
+                                  cursor: 'pointer', 
+                                  fontSize: 14,
+                                  fontWeight: 600,
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteUserStoryFromProject(us);
+                                }}
+                              >
+                                🗑️ Löschen
+                              </button>
+                            </div>
                           </div>
                           {openProjectUsGroups[us] && (
                             <div style={{ padding: '12px 16px' }}>
@@ -888,26 +977,6 @@ export default function TestPlan() {
                     <span style={{ color: '#64748b', fontWeight: 400, fontSize: 14, marginLeft: 8 }}>({tcs.length} Testfälle)</span>
                   </span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <button
-                      title="User Story mit allen Testfällen in Projekt übernehmen"
-                      style={{ 
-                        background: selectedProject ? '#10b981' : '#cbd5e1', 
-                        color: 'white', 
-                        border: 'none', 
-                        borderRadius: 4, 
-                        padding: '6px 12px', 
-                        cursor: selectedProject ? 'pointer' : 'not-allowed', 
-                        fontSize: 14,
-                        fontWeight: 600,
-                      }}
-                      disabled={!selectedProject}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        adoptUsDirectly(us);
-                      }}
-                    >
-                      ✓ Übernehmen
-                    </button>
                     <button
                       title="User Story und alle zugehörigen Testfälle aus der globalen Auswahl entfernen"
                       style={{ 
