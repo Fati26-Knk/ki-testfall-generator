@@ -1,0 +1,55 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 Checkbox wird bei Meldungen mit bestehenden Daten angezeigt",
+      "description": "Überprüfe, ob die Checkbox 'Meldepflichtige Mängel' bei Meldungen mit bestehenden Daten in der Datenbank angezeigt wird",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV Umgebung"
+      ],
+      "steps": [
+        "1. Erstelle eine Meldung mit bestehenden Daten in der Datenbank",
+        "2. Überprüfe die Anzeige der Checkbox 'Meldepflichtige Mängel'"
+      ],
+      "expected_result": "Die Checkbox 'Meldepflichtige Mängel' wird angezeigt",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 5 - EVV",
+      "_globalIdx": 33
+    },
+    {
+      "title": "TC-2 RadioButton wird bei Neuanlage mit Frage angezeigt",
+      "description": "Stelle sicher, dass der RadioButton mit der Frage 'Sind meldepflichtige Mängel aufgetreten?' bei Neuanlage angezeigt wird",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV Umgebung"
+      ],
+      "steps": [
+        "1. Erstelle eine Neuanlage ohne bestehende Daten in der Datenbank",
+        "2. Überprüfe die Anzeige des RadioButtons mit der Frage"
+      ],
+      "expected_result": "Der RadioButton mit der Frage wird angezeigt und hat standardmäßig keine Auswahl",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 5 - EVV",
+      "_globalIdx": 34
+    },
+    {
+      "title": "TC-3 RadioButton zeigt Wert aus Datenbank an",
+      "description": "Überprüfe, ob der RadioButton den Wert aus der Datenbank korrekt anzeigt",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV Umgebung"
+      ],
+      "steps": [
+        "1. Setze einen Wert ('Ja' oder 'Nein') in der Datenbank für 'Meldepflichtige Mängel'",
+        "2. Erstelle eine Neuanlage und überprüfe die Anzeige des RadioButtons"
+      ],
+      "expected_result": "Der RadioButton zeigt den Wert aus der Datenbank korrekt an, falls vorhanden",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 5 - EVV",
+      "_globalIdx": 35
+    }
+  ]
+}

@@ -170,7 +170,8 @@ async def adopt_test_cases(body: AdoptRequest, project: str | None = None, reque
         # Ensure project exists if provided to avoid arbitrary names being used.
         proj_name = project or "default"
         available = storage.list_projects()
-        if proj_name not in available and proj_name != "default":
+        project_names = [p.get('name') if isinstance(p, dict) else p for p in available]
+        if proj_name not in project_names and proj_name != "default":
             raise HTTPException(status_code=400, detail=f"Project '{proj_name}' does not exist. Create it first.")
         result = storage.save_user_story(
             project=proj_name,
@@ -263,7 +264,9 @@ async def adopt_selected_to_project(project: str, us: str, request: Request):
 
         _, storage = _get_services(request)
         # ensure project and us exist
-        if project not in storage.list_projects():
+        available_projects = storage.list_projects()
+        project_names = [p.get('name') if isinstance(p, dict) else p for p in available_projects]
+        if project not in project_names:
             raise HTTPException(status_code=400, detail=f"Project '{project}' does not exist")
 
         # Save under the provided project/us folder (overwrites or creates)

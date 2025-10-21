@@ -1,0 +1,40 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 Modal schließt sich beim Klick auf 'Abbrechen' und Daten bleiben unverändert",
+      "description": "Das Modal sollte sich schließen, wenn auf 'Abbrechen' geklickt wird, und die Daten sollten unverändert bleiben.",
+      "type": "functional",
+      "preconditions": [
+        "Step 3 - EVV Umgebung"
+      ],
+      "steps": [
+        "Klicke auf 'Abbrechen'",
+        "Überprüfe, ob das Modal geschlossen ist",
+        "Überprüfe, ob die Daten unverändert geblieben sind"
+      ],
+      "expected_result": "Das Modal schließt sich und die Daten bleiben unverändert.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV",
+      "_globalIdx": 33
+    },
+    {
+      "title": "TC-2 Modal schließt sich beim Klick auf 'Speichern' und Daten werden aktualisiert oder hinzugefügt",
+      "description": "Das Modal sollte sich schließen, wenn auf 'Speichern' geklickt wird, und die Daten sollten aktualisiert oder hinzugefügt werden.",
+      "type": "functional",
+      "preconditions": [
+        "Step 3 - EVV Umgebung"
+      ],
+      "steps": [
+        "Klicke auf 'Speichern'",
+        "Überprüfe, ob das Modal geschlossen ist",
+        "Überprüfe, ob die Daten aktualisiert oder hinzugefügt wurden"
+      ],
+      "expected_result": "Das Modal schließt sich und die Daten werden aktualisiert oder hinzugefügt.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV",
+      "_globalIdx": 34
+    }
+  ]
+}

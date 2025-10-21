@@ -70,6 +70,19 @@ export async function exportTestcasesCsvWithFormat(project, usFolder, format = '
   return resp.data;
 }
 
+// Save a provided subset of test cases into a specific project/user-story folder
+// Body matches backend route `/projects/{project}/{us}/adopt-selected`
+export async function adoptSelectedToProject(project, usFolder, testCases, userStoryText = null) {
+  const payload = { test_cases: testCases };
+  if (userStoryText) payload.user_story = userStoryText;
+  const resp = await api.post(
+    `/projects/${encodeURIComponent(project)}/${encodeURIComponent(usFolder)}/adopt-selected`,
+    JSON.stringify(payload),
+    { headers: { "Content-Type": "application/json" } }
+  );
+  return resp.data;
+}
+
 // Attach helper functions to the default axios instance so existing components
 // that import the default `api` object can call helper methods like
 // `api.getStaging()` or `api.deleteUserStory()`.
@@ -83,5 +96,6 @@ api.healthCheck = healthCheck;
 api.deleteUserStory = deleteUserStory;
 api.exportTestcasesCsv = exportTestcasesCsv;
 api.exportTestcasesCsvWithFormat = exportTestcasesCsvWithFormat;
+api.adoptSelectedToProject = adoptSelectedToProject;
 
 export default api;

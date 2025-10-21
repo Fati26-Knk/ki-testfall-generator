@@ -46,7 +46,8 @@ export default function Dashboard({ setView, activeProject }) {
     if (!generated) return alert('Keine generierten Testfälle');
     const selectedIndexes = Object.keys(selected).filter((k) => selected[k]).map((s) => parseInt(s, 10));
     if (selectedIndexes.length === 0) return alert('Bitte mindestens einen Testfall auswählen');
-    const subset = selectedIndexes.map((i) => generated[i]);
+    // Füge user_story Feld hinzu
+    const subset = selectedIndexes.map((i) => ({ ...generated[i], user_story: title }));
     setLoading(true);
     try {
       const resp = await api.postStaging(subset);
@@ -64,7 +65,10 @@ export default function Dashboard({ setView, activeProject }) {
     // send selected if any, otherwise all generated testcases to staging
     if (!generated || generated.length === 0) return alert('Keine generierten Testfälle');
     const selectedIndexes = Object.keys(selected).filter((k) => selected[k]).map((s) => parseInt(s, 10));
-    const subset = (selectedIndexes.length > 0) ? selectedIndexes.map((i) => generated[i]) : generated;
+    // Füge user_story Feld hinzu
+    const subset = (selectedIndexes.length > 0)
+      ? selectedIndexes.map((i) => ({ ...generated[i], user_story: title }))
+      : generated.map((tc) => ({ ...tc, user_story: title }));
     setLoading(true);
     try {
       const resp = await api.postStaging(subset);

@@ -20,8 +20,18 @@ function App() {
           </div>
 
           <div className="header__actions">
-            <button className="btn-ghost" onClick={() => setView('dashboard')}>Dashboard</button>
-            <button className="btn-ghost" onClick={() => setView('testplan')}>Testplan</button>
+            <button 
+              className={view === 'dashboard' ? 'btn-nav active' : 'btn-nav'}
+              onClick={() => setView('dashboard')}
+            >
+              Dashboard
+            </button>
+            <button 
+              className={view === 'testplan' ? 'btn-nav active' : 'btn-nav'}
+              onClick={() => setView('testplan')}
+            >
+              Testplan
+            </button>
           </div>
         </div>
       </header>
