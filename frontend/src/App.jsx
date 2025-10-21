@@ -5,6 +5,7 @@ import "./App.css";
 
 function App() {
   const [view, setView] = React.useState('dashboard');
+  const [activeProject, setActiveProject] = React.useState(null);
 
   return (
     <div className="app">
@@ -25,7 +26,7 @@ function App() {
         </div>
       </header>
 
-      {view === 'dashboard' ? <Dashboard /> : <TestPlan />}
+  {view === 'dashboard' ? <Dashboard setView={setView} activeProject={activeProject} /> : <TestPlan setView={setView} setActiveProject={setActiveProject} />}
     </div>
   );
 }

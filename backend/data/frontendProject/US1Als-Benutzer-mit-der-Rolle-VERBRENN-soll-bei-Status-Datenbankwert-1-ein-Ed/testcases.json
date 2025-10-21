@@ -1,0 +1,46 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 Benutzer mit Rolle VERBRENN sieht Edit/Stift Button bei Status Datenbankwert: 1",
+      "description": "Überprüfe, ob ein Benutzer mit der Rolle VERBRENN den Edit/Stift Button sieht, wenn der Status Datenbankwert 1 ist.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Einloggen als Benutzer mit Rolle VERBRENN",
+        "2. Überprüfen, ob der Status Datenbankwert 1 ist",
+        "3. Überprüfen, ob der Edit/Stift Button sichtbar ist"
+      ],
+      "expected_result": "Der Benutzer mit Rolle VERBRENN sieht den Edit/Stift Button bei Status Datenbankwert 1.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 Klick auf Auge Button leitet Benutzer zur Read Only Ansicht",
+      "description": "Überprüfe, ob der Benutzer zur Read Only Ansicht der EE geleitet wird, wenn er auf das Auge Symbol klickt.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Einloggen als Benutzer mit Rolle VERBRENN",
+        "2. Klicken auf das Auge Symbol",
+        "3. Überprüfen, ob die Read Only Ansicht der EE angezeigt wird"
+      ],
+      "expected_result": "Der Benutzer wird zur Read Only Ansicht der EE geleitet.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-4 Klick auf Edit/Stift Button leitet Benutzer zur Edit Version",
+      "description": "Überprüfe, ob der Benutzer zur Edit Version der EE geleitet wird, wenn er auf den Edit/Stift Button klickt.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Einloggen als Benutzer mit Rolle VERBRENN",
+        "2. Klicken auf den Edit/Stift Button",
+        "3. Überprüfen, ob die Edit Version der EE angezeigt wird"
+      ],
+      "expected_result": "Der Benutzer wird zur Edit Version der EE geleitet.",
+      "covers": [],
+      "priority": "High"
+    }
+  ]
+}

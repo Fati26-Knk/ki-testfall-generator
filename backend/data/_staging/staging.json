@@ -1,0 +1,476 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-3 Klick auf Auge Button leitet zu Read Only Ansicht",
+      "description": "Überprüfe, ob ein Benutzer mit der Rolle VERBRENN bei einem Status Datenbankwert von 1 durch Klick auf das Auge Symbol zur Read Only Ansicht der EE geleitet wird.",
+      "type": "functional",
+      "preconditions": [
+        "Benutzer mit der Rolle VERBRENN ist angemeldet",
+        "Status Datenbankwert ist 1"
+      ],
+      "steps": [
+        "1. Melde dich als Benutzer mit der Rolle VERBRENN an",
+        "2. Klicke auf das Auge Symbol bei Status Datenbankwert: 1"
+      ],
+      "expected_result": "Der Benutzer wird zur Read Only Ansicht der EE geleitet.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Benutzer mit Rolle VERBRENN sieht Edit/Stift Button bei Status Datenbankwert: 1",
+      "description": "Überprüfe, ob der Benutzer mit der Rolle VERBRENN den Edit/Stift Button sieht, wenn der Status Datenbankwert 1 ist.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Einloggen als Benutzer mit Rolle VERBRENN",
+        "2. Überprüfen, ob der Status Datenbankwert 1 ist",
+        "3. Überprüfen, ob der Edit/Stift Button sichtbar ist"
+      ],
+      "expected_result": "Der Benutzer mit Rolle VERBRENN sieht den Edit/Stift Button bei Status Datenbankwert 1.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Edit Button leads to Edit Version",
+      "description": "Verify that clicking on the Edit/Stift Button leads the user with role VERBRENN to the Edit version of the EE when the database status is 1",
+      "type": "functional",
+      "preconditions": [
+        "User with role VERBRENN is logged in",
+        "Database status is 1"
+      ],
+      "steps": [
+        "1. Log in as user with role VERBRENN",
+        "2. Set the database status to 1",
+        "3. Click on the Edit/Stift Button"
+      ],
+      "expected_result": "User is directed to the Edit version of the EE",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-2 Eye Button leads to Read Only View",
+      "description": "Ensure that clicking on the Auge Button directs the user with role VERBRENN to the Read Only view of the EE when the database status is 1",
+      "type": "functional",
+      "preconditions": [
+        "User with role VERBRENN is logged in",
+        "Database status is 1"
+      ],
+      "steps": [
+        "1. Log in as user with role VERBRENN",
+        "2. Set the database status to 1",
+        "3. Click on the Auge Button"
+      ],
+      "expected_result": "User is taken to the Read Only view of the EE",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Verify Edit/Stift Button is displayed for VERBRENN role at Status 1",
+      "description": "Verify that the Edit/Stift Button is displayed for users with the role VERBRENN when the database status value is 1",
+      "type": "functional",
+      "preconditions": [
+        "User is logged in with VERBRENN role",
+        "Database status value is 1"
+      ],
+      "steps": [
+        "1. Log in with VERBRENN role",
+        "2. Check the page for the Edit/Stift Button at Status 1"
+      ],
+      "expected_result": "Edit/Stift Button is displayed",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 Verify clicking on Auge Button redirects to Read Only view for VERBRENN role",
+      "description": "Verify that clicking on the Auge Button redirects the user with VERBRENN role to the Read Only view of the EE",
+      "type": "functional",
+      "preconditions": [
+        "User is logged in with VERBRENN role",
+        "Database status value is 1"
+      ],
+      "steps": [
+        "1. Log in with VERBRENN role",
+        "2. Click on the Auge Button"
+      ],
+      "expected_result": "User is redirected to Read Only view of the EE",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-4 Verify clicking on Edit/Stift Button redirects to Edit Version for VERBRENN role",
+      "description": "Verify that clicking on the Edit/Stift Button redirects the user with VERBRENN role to the Edit Version of the EE",
+      "type": "functional",
+      "preconditions": [
+        "User is logged in with VERBRENN role",
+        "Database status value is 1"
+      ],
+      "steps": [
+        "1. Log in with VERBRENN role",
+        "2. Click on the Edit/Stift Button"
+      ],
+      "expected_result": "User is redirected to Edit Version of the EE",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Benutzer mit Rolle VERBRENN sieht Edit/Stift Button bei Status 1",
+      "description": "Überprüfe, ob ein Benutzer mit der Rolle VERBRENN bei einem Status Datenbankwert von 1 den Edit/Stift Button sieht.",
+      "type": "functional",
+      "preconditions": [
+        "Benutzer mit der Rolle VERBRENN ist angemeldet",
+        "Status Datenbankwert ist 1"
+      ],
+      "steps": [
+        "Überprüfe die Ansicht des Benutzers mit der Rolle VERBRENN bei Status 1",
+        "Bestätige, dass der Edit/Stift Button sichtbar ist"
+      ],
+      "expected_result": "Der Benutzer mit der Rolle VERBRENN sieht den Edit/Stift Button bei Status 1.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 Klick auf Auge Button führt zur Read Only Ansicht der EE",
+      "description": "Überprüfe, ob ein Klick auf das Auge Symbol den Benutzer zur Read Only Ansicht der EE leitet.",
+      "type": "functional",
+      "preconditions": [
+        "Benutzer mit der Rolle VERBRENN ist angemeldet",
+        "Status Datenbankwert ist 1"
+      ],
+      "steps": [
+        "Klicke auf das Auge Symbol",
+        "Überprüfe die Weiterleitung zur Read Only Ansicht der EE"
+      ],
+      "expected_result": "Der Benutzer wird zur Read Only Ansicht der EE geleitet.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-4 Klick auf Edit/Stift Button führt zur Edit Version der EE",
+      "description": "Überprüfe, ob ein Klick auf den Edit/Stift Button den Benutzer zur Edit Version der EE leitet.",
+      "type": "functional",
+      "preconditions": [
+        "Benutzer mit der Rolle VERBRENN ist angemeldet",
+        "Status Datenbankwert ist 1"
+      ],
+      "steps": [
+        "Klicke auf den Edit/Stift Button",
+        "Überprüfe die Weiterleitung zur Edit Version der EE"
+      ],
+      "expected_result": "Der Benutzer wird zur Edit Version der EE geleitet.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Benutzer mit Rolle VERBRENN sieht Edit/Stift Button bei Status Datenbankwert: 1",
+      "description": "Überprüfe, ob ein Benutzer mit der Rolle VERBRENN den Edit/Stift Button sieht, wenn der Status Datenbankwert 1 ist.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Einloggen als Benutzer mit Rolle VERBRENN",
+        "2. Überprüfen, ob der Status Datenbankwert 1 ist",
+        "3. Überprüfen, ob der Edit/Stift Button sichtbar ist"
+      ],
+      "expected_result": "Der Benutzer mit der Rolle VERBRENN sieht den Edit/Stift Button bei Status Datenbankwert 1.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 Klick auf Auge Button leitet Benutzer zur Read Only Ansicht",
+      "description": "Überprüfe, ob der Benutzer zur Read Only Ansicht der EE geleitet wird, wenn er auf den Auge Button klickt.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Einloggen als Benutzer mit Rolle VERBRENN",
+        "2. Klicken auf den Auge Button"
+      ],
+      "expected_result": "Der Benutzer wird zur Read Only Ansicht der EE geleitet.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-4 Klick auf Edit/Stift Button leitet Benutzer zur Edit Version",
+      "description": "Überprüfe, ob der Benutzer zur Edit Version der EE geleitet wird, wenn er auf den Edit/Stift Button klickt.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Einloggen als Benutzer mit Rolle VERBRENN",
+        "2. Klicken auf den Edit/Stift Button"
+      ],
+      "expected_result": "Der Benutzer wird zur Edit Version der EE geleitet.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Modal erscheint nach Klick auf 'Mistkübel' Icon",
+      "description": "Überprüfe, ob nach dem Klick auf das 'Mistkübel' Icon das Modal erscheint",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe, ob das Modal mit der Frage erscheint"
+      ],
+      "expected_result": "Das Modal mit der Frage erscheint",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-2 Modal enthält die Frage zum Löschen",
+      "description": "Überprüfe, ob das Modal die korrekte Frage zum Löschen enthält",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe, ob das Modal die Frage 'Sind Sie sicher, dass sie diesen Eintrag löschen wollen' enthält"
+      ],
+      "expected_result": "Das Modal enthält die Frage zum Löschen",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 Modal enthält Optionen 'Abbrechen' und 'Fortfahren'",
+      "description": "Überprüfe, ob das Modal die Optionen 'Abbrechen' und 'Fortfahren' enthält",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe, ob das Modal die Optionen 'Abbrechen' und 'Fortfahren' enthält"
+      ],
+      "expected_result": "Das Modal enthält die Optionen 'Abbrechen' und 'Fortfahren'",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Modal erscheint nach Klick auf Mistkübel Icon",
+      "description": "Überprüfe, ob nach dem Klick auf das Mistkübel Icon das Modal mit der Löschfrage erscheint",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Klicke auf das Mistkübel Icon",
+        "2. Überprüfe ob das Modal mit der Löschfrage erscheint"
+      ],
+      "expected_result": "Das Modal mit der Löschfrage wird angezeigt",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-2 Modal enthält die Löschfrage",
+      "description": "Überprüfe, ob das Modal die korrekte Löschfrage enthält",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Klicke auf das Mistkübel Icon",
+        "2. Überprüfe ob das Modal die Frage \"Sind Sie sicher, dass sie diesen Eintrag löschen wollen\" enthält"
+      ],
+      "expected_result": "Das Modal enthält die korrekte Löschfrage",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 Modal enthält Abbrechen und Fortfahren Optionen",
+      "description": "Überprüfe, ob das Modal die Optionen \"Abbrechen\" und \"Fortfahren\" enthält",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Klicke auf das Mistkübel Icon",
+        "2. Überprüfe ob das Modal die Optionen \"Abbrechen\" und \"Fortfahren\" enthält"
+      ],
+      "expected_result": "Das Modal enthält die Optionen \"Abbrechen\" und \"Fortfahren\"",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Modal erscheint nach Klick auf das \"Mistkübel\" Icon",
+      "description": "Überprüfe, ob nach dem Klick auf das \"Mistkübel\" Icon das Modal erscheint",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Klicke auf das \"Mistkübel\" Icon",
+        "2. Überprüfe ob das Modal erscheint"
+      ],
+      "expected_result": "Das Modal erscheint wie erwartet",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-2 Modal enthält die Frage nach Löschbestätigung",
+      "description": "Überprüfe, ob das Modal die Frage \"Sind Sie sicher, dass sie diesen Eintrag löschen wollen\" enthält",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Klicke auf das \"Mistkübel\" Icon",
+        "2. Überprüfe ob das Modal die Frage enthält"
+      ],
+      "expected_result": "Das Modal enthält die Frage nach Löschbestätigung",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 Modal enthält Optionen \"Abbrechen\" und \"Fortfahren\"",
+      "description": "Überprüfe, ob das Modal die Optionen \"Abbrechen\" und \"Fortfahren\" enthält",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Klicke auf das \"Mistkübel\" Icon",
+        "2. Überprüfe ob das Modal die Optionen enthält"
+      ],
+      "expected_result": "Das Modal enthält die Optionen \"Abbrechen\" und \"Fortfahren\"",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Modal erscheint nach Klick auf 'Mistkübel' Icon",
+      "description": "Überprüfe, ob nach dem Klick auf das 'Mistkübel' Icon das Modal erscheint",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe ob das Modal mit der Frage erscheint"
+      ],
+      "expected_result": "Das Modal mit der Frage erscheint",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-2 Modal enthält die Frage zum Löschen",
+      "description": "Überprüfe, ob das Modal die korrekte Frage zum Löschen enthält",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe ob die Frage 'Sind Sie sicher, dass sie diesen Eintrag löschen wollen' im Modal erscheint"
+      ],
+      "expected_result": "Das Modal enthält die Frage zum Löschen",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 Modal enthält Optionen 'Abbrechen' und 'Fortfahren'",
+      "description": "Überprüfe, ob das Modal die Optionen 'Abbrechen' und 'Fortfahren' enthält",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe ob die Optionen 'Abbrechen' und 'Fortfahren' im Modal erscheinen"
+      ],
+      "expected_result": "Das Modal enthält die Optionen 'Abbrechen' und 'Fortfahren'",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Modal erscheint beim Klick auf das Mistkübel Icon",
+      "description": "Überprüft, ob beim Klick auf das Mistkübel Icon das Modal mit der Löschfrage erscheint",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Klicke auf das Mistkübel Icon",
+        "2. Überprüfe ob das Modal mit der Frage erscheint"
+      ],
+      "expected_result": "Das Modal mit der Löschfrage erscheint",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-2 Abbrechen-Option im Modal funktioniert",
+      "description": "Überprüft, ob die Abbrechen-Option im Modal korrekt funktioniert",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Klicke auf das Mistkübel Icon",
+        "2. Klicke auf die Abbrechen-Option im Modal"
+      ],
+      "expected_result": "Das Modal wird geschlossen ohne den Eintrag zu löschen",
+      "covers": [],
+      "priority": "Medium"
+    },
+    {
+      "title": "TC-3 Fortfahren-Option im Modal funktioniert",
+      "description": "Überprüft, ob die Fortfahren-Option im Modal korrekt funktioniert",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "1. Klicke auf das Mistkübel Icon",
+        "2. Klicke auf die Fortfahren-Option im Modal"
+      ],
+      "expected_result": "Der Eintrag wird gelöscht",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Aktualisierung der Stammdaten am letzten Tag des Monats",
+      "description": "Überprüfe, ob die Stammdaten aller Kinder erfolgreich am letzten Tag des Monats aus KidData aktualisiert werden.",
+      "type": "functional",
+      "preconditions": [
+        "Zugriff auf KidData Schnittstelle erforderlich",
+        "Zertifikat app::fmium_test verwenden"
+      ],
+      "steps": [
+        "1. Warte bis zum letzten Tag des Monats",
+        "2. Überprüfe die Aktualisierung der Stammdaten aus KidData"
+      ],
+      "expected_result": "Die Stammdaten aller Kinder werden erfolgreich aktualisiert.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-2 Deaktivierung von nicht mehr im Kindergarten befindlichen Kindern in FMI",
+      "description": "Überprüfe, ob Kinder, die nicht mehr in den Kindergarten gehen, nicht in FMI deaktiviert werden.",
+      "type": "functional",
+      "preconditions": [
+        "Zugriff auf KidData Schnittstelle erforderlich",
+        "Zertifikat app::fmium_test verwenden"
+      ],
+      "steps": [
+        "1. Identifiziere Kinder, die nicht mehr im Kindergarten sind",
+        "2. Überprüfe, ob diese Kinder nicht in FMI deaktiviert werden"
+      ],
+      "expected_result": "Kinder, die nicht mehr im Kindergarten sind, werden nicht in FMI deaktiviert.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-1 Checkbox wird bei Meldungen mit bestehenden Daten angezeigt",
+      "description": "Überprüfe, ob die Checkbox 'Meldepflichtige Mängel' bei Meldungen mit bestehenden Daten in der Datenbank angezeigt wird.",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV Umgebung"
+      ],
+      "steps": [
+        "1. Erstelle eine Meldung mit bestehenden Daten in der Datenbank.",
+        "2. Überprüfe die Anzeige der Checkbox 'Meldepflichtige Mängel'."
+      ],
+      "expected_result": "Die Checkbox 'Meldepflichtige Mängel' wird angezeigt.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-2 RadioButton wird bei Neuanlage mit Frage angezeigt",
+      "description": "Stelle sicher, dass der RadioButton mit der Frage 'Sind meldepflichtige Mängel aufgetreten?' bei Neuanlage angezeigt wird.",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV Umgebung"
+      ],
+      "steps": [
+        "1. Erstelle eine Neuanlage ohne bestehende Daten in der Datenbank.",
+        "2. Überprüfe die Anzeige des RadioButtons mit der Frage."
+      ],
+      "expected_result": "Der RadioButton mit der Frage wird angezeigt und hat standardmäßig keine Auswahl.",
+      "covers": [],
+      "priority": "High"
+    },
+    {
+      "title": "TC-3 RadioButton zeigt Wert aus Datenbank an",
+      "description": "Überprüfe, ob der RadioButton den Wert aus der Datenbank korrekt anzeigt, falls vorhanden.",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV Umgebung"
+      ],
+      "steps": [
+        "1. Setze einen Wert ('Ja' oder 'Nein') in der Datenbank für 'Meldepflichtige Mängel'.",
+        "2. Erstelle eine Neuanlage und überprüfe die Anzeige des RadioButtons."
+      ],
+      "expected_result": "Der RadioButton zeigt den Wert aus der Datenbank korrekt an.",
+      "covers": [],
+      "priority": "High"
+    }
+  ]
+}

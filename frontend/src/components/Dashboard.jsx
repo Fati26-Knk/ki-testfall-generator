@@ -1,67 +1,92 @@
 import React, { useState } from "react";
-import api from "../services/api";
+import * as api from "../services/api";
 import Toast from "./Toast";
 
-export default function Dashboard() {
+export default function Dashboard({ setView, activeProject }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [generated, setGenerated] = useState(null);
   const [selected, setSelected] = useState({});
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
+  const [comprehensive, setComprehensive] = useState(true);
 
   async function onGenerate(e) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.generateTestCases(`${title}\n\n${description}`, 3);
+      // If comprehensive is selected, send 0 to indicate backend should generate a comprehensive set
+      const requested = comprehensive ? 0 : 3;
+      const res = await api.generateTestCases(`${title}\n\n${description}`, requested);
       setGenerated(res.test_cases || []);
       // reset selection
       setSelected({});
     } catch (err) {
-      console.error(err);
-      alert("Fehler beim Generieren");
+      console.error('Generate error', err);
+      // Try to extract a useful message from the axios error
+      const msg = err?.response?.data?.detail || err?.response?.data || err?.message || JSON.stringify(err);
+      alert(`Fehler beim Generieren: ${msg}`);
     } finally {
       setLoading(false);
     }
   }
 
   async function onAdoptAll() {
-    if (!title || !description) return alert("Bitte Title und Description ausfüllen");
+    // deprecated: replaced by onMerken
+    return;
+  }
+
+  async function onAdoptSelected() {
+    // deprecated: replaced by onMerken
+    return;
+  }
+
+  async function onRememberSelected() {
+    // send selected generated testcases to staging area
+    if (!generated) return alert('Keine generierten Testfälle');
+    const selectedIndexes = Object.keys(selected).filter((k) => selected[k]).map((s) => parseInt(s, 10));
+    if (selectedIndexes.length === 0) return alert('Bitte mindestens einen Testfall auswählen');
+    const subset = selectedIndexes.map((i) => generated[i]);
     setLoading(true);
     try {
-      await api.adoptTestCases(`${title}\n\n${description}`, 5, "frontendProject");
-      setToast('Alle Testfälle übernommen');
-      // reset selection and generated
-      setSelected({});
-      setGenerated(null);
-    } catch (err) {
-      console.error(err);
-      alert("Fehler beim Übernehmen");
+      const resp = await api.postStaging(subset);
+      setToast(`In Testplan gemerkt (${resp.count || subset.length})`);
+      if (setView) setView('testplan');
+    } catch (e) {
+      console.error(e);
+      alert('Fehler beim Merken');
     } finally {
       setLoading(false);
     }
   }
 
-  async function onAdoptSelected() {
-    if (!title || !description) return alert("Bitte Title und Description ausfüllen");
+  async function onMerken() {
+    // send selected if any, otherwise all generated testcases to staging
+    if (!generated || generated.length === 0) return alert('Keine generierten Testfälle');
     const selectedIndexes = Object.keys(selected).filter((k) => selected[k]).map((s) => parseInt(s, 10));
-    if (selectedIndexes.length === 0) return alert("Bitte mindestens einen Testfall auswählen");
-    const subset = selectedIndexes.map((i) => generated[i]);
+    const subset = (selectedIndexes.length > 0) ? selectedIndexes.map((i) => generated[i]) : generated;
     setLoading(true);
     try {
-      await api.adoptTestCases(`${title}\n\n${description}`, subset.length, "frontendProject", subset);
-      setToast('Ausgewählte Testfälle übernommen');
-      // remove selected items from list
-      const remaining = generated.filter((_, idx) => !selectedIndexes.includes(idx));
-      setGenerated(remaining.length ? remaining : null);
+      const resp = await api.postStaging(subset);
+      setToast(`In Testplan gemerkt (${resp.count || subset.length})`);
+      // optionally clear selection but keep generated visible
       setSelected({});
-    } catch (err) {
-      console.error(err);
-      alert("Fehler beim Übernehmen");
+      if (setView) setView('testplan');
+    } catch (e) {
+      console.error(e);
+      alert('Fehler beim Merken');
     } finally {
       setLoading(false);
     }
+  }
+
+  function onNewUserStory() {
+    // Clear form and generated results to create a fresh US
+    setTitle("");
+    setDescription("");
+    setGenerated(null);
+    setSelected({});
+    setToast('Neue User Story bereit');
   }
 
   return (
@@ -78,10 +103,14 @@ export default function Dashboard() {
             <textarea className="input" value={description} onChange={(e) => setDescription(e.target.value)} rows={6} />
           </div>
 
-          <div className="form-row">
+            <div className="form-row">
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <input type="checkbox" checked={comprehensive} onChange={(e) => setComprehensive(e.target.checked)} />
+              <span style={{ fontSize: 14 }}>Comprehensive</span>
+            </label>
             <button className="btn-primary" type="submit" disabled={loading}>{loading ? 'Generieren...' : '✨ Testfälle generieren'}</button>
-            <button className="btn-primary" type="button" onClick={onAdoptAll} disabled={loading} style={{ background: '#10b981' }}>{'Merken / Übernehmen'}</button>
-            <button className="btn-primary" type="button" onClick={onAdoptSelected} disabled={loading} style={{ background: '#f59e0b' }}>{'Adopt selected'}</button>
+            <button className="btn-primary" type="button" onClick={onMerken} disabled={loading} style={{ background: '#10b981' }}>{'Merken'}</button>
+            <button className="btn-ghost" type="button" onClick={onNewUserStory} style={{ marginLeft: 8 }}>Neue User Story</button>
           </div>
         </form>
       </div>
@@ -99,6 +128,35 @@ export default function Dashboard() {
               <div>
                 <h4>{tc.title}</h4>
                 <div style={{ color: '#6b7280' }}>{tc.description}</div>
+                {tc.preconditions && tc.preconditions.length > 0 && (
+                  <div style={{ marginTop: 8 }}>
+                    <strong>Preconditions:</strong>
+                    <ul style={{ marginTop: 4 }}>
+                      {tc.preconditions.map((p, idx) => (
+                        <li key={idx} style={{ color: '#6b7280' }}>{p}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {tc.steps && tc.steps.length > 0 && (
+                  <div style={{ marginTop: 8 }}>
+                    <strong>Steps:</strong>
+                    <ol style={{ marginTop: 4 }}>
+                      {tc.steps.map((s, idx) => (
+                        <li key={idx} style={{ color: '#374151' }}>{s}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+                {tc.expected_result && (
+                  <div style={{ marginTop: 8 }}>
+                    <strong>Expected result:</strong>
+                    <div style={{ color: '#064e3b' }}>{tc.expected_result}</div>
+                  </div>
+                )}
+                {tc.priority && (
+                  <div style={{ marginTop: 8, fontSize: 12, color: '#6b7280' }}><strong>Priority:</strong> {tc.priority}</div>
+                )}
               </div>
               <div className="controls">
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

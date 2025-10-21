@@ -1,0 +1,1 @@
+{"user_story":"Test Story for adopt check","num_test_cases":1,"test_cases":[{"title":"TC-Check","description":"desc","type":"functional","preconditions":[],"steps":["1. do"],"expected_result":"ok","covers":[],"priority":"High"}]}

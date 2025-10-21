@@ -1,0 +1,10 @@
+{
+  "project": "frontendProject",
+  "user_story_title": "US1\n\nEin Träger hat in KidWeb die Möglichkeit, bereits abgegebene Leistungsnachw",
+  "user_story": "US1\n\nEin Träger hat in KidWeb die Möglichkeit, bereits abgegebene Leistungsnachweise zu ändern. Ablauf: Träger hebt Freigabe in KidWEb auf KidWeb meldet über ResetKidWebAbrechnung, dass der Träger die Freigabe aufgehoben hat Träger ändert die Leistungsnachweise und gibt erneut frei (zu klären: Träger sperren? Flag setzen?) KidWeb meldet über AddKidWebAbrechnung, dass die Korrektur der Leistungsnachweise \"abgeholt\" werden können. FMI fragt bei KidWeb die geänderten Leistungsnachweise ab mit GetGeänderteStandorteForPeriode KidWeb liefert Leistungsnachweise zurück mit GetGeänderteStandorteForPeriodeResponse Frage: liefert KidWeb alle LNW eines Trägers? Oder nur die geänderten? Falls nur die geänderten: wie erkennen wir, dass eine Gruppe oder ein Standort weggefallen ist? Vermutung: für einen Träger werden von Kidweb immer alle Standorte/Gruppen geliefert Antwort Hr. Rabel (Mail vom 8.9.2025): \"ich habe keine Evidenz für die teilweise Übermittlung von Leistungsnachweisen gefunden.",
+  "count": 5,
+  "created_at": "2025-10-19T20:21:59.207211Z",
+  "status": "new",
+  "generated_by": "mock",
+  "model": "gpt-3.5-turbo"
+}

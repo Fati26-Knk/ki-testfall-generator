@@ -1,0 +1,1 @@
+﻿{"num_test_cases":6,"user_story":"Als Produktmanager möchte ich Gruppen zusammenführen, damit doppelte Datensätze vereinheitlicht werden können. Die Geschäftsregel: Beim Zusammenführen muss genau eine Gruppe eine MA11-ID haben (sonst Abbruch). Aktion: \"Zusammenführen\" im UI."}

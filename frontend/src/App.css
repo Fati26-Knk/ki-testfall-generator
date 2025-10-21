@@ -114,6 +114,62 @@ body {
   max-width: 900px;
 }
 
+/* Layout tweaks for TestPlan: fixed inner content area to avoid body shifting when accordions expand */
+.input-section.testplan {
+  display: flex;
+  padding: 1.25rem;
+  gap: 1rem;
+  align-items: stretch; /* ensure sidebar and main align top and stretch */
+  max-width: 1100px; /* allow fuller width for testplan view */
+  width: 100%;
+  box-sizing: border-box;
+  /* default compact view: limit height to make main compact */
+  max-height: 440px;
+  overflow: hidden;
+  transition: max-height 280ms ease-in-out, padding 180ms ease-in-out;
+}
+
+.input-section.testplan.expanded {
+  /* expanded: allow the card to grow up to viewport cap */
+  max-height: calc(90vh - 80px);
+  padding-bottom: 2.5rem;
+  overflow: visible;
+}
+
+.testplan-sidebar {
+  min-width: 220px;
+  max-width: 260px;
+}
+
+.testplan-main {
+  flex: 1 1 auto;
+  /* compact inner view: small max-height with internal scroll; when outer expands, we increase this */
+  max-height: 360px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.75rem 1rem;
+  background: transparent; /* visually part of the parent card */
+  border-radius: 6px;
+  border: none; /* remove floating inner border */
+  box-shadow: none;
+  box-sizing: border-box;
+  width: 100%;
+  transition: max-height 280ms ease-in-out;
+}
+
+/* Smoothly animate when expanding to show content inline */
+.testplan-main.expanded {
+  max-height: calc(80vh - 200px);
+}
+
+/* ensure tc-card inside the scroll area doesn't change document flow */
+.testplan-main .tc-card {
+  margin-bottom: 0.75rem;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+
 .card-subtle {
   background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.9));
   border: 1px solid rgba(226,232,240,0.6);
@@ -263,14 +319,13 @@ body {
 }
 
 .tc-card {
-  border: 1px solid rgba(99,102,241,0.08);
-  padding: 1rem 1rem;
-  border-radius: 10px;
+  padding: 0.75rem 0.5rem;
   margin-bottom: 0.75rem;
-  background: linear-gradient(180deg,#ffffff,#fbfbff);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid rgba(229,231,235,0.8);
+  background: transparent;
 }
 
 .tc-card h4 {

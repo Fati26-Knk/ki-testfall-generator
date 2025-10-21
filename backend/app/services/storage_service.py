@@ -29,7 +29,7 @@ class StorageService:
         self.base_path = os.path.abspath(root)
         os.makedirs(self.base_path, exist_ok=True)
 
-    def save_user_story(self, project: str, user_story_title: str, user_story_text: str, test_cases: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def save_user_story(self, project: str, user_story_title: str, user_story_text: str, test_cases: List[Dict[str, Any]], meta_extra: Dict[str, Any] | None = None) -> Dict[str, Any]:
         """Persist a user story and its generated test cases.
 
         `test_cases` may be the full generated set or a client-provided subset.
@@ -53,6 +53,13 @@ class StorageService:
             "status": "new",
         }
 
+        # Merge any additional metadata provided by caller (e.g., generated_by, model)
+        if meta_extra:
+            try:
+                meta.update(meta_extra)
+            except Exception:
+                pass
+
         meta_path = os.path.join(folder, "metadata.json")
         tc_path = os.path.join(folder, "testcases.json")
 
@@ -61,13 +68,64 @@ class StorageService:
 
         with open(tc_path, "w", encoding="utf-8") as f:
             json.dump({"test_cases": test_cases}, f, ensure_ascii=False, indent=2)
+        # Update project-level marker metadata (count, last_modified)
+        try:
+            self._update_project_marker(proj)
+        except Exception:
+            pass
 
-        return {"folder": folder, "meta_path": meta_path, "testcases_path": tc_path}
+        # Return both absolute paths and sanitized folder identifiers for client convenience
+        return {
+            "folder": folder,
+            "meta_path": meta_path,
+            "testcases_path": tc_path,
+            "project_folder": proj,
+            "us_folder": us,
+        }
 
     def list_projects(self) -> List[str]:
-        """Return a list of project folder names."""
+        """Return a list of project metadata objects: { name, test_case_count, last_modified }."""
         try:
-            return [name for name in os.listdir(self.base_path) if os.path.isdir(os.path.join(self.base_path, name))]
+            results: List[Dict[str, Any]] = []
+            for name in os.listdir(self.base_path):
+                folder = os.path.join(self.base_path, name)
+                if not os.path.isdir(folder):
+                    continue
+                marker = os.path.join(folder, 'project.json')
+                if not os.path.exists(marker):
+                    continue
+                # read marker
+                try:
+                    with open(marker, 'r', encoding='utf-8') as f:
+                        m = json.load(f)
+                except Exception:
+                    m = {}
+                # compute test case count by summing all testcases in user-stories
+                total = 0
+                last_mod = m.get('updated_at') or m.get('created_at')
+                try:
+                    for us in os.listdir(folder):
+                        us_folder = os.path.join(folder, us)
+                        if not os.path.isdir(us_folder):
+                            continue
+                        tc_path = os.path.join(us_folder, 'testcases.json')
+                        if os.path.exists(tc_path):
+                            try:
+                                with open(tc_path, 'r', encoding='utf-8') as f:
+                                    d = json.load(f)
+                                    total += len(d.get('test_cases', []))
+                            except Exception:
+                                continue
+                except Exception:
+                    pass
+
+                results.append({
+                    'name': name,
+                    'test_case_count': total,
+                    'last_modified': last_mod,
+                    **(m or {}),
+                })
+            return results
         except FileNotFoundError:
             return []
 
@@ -79,6 +137,105 @@ class StorageService:
             return [name for name in os.listdir(folder) if os.path.isdir(os.path.join(folder, name))]
         except FileNotFoundError:
             return []
+
+    def create_project(self, project: str) -> str:
+        """Create a project folder. Returns the sanitized project folder name."""
+        proj = _sanitize(project or "default")
+        folder = os.path.join(self.base_path, proj)
+        os.makedirs(folder, exist_ok=True)
+        # write a marker file so list_projects knows this was user-created
+        marker = os.path.join(folder, 'project.json')
+        try:
+            from datetime import datetime
+            meta = {"project": project, "created_at": datetime.utcnow().isoformat() + 'Z', 'updated_at': datetime.utcnow().isoformat() + 'Z'}
+            with open(marker, 'w', encoding='utf-8') as f:
+                json.dump(meta, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+        return proj
+
+    def _update_project_marker(self, proj: str) -> None:
+        """Update the project's project.json marker with counts and updated_at."""
+        folder = os.path.join(self.base_path, proj)
+        marker = os.path.join(folder, 'project.json')
+        now = None
+        try:
+            from datetime import datetime
+            now = datetime.utcnow().isoformat() + 'Z'
+        except Exception:
+            now = None
+
+        meta = {}
+        if os.path.exists(marker):
+            try:
+                with open(marker, 'r', encoding='utf-8') as f:
+                    meta = json.load(f) or {}
+            except Exception:
+                meta = {}
+
+        # compute total test cases
+        total = 0
+        try:
+            for us in os.listdir(folder):
+                us_folder = os.path.join(folder, us)
+                if not os.path.isdir(us_folder):
+                    continue
+                tc_path = os.path.join(us_folder, 'testcases.json')
+                if os.path.exists(tc_path):
+                    try:
+                        with open(tc_path, 'r', encoding='utf-8') as f:
+                            d = json.load(f)
+                            total += len(d.get('test_cases', []))
+                    except Exception:
+                        continue
+        except Exception:
+            pass
+
+        meta['test_case_count'] = total
+        if now:
+            meta['updated_at'] = now
+
+        try:
+            with open(marker, 'w', encoding='utf-8') as f:
+                json.dump(meta, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+
+    def rename_project(self, old_name: str, new_name: str) -> str:
+        """Rename a project folder. Returns new sanitized name."""
+        old_proj = _sanitize(old_name)
+        new_proj = _sanitize(new_name)
+        old_folder = os.path.join(self.base_path, old_proj)
+        new_folder = os.path.join(self.base_path, new_proj)
+        if not os.path.isdir(old_folder):
+            raise FileNotFoundError(old_folder)
+        # if target exists, raise
+        if os.path.exists(new_folder):
+            raise FileExistsError(new_folder)
+        os.rename(old_folder, new_folder)
+        # update marker project name
+        marker = os.path.join(new_folder, 'project.json')
+        try:
+            if os.path.exists(marker):
+                with open(marker, 'r', encoding='utf-8') as f:
+                    meta = json.load(f) or {}
+        except Exception:
+            meta = {}
+        meta['project'] = new_name
+        try:
+            with open(marker, 'w', encoding='utf-8') as f:
+                json.dump(meta, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+        return new_proj
+
+    def delete_project(self, project: str) -> bool:
+        proj = _sanitize(project or 'default')
+        folder = os.path.join(self.base_path, proj)
+        if os.path.isdir(folder):
+            shutil.rmtree(folder)
+            return True
+        return False
 
     def load_metadata(self, project: str, us_folder: str) -> Dict[str, Any] | None:
         proj = _sanitize(project or "default")

@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 import os
 
 from app.api.routes import router
+from app.services.llm_service import LLMService
+from app.services.storage_service import StorageService
 
 # Load environment variables
 load_dotenv()
@@ -41,6 +43,44 @@ async def root():
         "version": "1.0.0",
         "docs": "/api/docs"
     }
+
+
+
+# Instrument startup and shutdown to help diagnose unexpected lifespans
+@app.on_event("startup")
+async def _log_startup():
+    import os, subprocess
+    print("APP EVENT: startup called")
+    try:
+        pid = os.getpid()
+        ppid = os.getppid()
+        print(f"DIAG: pid={pid} ppid={ppid}")
+        # show a short tasklist of python processes to help identify parent/child
+        try:
+            out = subprocess.check_output(["tasklist", "/FI", "IMAGENAME eq python.exe"], shell=False, text=True)
+            print("DIAG: tasklist python.exe entries:\n" + out)
+        except Exception as e:
+            print("DIAG: failed to run tasklist:", e)
+
+        # Initialize services here (avoid import-time network calls)
+        try:
+            skip = os.getenv("SKIP_SERVICE_INIT", "0")
+            if skip == "1":
+                print("APP EVENT: SKIP_SERVICE_INIT=1, skipping service initialization")
+            else:
+                app.state.llm_service = LLMService()
+                app.state.storage = StorageService()
+                print("APP EVENT: services initialized on app.state")
+        except Exception as e:
+            print("APP EVENT: failed to init services:", e)
+
+    except Exception as e:
+        print("DIAG: startup diag failed:", e)
+
+
+@app.on_event("shutdown")
+async def _log_shutdown():
+    print("APP EVENT: shutdown called")
 
 
 if __name__ == "__main__":

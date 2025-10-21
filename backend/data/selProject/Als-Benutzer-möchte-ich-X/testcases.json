@@ -1,0 +1,14 @@
+{
+  "test_cases": [
+    {
+      "title": "TC 2",
+      "description": "Second",
+      "preconditions": [],
+      "steps": [
+        "s1"
+      ],
+      "expected_result": "ok",
+      "priority": "Low"
+    }
+  ]
+}
