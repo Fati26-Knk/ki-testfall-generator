@@ -31,8 +31,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API routes
-app.include_router(router, prefix="/api/v1", tags=["test-cases"])
+# Include API routes (no prefix to match frontend expectations)
+app.include_router(router, tags=["test-cases"])
 
 
 @app.get("/")

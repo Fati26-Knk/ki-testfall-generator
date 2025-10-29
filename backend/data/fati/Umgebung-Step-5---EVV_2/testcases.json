@@ -1,0 +1,73 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 Checkbox wird bei Meldungen mit bestehenden Daten angezeigt",
+      "description": "Überprüfe, ob die Checkbox 'Meldepflichtige Mängel' angezeigt wird, wenn Meldungen mit bestehenden Daten in der Datenbank vorliegen",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV_2 Umgebung"
+      ],
+      "steps": [
+        "1. Erstelle eine Meldung mit bestehenden Daten in der Datenbank",
+        "2. Überprüfe die Anzeige der Checkbox 'Meldepflichtige Mängel'"
+      ],
+      "expected_result": "Die Checkbox 'Meldepflichtige Mängel' wird angezeigt",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 5 - EVV_2",
+      "_globalIdx": 33
+    },
+    {
+      "title": "TC-2 Checkbox wird zu RadioButton bei Neuanlage",
+      "description": "Überprüfe, ob die Checkbox zu einem RadioButton mit der Frage 'Sind meldepflichtige Mängel aufgetreten?' geändert wird bei Neuanlage",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV_2 Umgebung"
+      ],
+      "steps": [
+        "1. Erstelle eine neue Meldung (Neuanlage)",
+        "2. Überprüfe die Anzeige des RadioButtons mit der Frage 'Sind meldepflichtige Mängel aufgetreten?'"
+      ],
+      "expected_result": "Die Checkbox wird zu einem RadioButton mit der Frage 'Sind meldepflichtige Mängel aufgetreten?' geändert",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 5 - EVV_2",
+      "_globalIdx": 34
+    },
+    {
+      "title": "TC-3 RadioButton hat standardmäßig keine Auswahl bei Neuanlage",
+      "description": "Überprüfe, ob der RadioButton standardmäßig keine Auswahl enthält bei Neuanlage oder fehlendem Wert in der Datenbank",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV_2 Umgebung"
+      ],
+      "steps": [
+        "1. Erstelle eine neue Meldung (Neuanlage)",
+        "2. Überprüfe die Standardauswahl des RadioButtons"
+      ],
+      "expected_result": "Der RadioButton enthält standardmäßig keine Auswahl",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 5 - EVV_2",
+      "_globalIdx": 35
+    },
+    {
+      "title": "TC-4 RadioButton zeigt vorhandenen Wert aus der Datenbank",
+      "description": "Überprüfe, ob der RadioButton den vorhandenen Wert aus der Datenbank anzeigt, wenn ein Wert vorhanden ist",
+      "type": "functional",
+      "preconditions": [
+        "Step 5 - EVV_2 Umgebung"
+      ],
+      "steps": [
+        "1. Setze einen Wert in der Datenbank für 'Meldepflichtige Mängel'",
+        "2. Erstelle eine Meldung",
+        "3. Überprüfe die Anzeige des vorhandenen Werts im RadioButton"
+      ],
+      "expected_result": "Der RadioButton zeigt den vorhandenen Wert aus der Datenbank an",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 5 - EVV_2",
+      "_globalIdx": 36
+    }
+  ]
+}
