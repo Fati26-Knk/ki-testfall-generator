@@ -1,4 +1,4 @@
-# 🐳 Docker Setup
+#  Docker Setup
 
 ## Schnellstart
 
@@ -18,7 +18,7 @@ docker-compose -f docker-compose.dev.yml up --build
 - **Backend API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
 
-## 📋 Voraussetzungen
+##  Voraussetzungen
 
 - Docker Desktop installiert
 - `.env` Datei im `/backend` Verzeichnis mit deinem OpenAI API Key:
@@ -27,7 +27,7 @@ docker-compose -f docker-compose.dev.yml up --build
   OPENAI_MODEL=gpt-3.5-turbo
   ```
 
-## 🚀 Verwendung
+##  Verwendung
 
 ### Alle Services starten
 ```bash
@@ -86,23 +86,23 @@ docker-compose down -v
 docker-compose down -v --rmi all
 ```
 
-## 🔧 Unterschiede zwischen Production und Development
+##  Unterschiede zwischen Production und Development
 
 ### Production (`docker-compose.yml`)
-- ✅ Frontend wird gebaut und mit Nginx ausgeliefert
-- ✅ Optimierte Build-Größe
-- ✅ Schnellere Ladezeiten
-- ❌ Kein Hot-Reload
-- 🌐 Frontend auf Port 80
+-  Frontend wird gebaut und mit Nginx ausgeliefert
+-  Optimierte Build-Größe
+-  Schnellere Ladezeiten
+-  Kein Hot-Reload
+-  Frontend auf Port 80
 
 ### Development (`docker-compose.dev.yml`)
-- ✅ Hot-Reload für Frontend (Vite)
-- ✅ Hot-Reload für Backend (uvicorn --reload)
-- ✅ Code-Änderungen werden sofort übernommen
-- ✅ Besseres Debugging
-- 🌐 Frontend auf Port 5173
+-  Hot-Reload für Frontend (Vite)
+-  Hot-Reload für Backend (uvicorn --reload)
+-  Code-Änderungen werden sofort übernommen
+-  Besseres Debugging
+-  Frontend auf Port 5173
 
-## 📁 Volumes
+##  Volumes
 
 ### Development
 - `./backend:/app` - Backend-Code wird gemountet (Hot-Reload)
@@ -112,13 +112,13 @@ docker-compose down -v --rmi all
 - `./backend/app:/app/app` - Nur App-Code
 - `./backend/data:/app/data` - Persistente Daten
 
-## 🌐 Netzwerk
+##  Netzwerk
 
 Beide Services laufen im gleichen Docker-Netzwerk `testcase-network`:
 - Backend erreichbar unter `http://backend:8000` (intern)
 - Frontend Nginx proxied `/api` zum Backend
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Container startet nicht
 ```bash
@@ -148,7 +148,7 @@ cat backend/.env
 # OPENAI_API_KEY=sk-...
 ```
 
-## 💡 Empfohlener Workflow
+##  Empfohlener Workflow
 
 1. **Development starten**:
    ```bash
@@ -169,3 +169,4 @@ cat backend/.env
    ```bash
    docker-compose down -v
    ```
+

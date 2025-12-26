@@ -1,0 +1,92 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 - Auswahl des RadioButton ohne Auswahl",
+      "description": "Überprüfen, ob der RadioButton standardmäßig keine Auswahl enthält.",
+      "type": "functional",
+      "preconditions": [
+        "Der Benutzer befindet sich im Modal AVV - Step 3 - Brennstoffe"
+      ],
+      "steps": [
+        "Der Benutzer öffnet den Modal AVV - Step 3 - Brennstoffe",
+        "Der Benutzer überprüft den RadioButton für die Checkbox 'Wurde dieser Brennstoff im Berichtsjahr eingesetzt?'",
+        "Der Benutzer stellt sicher, dass der RadioButton keine Auswahl enthält"
+      ],
+      "expected_result": "Der RadioButton enthält standardmäßig keine Auswahl.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC1",
+      "_globalIdx": 33
+    },
+    {
+      "title": "TC-2 - Auswahl des RadioButton mit 'Ja'",
+      "description": "Überprüfen, ob die Auswahl 'Ja' im RadioButton korrekt funktioniert.",
+      "type": "functional",
+      "preconditions": [
+        "Der Benutzer befindet sich im Modal AVV - Step 3 - Brennstoffe"
+      ],
+      "steps": [
+        "Der Benutzer öffnet den Modal AVV - Step 3 - Brennstoffe",
+        "Der Benutzer wählt 'Ja' im RadioButton für die Checkbox 'Wurde dieser Brennstoff im Berichtsjahr eingesetzt?'",
+        "Der Benutzer überprüft, ob weitere Informationen angezeigt werden"
+      ],
+      "expected_result": "Bei Auswahl von 'Ja' werden weitere Informationen angezeigt.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC1",
+      "_globalIdx": 34
+    },
+    {
+      "title": "TC-3 - Anzeige von Informationen bei Auswahl 'Ja'",
+      "description": "Überprüfen, ob zusätzliche Informationen angezeigt werden, wenn 'Ja' ausgewählt ist.",
+      "type": "functional",
+      "preconditions": [
+        "Der Benutzer befindet sich im Modal AVV - Step 3 - Brennstoffe",
+        "Der Benutzer hat 'Ja' im RadioButton ausgewählt"
+      ],
+      "steps": [
+        "Der Benutzer öffnet den Modal AVV - Step 3 - Brennstoffe",
+        "Der Benutzer überprüft, ob zusätzliche Informationen angezeigt werden"
+      ],
+      "expected_result": "Zusätzliche Informationen werden angezeigt, wenn 'Ja' ausgewählt ist.",
+      "covers": [],
+      "priority": "Medium",
+      "user_story": "UC1",
+      "_globalIdx": 35
+    },
+    {
+      "title": "TC-4 - Überprüfung der Anzeige bei keiner Auswahl",
+      "description": "Überprüfen, ob keine zusätzlichen Informationen angezeigt werden, wenn keine Auswahl getroffen wurde.",
+      "type": "functional",
+      "preconditions": [
+        "Der Benutzer befindet sich im Modal AVV - Step 3 - Brennstoffe"
+      ],
+      "steps": [
+        "Der Benutzer öffnet den Modal AVV - Step 3 - Brennstoffe",
+        "Der Benutzer überprüft, ob keine zusätzlichen Informationen angezeigt werden"
+      ],
+      "expected_result": "Keine zusätzlichen Informationen werden angezeigt, wenn keine Auswahl getroffen wurde.",
+      "covers": [],
+      "priority": "Medium",
+      "user_story": "UC1",
+      "_globalIdx": 36
+    },
+    {
+      "title": "TC-5 - Überprüfung der Info i-Funktion",
+      "description": "Überprüfen, ob die Info i-Funktion korrekt funktioniert.",
+      "type": "functional",
+      "preconditions": [
+        "Der Benutzer befindet sich im Modal AVV - Step 3 - Brennstoffe"
+      ],
+      "steps": [
+        "Der Benutzer öffnet den Modal AVV - Step 3 - Brennstoffe",
+        "Der Benutzer klickt auf das Info i-Symbol neben dem RadioButton"
+      ],
+      "expected_result": "Die entsprechenden Informationen werden angezeigt, wenn auf das Info i-Symbol geklickt wird.",
+      "covers": [],
+      "priority": "Low",
+      "user_story": "UC1",
+      "_globalIdx": 37
+    }
+  ]
+}

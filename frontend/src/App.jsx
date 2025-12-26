@@ -12,10 +12,10 @@ function App() {
       <header className="header">
         <div className="header__inner">
           <div className="header__brand">
-            <div className="header__logo" aria-hidden="true">🤖</div>
+            <div className="header__logo" role="img" aria-label="Logo"></div>
             <div className="header__titles">
               <h1>AI Test Case Generator</h1>
-              <p className="header__subtitle">Generate comprehensive test cases from user stories using AI</p>
+              <p className="header__subtitle">Erstelle umfassende Testfälle aus User Stories mit KI</p>
             </div>
           </div>
 

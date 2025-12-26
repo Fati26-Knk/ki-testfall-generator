@@ -51,6 +51,12 @@ async def openai_test(request: Request):
         return {"ok": False, "error": str(e)}
 
 
+@router.options("/generate-test-cases")
+async def generate_test_cases_options():
+    """Handle CORS preflight for generate-test-cases"""
+    return Response(status_code=200)
+
+
 @router.post("/generate-test-cases", response_model=TestCaseResponse)
 async def generate_test_cases(request: Request):
     """
@@ -139,6 +145,11 @@ async def generate_test_cases(request: Request):
         )
 
 
+@router.options("/adopt-test-cases")
+async def adopt_test_cases_options():
+    """Handle CORS preflight for adopt-test-cases"""
+    return Response(status_code=200)
+
 
 @router.post("/adopt-test-cases")
 async def adopt_test_cases(body: AdoptRequest, project: str | None = None, request: Request = None):
@@ -196,6 +207,12 @@ async def list_projects(request: Request):
     return {"projects": projects}
 
 
+@router.options("/projects")
+async def create_project_options():
+    """Handle CORS preflight for projects"""
+    return Response(status_code=200)
+
+
 @router.post("/projects")
 async def create_project(request: Request):
     """Create a new project. JSON body: { "project": "Name" }"""
@@ -247,6 +264,12 @@ async def delete_project(project: str, request: Request):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.options("/projects/{project}/{us}/adopt-selected")
+async def adopt_selected_options(project: str, us: str):
+    """Handle CORS preflight for adopt-selected"""
+    return Response(status_code=200)
 
 
 @router.post("/projects/{project}/{us}/adopt-selected")
@@ -303,6 +326,12 @@ async def get_staging(request: Request):
             return json.load(f)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.options('/staging')
+async def post_staging_options():
+    """Handle CORS preflight for staging"""
+    return Response(status_code=200)
 
 
 @router.post('/staging')
@@ -377,6 +406,12 @@ async def get_testcases(project: str, us: str, request: Request):
     if t is None:
         raise HTTPException(status_code=404, detail="Testcases not found")
     return t
+
+
+@router.options("/projects/{project}/{us}/status")
+async def update_status_options(project: str, us: str):
+    """Handle CORS preflight for status update"""
+    return Response(status_code=200)
 
 
 @router.post("/projects/{project}/{us}/status")

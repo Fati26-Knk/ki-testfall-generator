@@ -33,15 +33,15 @@ const TestCaseCard = ({ testCase, index }) => {
         </span>
       </div>
 
-      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 8 }}>
+      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 12 }}>
         {testCase.user_story && (
-          <span style={{ fontSize: 13, color: '#2563eb', background: '#eff6ff', borderRadius: 4, padding: '2px 8px' }} title="User Story">📝 {testCase.user_story}</span>
+          <span style={{ fontSize: 14, color: '#bfdbfe', background: 'rgba(59, 130, 246, 0.25)', borderRadius: 6, padding: '4px 12px', border: '1px solid rgba(59, 130, 246, 0.5)', fontWeight: '500' }} title="User Story">📝 {testCase.user_story}</span>
         )}
         {testCase.status && (
-          <span style={{ fontSize: 13, color: '#7c3aed', background: '#ede9fe', borderRadius: 4, padding: '2px 8px' }} title="Status">📋 {testCase.status}</span>
+          <span style={{ fontSize: 14, color: '#ddd6fe', background: 'rgba(139, 92, 246, 0.25)', borderRadius: 6, padding: '4px 12px', border: '1px solid rgba(139, 92, 246, 0.5)', fontWeight: '500' }} title="Status">📋 {testCase.status}</span>
         )}
         {testCase.source && (
-          <span style={{ fontSize: 13, color: '#0d9488', background: '#ccfbf1', borderRadius: 4, padding: '2px 8px' }} title="Quelle">🔗 {testCase.source}</span>
+          <span style={{ fontSize: 14, color: '#99f6e4', background: 'rgba(20, 184, 166, 0.25)', borderRadius: 6, padding: '4px 12px', border: '1px solid rgba(20, 184, 166, 0.5)', fontWeight: '500' }} title="Quelle">🔗 {testCase.source}</span>
         )}
       </div>
 
@@ -87,13 +87,14 @@ const TestCaseCard = ({ testCase, index }) => {
 
 const styles = {
   card: {
-    backgroundColor: 'white',
-    borderRadius: '10px',
-    padding: '18px 20px',
+    backgroundColor: 'rgba(30, 41, 59, 0.8)',
+    backdropFilter: 'blur(10px)',
+    borderRadius: '12px',
+    padding: '20px 24px',
     marginBottom: '16px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.07)',
-    border: '1px solid #e5e7eb',
-    transition: 'box-shadow 0.2s',
+    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
+    border: '1px solid rgba(148, 163, 184, 0.3)',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     position: 'relative',
   },
   header: {
@@ -105,21 +106,25 @@ const styles = {
   },
   title: {
     margin: '0',
-    fontSize: '17px',
+    fontSize: '18px',
     fontWeight: '600',
-    color: '#1e293b',
+    color: '#ffffff',
     flex: 1,
-    lineHeight: '1.3',
+    lineHeight: '1.4',
     wordBreak: 'break-word',
   },
   index: {
-    color: '#64748b',
-    fontWeight: 'bold',
-    marginRight: '8px',
-    fontSize: '15px',
-    minWidth: '32px',
-    textAlign: 'right',
-    letterSpacing: '0.5px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: '36px',
+    height: '36px',
+    borderRadius: '8px',
+    background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+    color: 'white',
+    fontSize: '14px',
+    fontWeight: '700',
+    boxShadow: '0 2px 8px rgba(59, 130, 246, 0.4)',
   },
   priority: {
     padding: '4px 12px',
@@ -134,42 +139,45 @@ const styles = {
     boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
   },
   description: {
-    color: '#334155',
+    color: '#e2e8f0',
     fontSize: '15px',
-    lineHeight: '1.6',
+    lineHeight: '1.7',
     marginBottom: '14px',
     marginTop: 0,
+    fontWeight: '400',
   },
   section: {
     marginBottom: '14px',
   },
   sectionTitle: {
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#2563eb',
-    marginBottom: '6px',
+    fontSize: '15px',
+    fontWeight: '700',
+    color: '#93c5fd',
+    marginBottom: '8px',
     marginTop: '0',
-    letterSpacing: '0.2px',
+    letterSpacing: '0.3px',
   },
   list: {
     margin: '0',
     paddingLeft: '24px',
-    color: '#334155',
-    fontSize: '14px',
+    color: '#e2e8f0',
+    fontSize: '15px',
+    lineHeight: '1.8',
   },
   listItem: {
-    marginBottom: '3px',
-    lineHeight: '1.5',
+    marginBottom: '6px',
+    lineHeight: '1.8',
   },
   expectedResult: {
     margin: '0',
-    padding: '10px',
-    backgroundColor: '#f0fdf4',
-    borderLeft: '3px solid #10b981',
-    borderRadius: '4px',
-    color: '#047857',
-    fontSize: '14px',
-    lineHeight: '1.5',
+    padding: '12px',
+    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+    borderLeft: '4px solid #34d399',
+    borderRadius: '6px',
+    color: '#a7f3d0',
+    fontSize: '15px',
+    lineHeight: '1.7',
+    fontWeight: '500',
   },
 };
 

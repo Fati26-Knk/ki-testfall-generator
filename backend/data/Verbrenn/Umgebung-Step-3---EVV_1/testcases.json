@@ -1,0 +1,101 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 Happy Path - Modal erscheint und Eintrag wird gelöscht",
+      "description": "Der Test überprüft, ob das Modal mit der Löschbestätigung erscheint und der Eintrag erfolgreich gelöscht wird.",
+      "type": "functional",
+      "preconditions": [
+        "Benutzer ist angemeldet",
+        "Eintrag existiert in der Tabelle"
+      ],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe, ob das Modal mit der Löschbestätigung angezeigt wird",
+        "Klicke auf 'Fortfahren'",
+        "Überprüfe, ob der Eintrag aus der Tabelle entfernt wurde"
+      ],
+      "expected_result": "Der Eintrag wird erfolgreich gelöscht.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV_1",
+      "_globalIdx": 33
+    },
+    {
+      "title": "TC-2 Abbrechen - Modal schließen",
+      "description": "Der Test überprüft, ob das Modal geschlossen wird, wenn der Benutzer auf 'Abbrechen' klickt.",
+      "type": "functional",
+      "preconditions": [
+        "Benutzer ist angemeldet",
+        "Eintrag existiert in der Tabelle"
+      ],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe, ob das Modal mit der Löschbestätigung angezeigt wird",
+        "Klicke auf 'Abbrechen'",
+        "Überprüfe, ob das Modal geschlossen wird"
+      ],
+      "expected_result": "Das Modal wird geschlossen, ohne den Eintrag zu löschen.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV_1",
+      "_globalIdx": 34
+    },
+    {
+      "title": "TC-4 Löschen eines nicht existierenden Eintrags",
+      "description": "Der Test überprüft, ob eine Fehlermeldung angezeigt wird, wenn der Benutzer versucht, einen nicht existierenden Eintrag zu löschen.",
+      "type": "functional",
+      "preconditions": [
+        "Benutzer ist angemeldet"
+      ],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe, ob eine Fehlermeldung für den nicht existierenden Eintrag angezeigt wird"
+      ],
+      "expected_result": "Eine Fehlermeldung wird angezeigt, dass der Eintrag nicht existiert.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV_1",
+      "_globalIdx": 35
+    },
+    {
+      "title": "TC-5 Löschen mit unerwarteter Eingabe",
+      "description": "Der Test überprüft, ob das System korrekt auf unerwartete Eingaben reagiert, z.B. wenn ein Sonderzeichen im Modal eingegeben wird.",
+      "type": "functional",
+      "preconditions": [
+        "Benutzer ist angemeldet",
+        "Eintrag existiert in der Tabelle"
+      ],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Gib ein Sonderzeichen in das Modal ein",
+        "Klicke auf 'Fortfahren'",
+        "Überprüfe die Reaktion des Systems"
+      ],
+      "expected_result": "Das System zeigt eine angemessene Fehlermeldung für unerwartete Eingaben an.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV_1",
+      "_globalIdx": 36
+    },
+    {
+      "title": "TC-8 Sicherheit - Validierung der Löschaktion",
+      "description": "Der Test überprüft, ob die Löschaktion validiert wird, um unbefugtes Löschen zu verhindern.",
+      "type": "functional",
+      "preconditions": [
+        "Benutzer ist angemeldet",
+        "Eintrag existiert in der Tabelle"
+      ],
+      "steps": [
+        "Klicke auf das 'Mistkübel' Icon",
+        "Überprüfe, ob eine Bestätigung für die Löschaktion erforderlich ist",
+        "Klicke auf 'Fortfahren' ohne Bestätigung",
+        "Überprüfe, ob die Löschung verhindert wird"
+      ],
+      "expected_result": "Die Löschaktion wird nur nach Bestätigung durchgeführt.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "Umgebung: Step 3 - EVV_1",
+      "_globalIdx": 39
+    }
+  ]
+}

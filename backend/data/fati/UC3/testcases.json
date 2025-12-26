@@ -1,0 +1,34 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 - Prüfen der Reihenfolge der Liste: Art der Abwasserreinigungsanlage - Art der Einleitung",
+      "description": "Überprüfen, ob die Reihenfolge in der Liste korrekt ist: Art der Abwasserreinigungsanlage sollte vor Art der Einleitung erscheinen.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "Überprüfen Sie die Reihenfolge der Elemente in der Liste.",
+        "Stellen Sie sicher, dass 'Art der Abwasserreinigungsanlage' vor 'Art der Einleitung' angezeigt wird."
+      ],
+      "expected_result": "Die Reihenfolge in der Liste ist korrekt: 'Art der Abwasserreinigungsanlage' erscheint vor 'Art der Einleitung'.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC3",
+      "_globalIdx": 33
+    },
+    {
+      "title": "TC-2 - Prüfen der Reihenfolge der Liste: Konsensmäßige Abwassermenge - RadioButtons zur Einheitsauswahl",
+      "description": "Überprüfen, ob die Reihenfolge in der Liste korrekt ist: Konsensmäßige Abwassermenge sollte vor RadioButtons zur Einheitsauswahl erscheinen.",
+      "type": "functional",
+      "preconditions": [],
+      "steps": [
+        "Überprüfen Sie die Reihenfolge der Elemente in der Liste.",
+        "Stellen Sie sicher, dass 'Konsensmäßige Abwassermenge' vor 'RadioButtons zur Einheitsauswahl' angezeigt wird."
+      ],
+      "expected_result": "Die Reihenfolge in der Liste ist korrekt: 'Konsensmäßige Abwassermenge' erscheint vor 'RadioButtons zur Einheitsauswahl'.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC3",
+      "_globalIdx": 34
+    }
+  ]
+}

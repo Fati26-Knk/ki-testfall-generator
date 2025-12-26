@@ -1,21 +1,20 @@
 """
 LLM Service for generating test cases using OpenAI API
-— US-/AC-getriebene Generierung ohne generische Schablonen; Dup-Filter inklusive.
+— Verbesserte Version mit dynamischer Abdeckung, gelockerten Filtern und mehr Varianz.
 """
 import os, json, traceback, asyncio, re
-from typing import List, Dict, Any, Optional, Tuple
-from collections import Counter
+from typing import List, Dict, Any, Optional
 from openai import OpenAI
 from dotenv import load_dotenv
 from app.models.schemas import TestCase
 
 
 def _norm(s: str) -> List[str]:
-    """Kleine Tokenisierung + Normalisierung für Jaccard-Ähnlichkeit."""
     s = (s or "").lower()
     s = re.sub(r"[^a-z0-9äöüß]+", " ", s)
     toks = [t for t in s.split() if t and len(t) > 2]
     return toks
+
 
 def _jaccard(a: List[str], b: List[str]) -> float:
     if not a or not b:
@@ -24,6 +23,7 @@ def _jaccard(a: List[str], b: List[str]) -> float:
     inter = len(sa & sb)
     uni = len(sa | sb)
     return inter / uni if uni else 0.0
+
 
 def _looks_like(keyword_set: set, text: str) -> bool:
     t = (text or "").lower()
@@ -37,9 +37,11 @@ class LLMService:
         load_dotenv()
         self.api_key = os.getenv("OPENAI_API_KEY", "")
         self.model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-        self.temperature = float(os.getenv("OPENAI_TEMPERATURE", "0.1"))
-        self.top_p = float(os.getenv("OPENAI_TOP_P", "1.0"))
-        self.max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", "1800"))
+
+        # 🟢 Mehr Kreativität für bessere Abdeckung
+        self.temperature = float(os.getenv("OPENAI_TEMPERATURE", "0.6"))
+        self.top_p = float(os.getenv("OPENAI_TOP_P", "0.9"))
+        self.max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", "9000"))
 
         self.client = None
         self.client_available = False
@@ -49,7 +51,7 @@ class LLMService:
             try:
                 self.client = OpenAI(api_key=self.api_key)
                 self.client_available = True
-                print(f"OpenAI client configured, model={self.model}")
+                print(f"✅ OpenAI client configured, model={self.model}")
             except Exception:
                 traceback.print_exc()
 
@@ -65,61 +67,147 @@ class LLMService:
         seed: Optional[int] = None,
     ) -> List[TestCase]:
         """
-        Erzeugt Testfälle, die ausschließlich durch User Story / ACs / NFRs gedeckt sind.
-        Keine generischen Pflichtquoten, kein Füllmaterial.
+        Generiert Testfälle mit deutlich verbesserter Testabdeckung.
+        Dynamisch angepasst an die Komplexität der User Story.
         """
         acceptance_criteria = acceptance_criteria or []
         roles = roles or []
         nfrs = nfrs or []
 
-        # Wunsch-Anzahl ist eine Obergrenze – wir generieren *höchstens* so viele,
-        # aber füllen nicht künstlich auf, wenn es weniger sinnvolle Fälle gibt.
-        target_max = max(num_cases or 0, 0)
+        # 🧠 Dynamische Zielgröße abhängig von Länge und Komplexität
+        text_len = len(user_story)
+        if num_cases == 0:
+            # Wenn keine Anzahl angegeben, verwende sinnvolle Anzahl basierend auf Komplexität
+            if text_len > 1500:
+                target_max = 15
+            elif text_len > 800:
+                target_max = 10
+            else:
+                target_max = 8
+        else:
+            # Verwende die angegebene Anzahl, aber mit vernünftigen Limits
+            target_max = min(num_cases, 20)  # Maximal 20 Testfälle
 
-        # 1) (Optional) Analysepass (robust, aber kein Muss)
+        # 🧩 Optional: Analyse der US
         analysis = {}
         try:
             analysis = await self._analyze_user_story(user_story)
         except Exception as e:
             print("Analysis failed:", e)
 
-        # 2) Prompt bauen
+        # 🧾 Prompt erstellen
         prompt = self._create_prompt(user_story, target_max, analysis, acceptance_criteria, roles, nfrs)
 
-        # 3) LLM-Aufruf (funktionales JSON via Function-Calling)
+        # 🚀 LLM-Aufruf
         cases_raw = await self._call_llm_returning_cases(prompt, seed)
+        print(f"DEBUG: After LLM call: {len(cases_raw)} raw cases")
 
-        # 4) Post-Processing: strikte Relevanz + Dedup + Trimmen
+        # 🧹 Nachbearbeitung: Filter + Dedup
         relevant_cases = self._filter_irrelevant(cases_raw, user_story, acceptance_criteria, nfrs)
+        print(f"DEBUG: After filter: {len(relevant_cases)} relevant cases")
+        
         unique_cases = self._deduplicate(relevant_cases)
+        print(f"DEBUG: After dedup: {len(unique_cases)} unique cases")
 
-        # 5) Limit anwenden (keine künstliche Auffüllung!)
+        # 🔢 Limit anwenden (wenn gesetzt)
         if target_max > 0:
             unique_cases = unique_cases[:target_max]
+        print(f"DEBUG: After limit: {len(unique_cases)} final cases")
+
+        # 🔢 IDs neu vergeben für konsistente Nummerierung (TC-1, TC-2, TC-3...)
+        for i, tc in enumerate(unique_cases, start=1):
+            # Entferne alte TC-Nummer aus dem Titel
+            title = tc.title
+            # Entferne TC-X prefix falls vorhanden
+            title = re.sub(r'^TC-\d+\s*[-:]?\s*', '', title)
+            # Füge neue konsistente Nummer hinzu
+            tc.title = f"TC-{i} - {title}"
 
         self.last_generation_source = "openai" if self.client_available else "mock"
         return unique_cases
+
+    # ========= Analysis =========
+
+    async def _analyze_user_story(self, user_story: str) -> Dict[str, Any]:
+        """
+        Optionale Analyse der User Story zur Strukturierung.
+        Extrahiert Schlüsselinformationen für bessere Testgenerierung.
+        """
+        try:
+            # Einfache strukturelle Analyse ohne zusätzlichen LLM-Call
+            analysis = {
+                "summary": user_story[:200] + "..." if len(user_story) > 200 else user_story,
+                "complexity": "high" if len(user_story) > 1500 else "medium" if len(user_story) > 800 else "low",
+                "entities": [],  # Könnte erweitert werden
+                "actions": [],   # Könnte erweitert werden
+            }
+            return analysis
+        except Exception as e:
+            print(f"Analysis error: {e}")
+            return {}
 
     # ========= LLM Calls =========
 
     async def _call_llm_returning_cases(self, prompt: str, seed: Optional[int]) -> List[Dict[str, Any]]:
         if not self.client_available:
-            print("OpenAI client not configured → returning empty")
+            print("❌ OpenAI client not configured → returning empty")
             return []
 
-        system_msg = (
-            "Du bist Senior QA Engineer. "
-            "Erzeuge *nur* Testfälle, die aus der User Story und (falls vorhanden) aus expliziten Akzeptanzkriterien/NFRs "
-            "logisch folgen. "
-            "Wenn eine Kategorie (z. B. Performance, Security, Boundary) nicht durch US/AC/NFRs motiviert ist, "
-            "erzeuge dafür *keinen* Test. "
-            "Jeder Test muss Akzeptanzkriterien im Feld 'covers' referenzieren (oder leer lassen, wenn keine ACs angegeben sind). "
-            "Alle Ausgaben ausschließlich über die Funktion 'return_testcases'."
-        )
+        system_msg = """
+            Du bist ein erfahrener Requirements-basierter Testanalyst und Senior QA Engineer.
+
+            Deine Aufgabe ist es, HOCHWERTIGE, DETAILLIERTE und AUSREICHENDE Testfälle
+            auf Basis einer tiefgehenden Analyse der gegebenen User Story zu erstellen.
+
+            KRITISCHE SPRACHREGEL:
+            - Verwende IMMER dieselbe Sprache wie die User Story.
+            - Ist die User Story auf Deutsch → ALLE Testfälle auf Deutsch.
+            - Ist die User Story auf Englisch → ALLE Testfälle auf Englisch.
+            - Verwende durchgehend dieselbe Sprache in Titel, Beschreibung, Schritten und erwartetem Ergebnis.
+
+            VERPFLICHTENDE ANALYSE (ZUERST DURCHFÜHREN):
+            - Zerlege die User Story in ATOMARE, PRÜFBARE fachliche Regeln.
+            - Ein Satz kann MEHRERE Regeln enthalten.
+            - Identifiziere alle Bedingungen, Validierungen, Einschränkungen und logischen Verzweigungen.
+            - Begrenze dich NICHT auf die Anzahl der Sätze.
+
+            REGELN ZUR TESTFALL-ABLEITUNG:
+            - Erstelle ALLE Testfälle, die notwendig sind, um jede identifizierte Regel vollständig zu prüfen.
+            - Eine Regel kann MEHRERE Testfälle erfordern (z. B. Happy Path, Alternativfluss, Validierung).
+            - Es ist ERWARTET, dass eine kurze User Story zu VIELEN Testfällen führt.
+            - Vermische NICHT mehrere Regeln in einem Testfall.
+
+            STRENGE RELEVANZ:
+            - Triff KEINE Annahmen.
+            - Erfinde KEINE Regeln, Rollen, Validierungen oder Fehlerfälle.
+            - Erstelle Testfälle NUR, wenn sie explizit genannt oder eindeutig aus der User Story ableitbar sind.
+
+            KONSISTENZ & QUALITÄT:
+            - Alle Testfälle müssen dieselbe Struktur und denselben Detaillierungsgrad haben.
+            - Jeder Testfall muss vollständig und eigenständig ausführbar sein.
+            - Die Schritte müssen präzise, nummeriert und eindeutig formuliert sein.
+
+            TESTFALL-STRUKTUR (VERPFLICHTEND):
+            - Titel (OHNE TC-Nummer)
+            - Klare Beschreibung des Testziels
+            - Vorbedingungen
+            - 4–7 nummerierte Schritte mit konkreten Beispieldaten
+            - Erwartetes Ergebnis
+            - Priorität (Hoch / Mittel / Niedrig)
+
+            ZIEL:
+            - Die Testfälle sollen die User Story in ausführbarer Form widerspiegeln.
+            - Das Lesen der Testfälle soll sich anfühlen wie das Lesen der User Story – nur vollständig testbar.
+
+            AUSGABE:
+            - Verwende ausschließlich die Funktion "return_testcases".
+            - Format: { "test_cases": [ ... ] }
+            """
+
 
         functions = [{
             "name": "return_testcases",
-            "description": "Gebe ein JSON-Objekt mit der Eigenschaft 'test_cases' zurück.",
+            "description": "JSON mit Liste von Testfällen zurückgeben.",
             "parameters": {
                 "type": "object",
                 "required": ["test_cases"],
@@ -161,63 +249,22 @@ class LLMService:
             )
 
         try:
+            print(f"DEBUG: Calling OpenAI with model={self.model}")
             resp = await asyncio.to_thread(_call)
             msg = resp.choices[0].message
+            print(f"DEBUG: Response received, message={msg}")
             args = msg.function_call and msg.function_call.arguments
+            print(f"DEBUG: Function call args={args[:200] if args else None}...")
             data = json.loads(args) if args else {}
-            return data.get("test_cases", [])
-        except Exception:
+            test_cases = data.get("test_cases", [])
+            print(f"DEBUG: Parsed {len(test_cases)} test cases")
+            return test_cases
+        except Exception as e:
+            print(f"ERROR in _call_llm_returning_cases: {e}")
             traceback.print_exc()
             return []
 
-    async def _analyze_user_story(self, user_story: str) -> dict:
-        """Strukturierte Extraktion (optional)."""
-        if not self.client_available:
-            return {}
-        system = (
-            "Du bist ein präziser Analytiker für User Stories. "
-            "Gib ausschließlich JSON über die Funktion 'return_extraction' zurück."
-        )
-        user = f"Analysiere diese User Story:\n\n{user_story}\n"
-
-        functions = [{
-            "name": "return_extraction",
-            "description": "Strukturierte US-Extraktion",
-            "parameters": {
-                "type": "object",
-                "required": ["summary","preconditions","entities","constraints","acceptance_criteria","primary_feature"],
-                "properties": {
-                    "summary": {"type":"string"},
-                    "preconditions": {"type":"array","items":{"type":"string"}},
-                    "entities": {"type":"array","items":{"type":"string"}},
-                    "constraints": {"type":"array","items":{"type":"string"}},
-                    "acceptance_criteria": {"type":"array","items":{"type":"string"}},
-                    "primary_feature": {"type":"string"}
-                }
-            }
-        }]
-
-        def _call():
-            return self.client.chat.completions.create(
-                model=self.model,
-                temperature=0.0,   # Analyse deterministischer
-                top_p=1.0,
-                messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
-                functions=functions,
-                function_call={"name": "return_extraction"},
-                max_tokens=500
-            )
-
-        try:
-            resp = await asyncio.to_thread(_call)
-            msg = resp.choices[0].message
-            args = msg.function_call and msg.function_call.arguments
-            return json.loads(args) if args else {}
-        except Exception:
-            traceback.print_exc()
-            return {}
-
-    # ========= Prompting =========
+    # ========= Prompt Creation =========
 
     def _create_prompt(
         self,
@@ -247,131 +294,150 @@ class LLMService:
             except Exception:
                 pass
 
-        cap = f"Erzeuge bis zu {target_max} Testfällen." if target_max > 0 else "Erzeuge eine sinnvolle Anzahl an Testfällen."
+        cap = f"Generate EXACTLY {target_max} relevant test cases." if target_max > 0 else "Generate 8-12 relevant test cases."
         rules = (
-            f"{cap}\n"
-            "- Erzeuge *nur* Tests, die streng aus User Story / ACs / NFRs folgen.\n"
-            "- Wenn Boundary/Negative/Performance/Security nicht explizit nahegelegt sind, lasse sie weg.\n"
-            "- Jeder Test muss *einen klaren Zweck* haben und darf keine Duplikate zu anderen Tests sein.\n"
-            "- Schritte nummerieren (1., 2., 3.), konkrete Beispielwerte verwenden.\n"
-            "- Feld 'covers' mit den abgedeckten ACs füllen (Wortlaut oder ID), sonst leer lassen.\n"
-            "- Ausgabe ausschließlich über die Funktion als JSON: {'test_cases': [...]}.\n"
+            f"{cap}\n\n"
+            "⚠️ KRITISCHE SPRACHREGEL:\n"
+            "- Verwende IMMER dieselbe Sprache wie die User Story.\n"
+            "- Ist die User Story auf Deutsch → ALLE Testfälle auf Deutsch.\n"
+            "- Ist die User Story auf Englisch → ALLE Testfälle auf Englisch.\n"
+            "- Verwende dieselbe Sprache in ALLEN Feldern (Titel, Beschreibung, Schritte, erwartetes Ergebnis).\n\n"
+
+            "⚠️ WICHTIG: QUALITÄT UND VOLLSTÄNDIGE ABDECKUNG SIND ENTSCHEIDEND.\n\n"
+
+            "1. VERPFLICHTENDE FACHLICHE ANALYSE (ZUERST):\n"
+            "   ✓ Zerlege die User Story in ATOMARE, PRÜFBARE fachliche Regeln.\n"
+            "   ✓ Ein einzelner Satz kann MEHRERE Regeln enthalten.\n"
+            "   ✓ Identifiziere alle Bedingungen, Validierungen, Einschränkungen und logischen Verzweigungen.\n"
+            "   ✓ Begrenze dich NICHT auf die Anzahl der Sätze der User Story.\n\n"
+
+            "2. TESTFALL-ABLEITUNG (KERNSCHRITT):\n"
+            "   ✓ Erstelle ALLE Testfälle, die notwendig sind, um JEDE identifizierte Regel vollständig zu prüfen.\n"
+            "   ✓ Eine Regel kann MEHRERE Testfälle erfordern (z. B. Happy Path, Alternativfluss, Validierung).\n"
+            "   ✓ Es ist ERWARTET, dass auch kurze User Stories zu VIELEN Testfällen führen können.\n"
+            "   ✓ Vermische NIEMALS mehrere fachliche Regeln in einem Testfall.\n\n"
+
+            "3. STRENGE RELEVANZ:\n"
+            "   ✓ Triff KEINE Annahmen.\n"
+            "   ✓ Erfinde KEINE Regeln, Rollen, Validierungen oder Fehlerfälle.\n"
+            "   ✓ Erstelle Testfälle NUR, wenn sie explizit genannt oder eindeutig aus der User Story ableitbar sind.\n\n"
+
+            "4. KONSISTENZ & QUALITÄT:\n"
+            "   ✓ Alle Testfälle müssen dieselbe Struktur und denselben Detaillierungsgrad haben.\n"
+            "   ✓ Jeder Testfall muss vollständig und eigenständig ausführbar sein.\n"
+            "   ✓ Keine Unterschiede in Präzision, Detailtiefe oder Formulierung.\n\n"
+
+            "5. TESTSCHRITTE:\n"
+            "   ✓ Jeder Schritt muss klar, präzise und eindeutig beschrieben sein.\n"
+            "   ✓ Alle Schritte müssen nummeriert sein (1., 2., 3., …).\n"
+            "   ✓ Verwende KONKRETE Beispieldaten statt Platzhalter.\n"
+            "   ✓ Jeder Klick, jede Eingabe und jede Aktion muss explizit beschrieben sein.\n\n"
+
+            "6. TESTFALL-STRUKTUR (VERPFLICHTEND):\n"
+            "   ✓ Titel OHNE TC-Nummer (Nummerierung erfolgt automatisch)\n"
+            "   ✓ Klare Beschreibung des Testziels\n"
+            "   ✓ Präzise Vorbedingungen\n"
+            "   ✓ 4–7 nummerierte Schritte mit konkreten Beispieldaten\n"
+            "   ✓ Erwartetes Ergebnis\n"
+            "   ✓ Priorität (High / Medium / Low)\n\n"
+
+            "7. ABDECKUNG DER USER STORY:\n"
+            "   ✓ Jeder fachliche Aspekt der User Story muss durch mindestens einen Testfall abgedeckt sein.\n"
+            "   ✓ Falls Akzeptanzkriterien vorhanden sind: mindestens ein Testfall pro Kriterium.\n"
+            "   ✓ Falls mehrere Testfälle zu einer Regel existieren, müssen sie unterschiedliche Aspekte prüfen.\n\n"
+
+            "8. AUSGABE:\n"
+            "   ✓ Titel OHNE TC-Präfix (z. B. „Happy Path – Auswahl Ja für verwendeten Brennstoff“)\n"
+            "   ✓ Ausschließlich über die Funktion „return_testcases“\n"
+            "   ✓ Format: { \"test_cases\": [ ... ] }\n"
+            "   ✓ Sprache MUSS exakt der Sprache der User Story entsprechen\n\n"
+
+            "⚠️ MERKSATZ:\n"
+            "Jeder Testfall muss fachlich begründbar und eindeutig aus der User Story ableitbar sein.\n"
         )
 
-        return (
-            "User Story:\n"
-            f"{user_story}\n\n"
-            "Akzeptanzkriterien:\n"
-            f"{ac_block}\n\n"
-            f"Rollen: {roles_block}\n"
-            f"NFRs: {nfrs_block}\n"
-            f"{analysis_block}\n\n"
-            "Regeln:\n"
-            f"{rules}"
-        )
 
-    # ========= Relevanz-Filter & Dedup =========
+        # Prompt zusammenstellen
+        prompt = f"""
+{rules}
 
-    def _filter_irrelevant(
-        self,
-        raw_cases: List[Dict[str, Any]],
-        user_story: str,
-        acs: List[str],
-        nfrs: List[str],
-    ) -> List[TestCase]:
+=== USER STORY ===
+{user_story}
+
+=== AKZEPTANZKRITERIEN ===
+{ac_block}
+
+=== ROLLEN ===
+{roles_block}
+
+=== NICHT-FUNKTIONALE ANFORDERUNGEN ===
+{nfrs_block}
+
+{analysis_block}
+"""
+        return prompt.strip()
+
+    # ========= Filter =========
+
+    def _filter_irrelevant(self, raw_cases, user_story, acs, nfrs):
         """
-        Entfernt Fälle, die thematisch nicht passen:
-        - Security nur, wenn US/AC/NFRs Begriffe wie auth/role/permission/security enthalten.
-        - Performance nur, wenn US/AC/NFRs 'performance', 'latenz', 'Last' etc. erwähnen.
-        - Boundary nur, wenn Felder/Größen/Längen/limits/intervalle/Min/Max etc. vorkommen.
-        - Integration nur, wenn externe Systeme/IDs/Downstream erwähnt sind.
+        Weniger restriktiv – erlaubt Integration, Security und Performance standardmäßig bei komplexen Stories.
         """
         text = " ".join([user_story] + acs + nfrs).lower()
+        allow_all = len(user_story) > 800  # komplexe Storys immer voll erlauben
 
-        kw_security = {"security", "sicherheit", "auth", "autor", "permission", "berechtigung", "role", "rollen", "oauth"}
-        kw_perf     = {"performance", "latenz", "last", "load", "reaktionszeit", "response time", "throughput"}
-        kw_boundary = {"grenz", "min", "max", "obergrenze", "untergrenze", "range", "limit", "länge", "maxlength", "anzahl", "wertbereich"}
-        kw_integr   = {"schnittstelle", "api", "extern", "downstream", "webhook", "queue", "id", "ma11", "ma10"}
-
-        allow_security  = _looks_like(kw_security, text)
-        allow_perf      = _looks_like(kw_perf, text)
-        allow_boundary  = _looks_like(kw_boundary, text)
-        allow_integr    = _looks_like(kw_integr, text)
-
-        filtered: List[TestCase] = []
-        for i, tc in enumerate(raw_cases, start=1):
+        filtered = []
+        for i, tc in enumerate(raw_cases):
             ttype = (tc.get("type") or "").lower().strip()
             title = (tc.get("title") or "").strip()
-            if not title.startswith("TC-"):
-                title = f"TC-{i} {title}"
-            tc["title"] = title
+            print(f"DEBUG: Filter case {i+1}: title='{title[:50]}...', type='{ttype}', allow_all={allow_all}")
+            
+            # Entferne TC-Prefix falls vorhanden (wird später neu vergeben)
+            title = re.sub(r'^TC-\d+\s*[-:]?\s*', '', title)
 
-            if ttype == "security" and not allow_security:
-                continue
-            if ttype == "performance" and not allow_perf:
-                continue
-            if ttype == "data-driven" and not allow_boundary:
-                # 'data-driven' wird in deinem Schema oft für Grenz-/Werte-Varianten benutzt
-                continue
-            if ttype == "integration" and not allow_integr:
-                continue
+            # Wenn type leer ist, als "functional" behandeln
+            if not ttype:
+                ttype = "functional"
+                print(f"DEBUG: No type found, defaulting to 'functional'")
 
-            # AC-Referenz ist erwünscht – wenn ACs vorhanden sind, prüfe auf minimale Deckung
-            if acs:
-                covers = [c.strip() for c in (tc.get("covers") or []) if c and c.strip()]
-                # toleranter Check: Substring-Match reicht (derselbe Wortlaut ist selten 1:1)
-                if not any(any(a.lower() in c.lower() or c.lower() in a.lower() for a in acs) for c in covers):
-                    # Falls der Test offensichtlich zum US-Kern gehört, aber covers fehlt, akzeptieren wir ihn.
-                    # (Optional: hier strenger machen und droppen)
-                    pass
-
-            filtered.append(TestCase(
-                title=tc["title"],
-                description=tc.get("description",""),
-                preconditions=tc.get("preconditions",[]) or [],
-                steps=tc.get("steps",[]) or [],
-                expected_result=tc.get("expected_result",""),
-                priority=tc.get("priority","Medium")
-            ))
+            if allow_all or ttype in ["functional","usability","integration","data-driven","security","performance"]:
+                filtered.append(TestCase(
+                    title=title,
+                    description=tc.get("description",""),
+                    preconditions=tc.get("preconditions",[]) or [],
+                    steps=tc.get("steps",[]) or [],
+                    expected_result=tc.get("expected_result",""),
+                    priority=tc.get("priority","Medium")
+                ))
+                print(f"DEBUG: Case {i+1} PASSED filter")
+            else:
+                print(f"DEBUG: Case {i+1} REJECTED by filter (type='{ttype}')")
 
         return filtered
 
-    def _deduplicate(self, cases: List[TestCase]) -> List[TestCase]:
-        """
-        Entfernt Duplikate/nahe Duplikate anhand von Titel/Schritten/Erwartung (Jaccard).
-        """
-        out: List[TestCase] = []
+    # ========= Dedup =========
+
+    def _deduplicate(self, cases):
+        out = []
         seen_titles = set()
         for tc in cases:
             t_tok = _norm(tc.title)
             s_tok = _norm(" ".join(tc.steps))
             e_tok = _norm(tc.expected_result)
-
             is_dup = False
             for ex in out:
-                t2 = _norm(ex.title)
-                s2 = _norm(" ".join(ex.steps))
-                e2 = _norm(ex.expected_result)
-
-                # Titel sehr ähnlich ODER (Schritte & Erwartung ähnlich)
-                if _jaccard(t_tok, t2) >= 0.7 or (
-                    _jaccard(s_tok, s2) >= 0.6 and _jaccard(e_tok, e2) >= 0.6
+                if _jaccard(t_tok, _norm(ex.title)) >= 0.7 or (
+                    _jaccard(s_tok, _norm(" ".join(ex.steps))) >= 0.6 and
+                    _jaccard(e_tok, _norm(ex.expected_result)) >= 0.6
                 ):
                     is_dup = True
                     break
-
-            if is_dup:
-                continue
-
-            # harte Titel-Dubletten abfangen
-            if tc.title in seen_titles:
-                continue
-            seen_titles.add(tc.title)
-            out.append(tc)
-
+            if not is_dup and tc.title not in seen_titles:
+                seen_titles.add(tc.title)
+                out.append(tc)
         return out
 
-    # ========= Connectivity Test =========
+    # ========= Connectivity =========
 
     async def test_connection(self) -> dict:
         if not self.client_available:
@@ -380,7 +446,7 @@ class LLMService:
             def _ping():
                 return self.client.chat.completions.create(
                     model=self.model,
-                    messages=[{"role":"user","content":"ping"}],
+                    messages=[{"role": "user", "content": "ping"}],
                     max_tokens=1,
                     temperature=0.0
                 )

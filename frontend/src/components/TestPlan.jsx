@@ -3,6 +3,7 @@ import api from '../services/api';
 import TestCaseCard from './TestCaseCard';
 import Toast from './Toast';
 import * as XLSX from 'xlsx';
+import ConfirmDialog from './ConfirmDialog';
 
 function EditableTestCase({ testCase, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -62,37 +63,37 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
 
   if (!isEditing) {
     return (
-      <div style={{ border: '1px solid #e5e7eb', borderRadius: 6, padding: 12, background: '#fff' }}>
+      <div style={{ border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 6, padding: 12, background: 'rgba(30, 41, 59, 0.6)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 8 }}>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>{testCase.title}</div>
+            <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4, color: '#e2e8f0' }}>{testCase.title}</div>
             {testCase.description && (
-              <div style={{ fontSize: 13, color: '#64748b', marginBottom: 8 }}>{testCase.description}</div>
+              <div style={{ fontSize: 13, color: '#cbd5e1', marginBottom: 8 }}>{testCase.description}</div>
             )}
             {testCase.preconditions && testCase.preconditions.length > 0 && (
               <div style={{ marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#475569', marginBottom: 4 }}>Vorbedingungen:</div>
-                <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#93c5fd', marginBottom: 4 }}>Vorbedingungen:</div>
+                <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, color: '#e2e8f0' }}>
                   {testCase.preconditions.map((pc, i) => <li key={i}>{pc}</li>)}
                 </ul>
               </div>
             )}
             {testCase.steps && testCase.steps.length > 0 && (
               <div style={{ marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#475569', marginBottom: 4 }}>Schritte:</div>
-                <ol style={{ margin: 0, paddingLeft: 20, fontSize: 13 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#93c5fd', marginBottom: 4 }}>Schritte:</div>
+                <ol style={{ margin: 0, paddingLeft: 20, fontSize: 13, color: '#e2e8f0' }}>
                   {testCase.steps.map((step, i) => <li key={i}>{step}</li>)}
                 </ol>
               </div>
             )}
             {testCase.expected_result && (
               <div style={{ marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#475569', marginBottom: 4 }}>Erwartetes Ergebnis:</div>
-                <div style={{ fontSize: 13 }}>{testCase.expected_result}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#93c5fd', marginBottom: 4 }}>Erwartetes Ergebnis:</div>
+                <div style={{ fontSize: 13, color: '#e2e8f0' }}>{testCase.expected_result}</div>
               </div>
             )}
             {testCase.priority && (
-              <div style={{ fontSize: 12, color: '#64748b' }}>
+              <div style={{ fontSize: 12, color: '#cbd5e1' }}>
                 <strong>Priorität:</strong> {testCase.priority}
               </div>
             )}
@@ -135,35 +136,35 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
   }
 
   return (
-    <div style={{ border: '2px solid #3b82f6', borderRadius: 6, padding: 16, background: '#eff6ff' }}>
+    <div style={{ border: '2px solid #3b82f6', borderRadius: 6, padding: 16, background: 'rgba(30, 41, 59, 0.8)' }}>
       <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4 }}>Titel:</label>
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: '#93c5fd' }}>Titel:</label>
         <input
           type="text"
           value={editedTc.title || ''}
           onChange={(e) => setEditedTc({ ...editedTc, title: e.target.value })}
-          style={{ width: '100%', padding: '8px', border: '1px solid #cbd5e1', borderRadius: 4, fontSize: 14 }}
+          style={{ width: '100%', padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
         />
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4 }}>Beschreibung:</label>
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: '#93c5fd' }}>Beschreibung:</label>
         <textarea
           value={editedTc.description || ''}
           onChange={(e) => setEditedTc({ ...editedTc, description: e.target.value })}
-          style={{ width: '100%', padding: '8px', border: '1px solid #cbd5e1', borderRadius: 4, fontSize: 14, minHeight: 60 }}
+          style={{ width: '100%', padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, minHeight: 60, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
         />
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4 }}>Vorbedingungen:</label>
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: '#93c5fd' }}>Vorbedingungen:</label>
         {(editedTc.preconditions || []).map((pc, idx) => (
           <div key={idx} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
             <input
               type="text"
               value={pc}
               onChange={(e) => updatePrecondition(idx, e.target.value)}
-              style={{ flex: 1, padding: '8px', border: '1px solid #cbd5e1', borderRadius: 4, fontSize: 14 }}
+              style={{ flex: 1, padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
             />
             <button
               onClick={() => deletePrecondition(idx)}
@@ -182,15 +183,15 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4 }}>Schritte:</label>
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: '#93c5fd' }}>Schritte:</label>
         {(editedTc.steps || []).map((step, idx) => (
           <div key={idx} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-            <span style={{ padding: '8px', fontWeight: 600, color: '#64748b' }}>{idx + 1}.</span>
+            <span style={{ padding: '8px', fontWeight: 600, color: '#93c5fd' }}>{idx + 1}.</span>
             <input
               type="text"
               value={step}
               onChange={(e) => updateStep(idx, e.target.value)}
-              style={{ flex: 1, padding: '8px', border: '1px solid #cbd5e1', borderRadius: 4, fontSize: 14 }}
+              style={{ flex: 1, padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
             />
             <button
               onClick={() => deleteStep(idx)}
@@ -209,20 +210,20 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4 }}>Erwartetes Ergebnis:</label>
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: '#93c5fd' }}>Erwartetes Ergebnis:</label>
         <textarea
           value={editedTc.expected_result || ''}
           onChange={(e) => setEditedTc({ ...editedTc, expected_result: e.target.value })}
-          style={{ width: '100%', padding: '8px', border: '1px solid #cbd5e1', borderRadius: 4, fontSize: 14, minHeight: 60 }}
+          style={{ width: '100%', padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, minHeight: 60, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
         />
       </div>
 
       <div style={{ marginBottom: 16 }}>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4 }}>Priorität:</label>
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: '#93c5fd' }}>Priorität:</label>
         <select
           value={editedTc.priority || 'medium'}
           onChange={(e) => setEditedTc({ ...editedTc, priority: e.target.value })}
-          style={{ padding: '8px', border: '1px solid #cbd5e1', borderRadius: 4, fontSize: 14 }}
+          style={{ padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
         >
           <option value="low">Niedrig</option>
           <option value="medium">Mittel</option>
@@ -265,6 +266,20 @@ export default function TestPlan() {
   const [loadingProjectUs, setLoadingProjectUs] = useState(false);
   const [openProjectUsGroups, setOpenProjectUsGroups] = useState({});
   const [projectUsTestCases, setProjectUsTestCases] = useState({});
+  // Bestätigungsdialog
+  const [confirm, setConfirm] = useState({ open: false });
+
+  // Toolbar Aktionen: Alle US auf-/zuklappen
+  function expandAllProjectUs() {
+    const next = {};
+    (projectUserStories || []).forEach(us => { next[us] = true; });
+    setOpenProjectUsGroups(next);
+  }
+  function collapseAllProjectUs() {
+    const next = {};
+    (projectUserStories || []).forEach(us => { next[us] = false; });
+    setOpenProjectUsGroups(next);
+  }
   
   // Separate state für Dropdown-Auswahl (unabhängig von selectedProject)
   const [dropdownProject, setDropdownProject] = useState('');
@@ -359,10 +374,10 @@ export default function TestPlan() {
       }
       setProjectUsTestCases(testCasesMap);
       
-      // Öffne alle User Stories standardmäßig
-      const openState = {};
-      usList.forEach(us => { openState[us] = true; });
-      setOpenProjectUsGroups(openState);
+  // Standard: In Projekten eingeklappt anzeigen (Nutzer kann ausklappen)
+  const openState = {};
+  usList.forEach(us => { openState[us] = false; });
+  setOpenProjectUsGroups(openState);
     } catch (e) {
       console.error('loadProjectUserStories', e);
       setToast({ message: 'User Stories konnten nicht geladen werden', type: 'error' });
@@ -423,25 +438,34 @@ export default function TestPlan() {
       return setToast({ message: 'Die Hauptseite kann nicht gelöscht werden', type: 'error' });
     }
     
-    if (!window.confirm(`Projekt "${projectName}" wirklich löschen? Alle User Stories und Testfälle gehen verloren!`)) {
-      return;
-    }
-    
-    try {
-      await api.delete(`/projects/${encodeURIComponent(projectName)}`);
-      setToast({ message: 'Projekt gelöscht', type: 'info' });
-      
-      // Wenn das gelöschte Projekt aktuell ausgewählt ist, wähle ein anderes
-      if (selectedProject === projectName) {
-        setSelectedProject('Hauptseite');
-      }
-      
-      await loadProjects();
-    } catch (e) {
-      console.error('deleteProject', e);
-      const errorMsg = e.response?.data?.detail || 'Fehler beim Löschen';
-      setToast({ message: errorMsg, type: 'error' });
-    }
+    setConfirm({
+      open: true,
+      title: 'Projekt löschen',
+      message: (
+        <span>
+          Projekt "{projectName}" wirklich löschen? Alle User Stories und Testfälle gehen verloren!
+        </span>
+      ),
+      confirmText: 'Ja, löschen',
+      tone: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/projects/${encodeURIComponent(projectName)}`);
+          setToast({ message: 'Projekt gelöscht', type: 'info' });
+          if (selectedProject === projectName) {
+            setSelectedProject('Hauptseite');
+          }
+          await loadProjects();
+        } catch (e) {
+          console.error('deleteProject', e);
+          const errorMsg = e.response?.data?.detail || 'Fehler beim Löschen';
+          setToast({ message: errorMsg, type: 'error' });
+        } finally {
+          setConfirm({ open: false });
+        }
+      },
+      onCancel: () => setConfirm({ open: false })
+    });
   }
   
   function openRenameDialog(projectName) {
@@ -454,19 +478,34 @@ export default function TestPlan() {
   }
 
   async function deleteUsFromGlobal(us) {
-    if (!window.confirm(`User Story "${us}" und alle zugehörigen Testfälle wirklich aus der globalen Auswahl entfernen?`)) return;
-    try {
-      const remaining = globalTestCases.filter(tc => {
-        const tcUs = tc.user_story || tc.userStoryTitle || tc.us_title;
-        return tcUs !== us;
-      });
-      await api.putStaging(remaining);
-      setToast({ message: 'User Story aus globaler Auswahl entfernt', type: 'info' });
-      await loadGlobalTestCases();
-    } catch (err) {
-      console.error('deleteUsFromGlobal', err);
-      setToast({ message: 'Entfernen fehlgeschlagen', type: 'error' });
-    }
+    setConfirm({
+      open: true,
+      title: 'User Story entfernen',
+      message: (
+        <span>
+          User Story "{us}" und alle zugehörigen Testfälle wirklich aus der globalen Auswahl entfernen?
+        </span>
+      ),
+      confirmText: 'Entfernen',
+      tone: 'danger',
+      onConfirm: async () => {
+        try {
+          const remaining = globalTestCases.filter(tc => {
+            const tcUs = tc.user_story || tc.userStoryTitle || tc.us_title;
+            return tcUs !== us;
+          });
+          await api.putStaging(remaining);
+          setToast({ message: 'User Story aus globaler Auswahl entfernt', type: 'info' });
+          await loadGlobalTestCases();
+        } catch (err) {
+          console.error('deleteUsFromGlobal', err);
+          setToast({ message: 'Entfernen fehlgeschlagen', type: 'error' });
+        } finally {
+          setConfirm({ open: false });
+        }
+      },
+      onCancel: () => setConfirm({ open: false })
+    });
   }
 
   async function adoptUserStoryToProject() {
@@ -553,25 +592,34 @@ export default function TestPlan() {
 
   async function deleteTestCaseFromProject(usTitle, testCaseIndex) {
     if (!selectedProject) return;
-    
     const testCases = projectUsTestCases[usTitle] || [];
-    if (!window.confirm(`Testfall "${testCases[testCaseIndex]?.title}" wirklich löschen?`)) return;
-    
-    try {
-      const updatedTestCases = testCases.filter((_, idx) => idx !== testCaseIndex);
-      
-      // Konvertiere "Hauptseite" zurück zu "default" für API-Aufruf
-      const apiProjectName = selectedProject === 'Hauptseite' ? 'default' : selectedProject;
-      
-      // Speichere aktualisierte Testfälle
-      await api.adoptSelectedToProject(apiProjectName, usTitle, updatedTestCases, usTitle);
-      
-      setToast({ message: 'Testfall gelöscht', type: 'info' });
-      await loadProjectUserStories(selectedProject);
-    } catch (e) {
-      console.error('deleteTestCaseFromProject error:', e);
-      setToast({ message: 'Löschen fehlgeschlagen', type: 'error' });
-    }
+    const title = testCases[testCaseIndex]?.title;
+    setConfirm({
+      open: true,
+      title: 'Testfall löschen',
+      message: (
+        <span>
+          Testfall "{title || 'Ohne Titel'}" wirklich löschen?
+        </span>
+      ),
+      confirmText: 'Ja, löschen',
+      tone: 'danger',
+      onConfirm: async () => {
+        try {
+          const updatedTestCases = testCases.filter((_, idx) => idx !== testCaseIndex);
+          const apiProjectName = selectedProject === 'Hauptseite' ? 'default' : selectedProject;
+          await api.adoptSelectedToProject(apiProjectName, usTitle, updatedTestCases, usTitle);
+          setToast({ message: 'Testfall gelöscht', type: 'info' });
+          await loadProjectUserStories(selectedProject);
+        } catch (e) {
+          console.error('deleteTestCaseFromProject error:', e);
+          setToast({ message: 'Löschen fehlgeschlagen', type: 'error' });
+        } finally {
+          setConfirm({ open: false });
+        }
+      },
+      onCancel: () => setConfirm({ open: false })
+    });
   }
   
   async function updateTestCase(usTitle, testCaseIndex, updatedTestCase) {
@@ -597,20 +645,31 @@ export default function TestPlan() {
   
   async function deleteUserStoryFromProject(usTitle) {
     if (!selectedProject) return;
-    
-    if (!window.confirm(`User Story "${usTitle}" mit allen Testfällen wirklich aus dem Projekt löschen?`)) return;
-    
-    try {
-      // Konvertiere "Hauptseite" zurück zu "default" für API-Aufruf
-      const apiProjectName = selectedProject === 'Hauptseite' ? 'default' : selectedProject;
-      
-      await api.deleteUserStory(apiProjectName, usTitle);
-      setToast({ message: 'User Story gelöscht', type: 'info' });
-      await loadProjectUserStories(selectedProject);
-    } catch (e) {
-      console.error('deleteUserStoryFromProject error:', e);
-      setToast({ message: 'Löschen fehlgeschlagen', type: 'error' });
-    }
+    setConfirm({
+      open: true,
+      title: 'User Story löschen',
+      message: (
+        <span>
+          User Story "{usTitle}" mit allen Testfällen wirklich aus dem Projekt löschen?
+        </span>
+      ),
+      confirmText: 'Ja, löschen',
+      tone: 'danger',
+      onConfirm: async () => {
+        try {
+          const apiProjectName = selectedProject === 'Hauptseite' ? 'default' : selectedProject;
+          await api.deleteUserStory(apiProjectName, usTitle);
+          setToast({ message: 'User Story gelöscht', type: 'info' });
+          await loadProjectUserStories(selectedProject);
+        } catch (e) {
+          console.error('deleteUserStoryFromProject error:', e);
+          setToast({ message: 'Löschen fehlgeschlagen', type: 'error' });
+        } finally {
+          setConfirm({ open: false });
+        }
+      },
+      onCancel: () => setConfirm({ open: false })
+    });
   }
   
   function exportUserStory(usTitle, testCases) {
@@ -683,15 +742,15 @@ export default function TestPlan() {
   return (
     <div>
       <div style={{ padding: 16, maxWidth: 1400, margin: '0 auto' }}>
-        <h2>TestPlan - Globale User Stories verwalten</h2>
-        <p style={{ color: '#64748b', marginBottom: 24, fontSize: 14 }}>
+        <h2 style={{ color: '#f1f5f9' }}>TestPlan - Globale User Stories verwalten</h2>
+        <p style={{ color: '#cbd5e1', marginBottom: 24, fontSize: 14 }}>
           Hier siehst du alle gespeicherten User Stories. Wähle ein Projekt und übernimm ganze User Stories auf einmal.
         </p>
         <div style={{ display: 'flex', gap: 16 }}>
-          <aside style={{ width: 220, borderRight: '1px solid #e5e7eb', paddingRight: 16 }}>
-          <h4 style={{ marginTop: 0 }}>Ziel-Projekte</h4>
-          {loading && <div style={{ color: '#6b7280' }}>Loading...</div>}
-          {!loading && projects.length === 0 && <div style={{ color: '#6b7280', fontSize: 13 }}>Noch keine Projekte vorhanden</div>}
+          <aside style={{ width: 220, borderRight: '1px solid rgba(71, 85, 105, 0.3)', paddingRight: 16 }}>
+          <h4 style={{ marginTop: 0, color: '#f1f5f9' }}>Ziel-Projekte</h4>
+          {loading && <div style={{ color: '#cbd5e1' }}>Loading...</div>}
+          {!loading && projects.length === 0 && <div style={{ color: '#cbd5e1', fontSize: 13 }}>Noch keine Projekte vorhanden</div>}
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {projects.map((p) => (
               <li 
@@ -708,17 +767,17 @@ export default function TestPlan() {
                     textAlign: 'left',
                     padding: '10px 14px',
                     background: p === selectedProject 
-                      ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
-                      : '#f3f4f6',
-                    border: 'none',
+                      ? 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' 
+                      : 'rgba(71, 85, 105, 0.4)',
+                    border: p === selectedProject ? 'none' : '1px solid rgba(148, 163, 184, 0.2)',
                     cursor: 'pointer',
                     borderRadius: 8,
                     fontWeight: 600,
-                    color: p === selectedProject ? 'white' : '#374151',
+                    color: p === selectedProject ? 'white' : '#cbd5e1',
                     fontSize: 14,
                     transition: 'all 0.2s ease',
                     boxShadow: p === selectedProject 
-                      ? '0 2px 8px rgba(16, 185, 129, 0.3)' 
+                      ? '0 2px 8px rgba(59, 130, 246, 0.3)' 
                       : '0 1px 3px rgba(0, 0, 0, 0.1)',
                   }}
                   onMouseOver={(e) => {
@@ -826,24 +885,64 @@ export default function TestPlan() {
           {selectedProject && selectedProject !== 'Hauptseite' && (
             <>
               <div style={{ marginBottom: 24 }}>
-                <h4 style={{ marginTop: 0, color: '#1f2937' }}>
-                  Ausgewählte User Stories
-                </h4>
-                <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 12, minHeight: 150, background: '#fafafa' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                  <h4 style={{ marginTop: 0, color: '#f1f5f9' }}>
+                    Ausgewählte User Stories
+                  </h4>
+                  {/* Expand/Collapse All Toolbar */}
+                  {projectUserStories.length > 0 && (
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button
+                        onClick={expandAllProjectUs}
+                        style={{
+                          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: 24,
+                          padding: '8px 14px',
+                          cursor: 'pointer',
+                          fontSize: 13,
+                          fontWeight: 700,
+                          boxShadow: '0 2px 8px rgba(16,185,129,.3)'
+                        }}
+                        title="Alle ausklappen"
+                      >
+                        ▼ Alle ausklappen
+                      </button>
+                      <button
+                        onClick={collapseAllProjectUs}
+                        style={{
+                          background: '#f3f4f6',
+                          color: '#374151',
+                          border: '2px solid #d1d5db',
+                          borderRadius: 24,
+                          padding: '8px 14px',
+                          cursor: 'pointer',
+                          fontSize: 13,
+                          fontWeight: 700
+                        }}
+                        title="Alle einklappen"
+                      >
+                        ▶ Alle einklappen
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <div style={{ border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 8, padding: 12, minHeight: 150, background: 'rgba(30, 41, 59, 0.6)' }}>
                   {loadingProjectUs && (
-                    <div style={{ color: '#6b7280', textAlign: 'center', padding: 40 }}>
+                    <div style={{ color: '#cbd5e1', textAlign: 'center', padding: 40 }}>
                       Lade User Stories...
                     </div>
                   )}
                   {!loadingProjectUs && projectUserStories.length === 0 && (
-                    <div style={{ color: '#6b7280', textAlign: 'center', padding: 40 }}>
+                    <div style={{ color: '#cbd5e1', textAlign: 'center', padding: 40 }}>
                       Noch keine User Stories in diesem Projekt. Übernimm User Stories von der Hauptseite.
                     </div>
                   )}
                   {!loadingProjectUs && projectUserStories.length > 0 && (
                     <div>
                       {projectUserStories.map((us) => (
-                        <div key={us} style={{ marginBottom: 16, border: '1px solid #e0e7ef', borderRadius: 6, background: 'white', overflow: 'hidden' }}>
+                        <div key={us} style={{ marginBottom: 16, border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 6, background: 'rgba(15, 23, 42, 0.5)', overflow: 'hidden' }}>
                           <div
                             style={{ 
                               cursor: 'pointer', 
@@ -853,19 +952,21 @@ export default function TestPlan() {
                               alignItems: 'center', 
                               justifyContent: 'space-between', 
                               fontSize: 16,
-                              background: '#f0f9ff',
-                              borderBottom: openProjectUsGroups[us] ? '1px solid #e0e7ef' : 'none',
+                              background: 'rgba(30, 41, 59, 0.6)',
+                              borderBottom: openProjectUsGroups[us] ? '1px solid rgba(71, 85, 105, 0.3)' : 'none',
                             }}
+                            role="button"
+                            aria-expanded={!!openProjectUsGroups[us]}
+                            onClick={() => setOpenProjectUsGroups(prev => ({ ...prev, [us]: !prev[us] }))}
                           >
                             <span style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
                               <span 
                                 style={{ fontSize: 18, marginRight: 8, display: 'inline-block', width: 20 }} 
-                                onClick={() => setOpenProjectUsGroups(prev => ({ ...prev, [us]: !prev[us] }))}
                               >
                                 {openProjectUsGroups[us] ? '▼' : '▶'}
                               </span>
-                              <strong style={{ color: '#1f2937' }}>📋 {us}</strong>
-                              <span style={{ color: '#64748b', fontWeight: 400, fontSize: 14, marginLeft: 8 }}>
+                              <strong style={{ color: '#e2e8f0' }}>📋 {us}</strong>
+                              <span style={{ color: '#93c5fd', fontWeight: 400, fontSize: 14, marginLeft: 8 }}>
                                 ({(projectUsTestCases[us] || []).length} Testfälle)
                               </span>
                             </span>
@@ -913,7 +1014,7 @@ export default function TestPlan() {
                           {openProjectUsGroups[us] && (
                             <div style={{ padding: '12px 16px' }}>
                               {(projectUsTestCases[us] || []).length === 0 && (
-                                <div style={{ color: '#6b7280', textAlign: 'center', padding: 20 }}>
+                                <div style={{ color: '#cbd5e1', textAlign: 'center', padding: 20 }}>
                                   Keine Testfälle vorhanden
                                 </div>
                               )}
@@ -940,15 +1041,15 @@ export default function TestPlan() {
           {/* Globale User Stories - NUR auf Hauptseite anzeigen */}
           {selectedProject === 'Hauptseite' && (
             <>
-              <h4 style={{ marginTop: 0 }}>Globale User Stories</h4>
-              <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 12, minHeight: 200, background: '#fafafa' }}>
+              <h4 style={{ marginTop: 0, color: '#f1f5f9' }}>Globale User Stories</h4>
+              <div style={{ border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 8, padding: 12, minHeight: 200, background: 'rgba(30, 41, 59, 0.6)' }}>
                 {Object.keys(groupedGlobalTestCases).length === 0 && (
-                  <div style={{ color: '#6b7280', textAlign: 'center', padding: 40 }}>
+                  <div style={{ color: '#cbd5e1', textAlign: 'center', padding: 40 }}>
                     Keine User Stories vorhanden. Erstelle Testfälle im Dashboard und merke sie hier.
                   </div>
                 )}
                 {Object.entries(groupedGlobalTestCases).map(([us, tcs]) => (
-              <div key={us} style={{ marginBottom: 16, border: '1px solid #e0e7ef', borderRadius: 6, background: 'white', overflow: 'hidden' }}>
+              <div key={us} style={{ marginBottom: 16, border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 6, background: 'rgba(15, 23, 42, 0.5)', overflow: 'hidden' }}>
                 <div
                   style={{ 
                     cursor: 'pointer', 
@@ -958,8 +1059,8 @@ export default function TestPlan() {
                     alignItems: 'center', 
                     justifyContent: 'space-between', 
                     fontSize: 16,
-                    background: selectedUserStory === us ? '#eef2ff' : '#f8fafc',
-                    borderBottom: openUsGroups[us] ? '1px solid #e0e7ef' : 'none',
+                    background: selectedUserStory === us ? 'rgba(59, 130, 246, 0.2)' : 'rgba(30, 41, 59, 0.6)',
+                    borderBottom: openUsGroups[us] ? '1px solid rgba(71, 85, 105, 0.3)' : 'none',
                   }}
                   onClick={() => setSelectedUserStory(us)}
                 >
@@ -973,8 +1074,8 @@ export default function TestPlan() {
                     >
                       {openUsGroups[us] ? '▼' : '▶'}
                     </span>
-                    <strong style={{ color: selectedUserStory === us ? '#3b82f6' : '#1f2937' }}>{us}</strong> 
-                    <span style={{ color: '#64748b', fontWeight: 400, fontSize: 14, marginLeft: 8 }}>({tcs.length} Testfälle)</span>
+                    <strong style={{ color: selectedUserStory === us ? '#60a5fa' : '#e2e8f0' }}>{us}</strong> 
+                    <span style={{ color: '#93c5fd', fontWeight: 400, fontSize: 14, marginLeft: 8 }}>({tcs.length} Testfälle)</span>
                   </span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <button
@@ -1013,10 +1114,10 @@ export default function TestPlan() {
           
           {/* Hilfe-Sektion - nur auf Hauptseite */}
           {selectedProject === 'Hauptseite' && Object.keys(groupedGlobalTestCases).length > 0 && (
-            <div style={{ marginTop: 16, padding: 16, background: '#f0f9ff', border: '1px solid #bfdbfe', borderRadius: 8 }}>
-              <h5 style={{ margin: '0 0 8px 0', color: '#1e40af' }}>So funktioniert's:</h5>
-              <div style={{ fontSize: 13, color: '#64748b' }}>
-                1. ✓ Projekt ist ausgewählt: <strong style={{ color: '#3b82f6' }}>{selectedProject}</strong><br />
+            <div style={{ marginTop: 16, padding: 16, background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: 8 }}>
+              <h5 style={{ margin: '0 0 8px 0', color: '#60a5fa' }}>So funktioniert's:</h5>
+              <div style={{ fontSize: 13, color: '#cbd5e1' }}>
+                1. ✓ Projekt ist ausgewählt: <strong style={{ color: '#60a5fa' }}>{selectedProject}</strong><br />
                 2. 📋 Wähle User Story im Dropdown unten<br />
                 3. ✅ Klicke auf "In Projekt übernehmen"
               </div>
@@ -1025,8 +1126,8 @@ export default function TestPlan() {
           
           {/* Dropdown-Bereich für Projekt- und User Story-Auswahl - nur auf Hauptseite */}
           {selectedProject === 'Hauptseite' && Object.keys(groupedGlobalTestCases).length > 0 && (
-            <div style={{ marginTop: 16, padding: 20, background: 'white', border: '2px solid #3b82f6', borderRadius: 8 }}>
-              <h4 style={{ margin: '0 0 16px 0', color: '#1f2937' }}>User Story in Projekt übernehmen</h4>
+            <div style={{ marginTop: 16, padding: 20, background: 'rgba(30, 41, 59, 0.8)', border: '2px solid #3b82f6', borderRadius: 8 }}>
+              <h4 style={{ margin: '0 0 16px 0', color: '#f1f5f9' }}>User Story in Projekt übernehmen</h4>
               <div style={{ marginBottom: 16, color: '#64748b', fontSize: 14 }}>
                 Wähle ein Ziel-Projekt und eine User Story aus, um sie zu übernehmen.
               </div>
@@ -1219,6 +1320,17 @@ export default function TestPlan() {
       )}
 
       {toast && <Toast message={toast.message || toast} type={toast.type || 'info'} onClose={() => setToast(null)} />}
+      {/* Reusable confirmation dialog */}
+      <ConfirmDialog
+        open={!!confirm.open}
+        title={confirm.title}
+        message={confirm.message}
+        confirmText={confirm.confirmText}
+        cancelText={confirm.cancelText}
+        tone={confirm.tone}
+        onConfirm={confirm.onConfirm}
+        onCancel={confirm.onCancel || (() => setConfirm({ open: false }))}
+      />
       </div>
     </div>
   );
