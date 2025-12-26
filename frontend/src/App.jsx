@@ -11,7 +11,7 @@ function App() {
     <div className="app">
       <header className="header">
         <div className="header__inner">
-          <div className="header__brand">
+          <div className="header__brand" onClick={() => setView('dashboard')} style={{ cursor: 'pointer' }}>
             <div className="header__logo" role="img" aria-label="Logo"></div>
             <div className="header__titles">
               <h1>AI Test Case Generator</h1>

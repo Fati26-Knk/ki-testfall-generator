@@ -12,16 +12,16 @@
 
 ## Dokumentinformationen
 
-| **Attribut** | **Wert** |
-|--------------|----------|
+| **Attribut** | **Wert**                                  |
+|--------------|-------------------------------------------|
 | **Dokumenttitel** | Software Requirements Specification (SRS) |
-| **Projekt** | AI Test Case Generator |
-| **Version** | 1.0.0 |
-| **Erstellt am** | 24. November 2025 |
-| **Autorin** | Fadime Konuk |
-| **Reviewer** | [Professor/Betreuer einfügen] |
-| **Status** | Final |
-| **Vertraulichkeit** | Intern (Hochschulprojekt) |
+| **Projekt** | AI Test Case Generator                    |
+| **Version** | 1.0.0                                     |
+| **Erstellt am** | 24. November 2025                         |
+| **Autorin** | Fadime Konuk                              |
+| **Reviewer** | FH-Prof. DI Dr. Igor Miladinovic, FH-Prof.in Mag.a Dr.in Sigrid Schefer-Wenzl, MSc BSc        |
+| **Status** | Final                                     |
+| **Vertraulichkeit** | Intern (Hochschulprojekt)                 |
 
 ---
 
@@ -88,8 +88,8 @@ Hochschule
 │   ├── Master Thesis Modul
 │   │   └── AI Test Case Generator (dieses Projekt)
 │   └── Betreuende Professoren
-│       ├── Erstbetreuer: [Name einfügen]
-│       └── Zweitbetreuer: [Name einfügen]
+│       ├── Erstbetreuer: FH-Prof.in Mag.a Dr.in Sigrid Schefer-Wenzl, MSc BSc
+│       └── Zweitbetreuer: FH-Prof. DI Dr. Igor Miladinovic
 ```
 
 #### Stakeholder
@@ -347,7 +347,7 @@ Die folgenden Anforderungen sind **zwingend erforderlich** für den Minimal Viab
 
 ### 1.2.2. Soll-Kriterien
 
-Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Produkts, sind aber nicht zwingend erforderlich:
+Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Produkts signifikant. Alle aufgelisteten Soll-Kriterien wurden erfolgreich implementiert:
 
 #### SK-1: Dokument-Upload
 **Beschreibung:** Hochladen von Anforderungsdokumenten zur erweiterten Kontextanalyse.
@@ -359,7 +359,7 @@ Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Pr
 - Größenlimit: 50 MB pro Datei
 - Text-Extraktion und Einbindung in LLM-Prompt
 
-**Status:**  Implementiert
+**Status:** ✅ Vollständig implementiert
 
 #### SK-2: Umfassende Testfall-Generierung
 **Beschreibung:** Modus für erweiterte Testabdeckung mit dynamischer Anzahl.
@@ -369,7 +369,7 @@ Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Pr
 - Dynamische Anzahl basierend auf Komplexität der User Story
 - Abdeckung von Edge Cases, negativen Szenarien, Performance-Tests
 
-**Status:**  Implementiert
+**Status:** ✅ Vollständig implementiert
 
 #### SK-3: Re-Generation mit Kontext
 **Beschreibung:** Erneute Generierung mit bisherigen Testfällen als Referenz.
@@ -380,7 +380,7 @@ Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Pr
 - Identifikation von Testfall-Lücken
 - Ziel: Mindestens 2x mehr Tests als vorher (keine Duplikate)
 
-**Status:**  Implementiert
+**Status:** ✅ Vollständig implementiert
 
 #### SK-4: Projekt-Umbenennung
 **Beschreibung:** Nachträgliche Änderung von Projektnamen.
@@ -391,7 +391,7 @@ Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Pr
 - Validierung: Name darf nicht leer sein, nicht bereits existieren
 - "Hauptseite" kann nicht umbenannt werden
 
-**Status:**  Implementiert
+**Status:** ✅ Vollständig implementiert
 
 #### SK-5: Expand/Collapse All
 **Beschreibung:** Bulk-Steuerung für Auf-/Zuklappen von User Stories.
@@ -401,7 +401,7 @@ Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Pr
 - Wirkt auf alle User Stories im aktuellen Projekt
 - Visuelles Feedback (Icons: ▼/▶)
 
-**Status:**  Implementiert
+**Status:** ✅ Vollständig implementiert
 
 #### SK-6: Custom Confirmation Dialogs
 **Beschreibung:** Benutzerdefinierte Bestätigungsdialoge statt Browser-Alerts.
@@ -412,7 +412,7 @@ Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Pr
 - Ton-Varianten: "danger" (rot) für Löschungen, "default" (blau) für andere
 - Verwendung bei: Projekt löschen, User Story löschen, Testfall löschen
 
-**Status:**  Implementiert
+**Status:** ✅ Vollständig implementiert
 
 #### SK-7: Toast-Benachrichtigungen
 **Beschreibung:** Nicht-invasive Feedback-Messages für Benutzeraktionen.
@@ -423,7 +423,7 @@ Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Pr
 - Typen: Success (grün), Error (rot), Info (blau), Warning (gelb)
 - Beispiele: "Testfälle gespeichert", "Projekt gelöscht", "Export erfolgreich"
 
-**Status:**  Implementiert
+**Status:** ✅ Vollständig implementiert
 
 #### SK-8: JIRA/Azure DevOps-Export-Format
 **Beschreibung:** Export-Formate optimiert für gängige Test-Management-Tools.
@@ -434,92 +434,65 @@ Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Pr
 - Generic-Format: Standard-CSV
 - Auswahl im Export-Dialog
 
-**Status:**  Implementiert (JIRA/Azure in Backend, Frontend nutzt Excel)
+**Status:** ✅ Vollständig implementiert (Backend unterstützt alle Formate, Frontend nutzt Excel-Export)
 
 ### 1.2.3. Kann-Kriterien
 
-Die folgenden Anforderungen sind **optional** und werden nur implementiert, wenn Zeit und Ressourcen es erlauben:
+Die folgenden Anforderungen sind **optionale Erweiterungen**, die den Funktionsumfang zusätzlich verbessern. Einige wurden bereits im Rahmen des Projekts umgesetzt:
 
-#### KK-1: Benutzer-Authentifizierung
-**Beschreibung:** Login-System mit Rollen und Berechtigungen.
-
-**Akzeptanzkriterien:**
-- Registrierung, Login, Logout
-- Rollen: Admin, QA-Lead, Tester
-- Projekt-spezifische Zugriffsrechte
-- Session-Management mit JWT-Tokens
-
-**Status:**  Nicht implementiert (zukünftige Erweiterung)
-
-#### KK-2: Multi-Model-Support
-**Beschreibung:** Unterstützung mehrerer LLM-Provider.
+#### KK-1: Docker-Containerisierung
+**Beschreibung:** Vollständige Container-basierte Deployment-Lösung.
 
 **Akzeptanzkriterien:**
-- Auswahl zwischen OpenAI, Claude, Llama, Mistral
-- Einheitliche Abstraktionsschicht (LLMService)
-- Konfiguration via UI oder Umgebungsvariablen
+- Docker-Compose für Multi-Container-Setup
+- Separate Container für Backend und Frontend
+- Development- und Production-Konfigurationen
+- Volume-Mapping für Datenpersistenz
 
-**Status:**  Nicht implementiert (Architektur vorbereitet)
+**Status:** ✅ Vollständig implementiert
 
-#### KK-3: Versionierung von Testfällen
-**Beschreibung:** Git-ähnliches Tracking von Änderungen.
-
-**Akzeptanzkriterien:**
-- Historie aller Änderungen pro Testfall
-- Diff-Ansicht (alt vs. neu)
-- Rollback zu früheren Versionen
-
-**Status:**  Nicht implementiert
-
-#### KK-4: Kommentar-Funktion
-**Beschreibung:** Diskussionen zu Testfällen.
+#### KK-2: API-Dokumentation
+**Beschreibung:** Automatisch generierte, interaktive API-Dokumentation.
 
 **Akzeptanzkriterien:**
-- Kommentar-Thread pro Testfall
-- @-Mentions für Kollegen
-- Markdown-Unterstützung
+- OpenAPI/Swagger-Dokumentation
+- Interaktive Test-Umgebung
+- Request/Response-Beispiele
+- Verfügbar unter `/api/docs`
 
-**Status:**  Nicht implementiert
+**Status:** ✅ Vollständig implementiert (FastAPI-Integration)
 
-#### KK-5: Test-Ausführungs-Tracking
-**Beschreibung:** Status-Management für Testdurchläufe.
-
-**Akzeptanzkriterien:**
-- Status: Passed, Failed, Blocked, Skipped
-- Test-Läufe mit Datum und Tester
-- Statistiken: Pass Rate, Failure Rate
-
-**Status:**  Nicht implementiert
-
-#### KK-6: Automatische Akzeptanzkriterien-Extraktion
-**Beschreibung:** KI erkennt ACs aus User Story-Text.
+#### KK-3: Responsive Design
+**Beschreibung:** Optimierung für verschiedene Bildschirmgrößen.
 
 **Akzeptanzkriterien:**
-- Parsing von "Given-When-Then" Strukturen
-- Nummerierung und Formatierung
-- Manuelle Korrekturmöglichkeit
+- Desktop-Optimierung (1920x1080 und höher)
+- Tablet-Unterstützung (768px - 1024px)
+- Mobile-Ansicht (< 768px)
+- Touch-optimierte Bedienelemente
 
-**Status:**  Nicht implementiert (Prompt-Engineering teilweise berücksichtigt)
+**Status:** ✅ Vollständig implementiert
 
-#### KK-7: Dark Mode
-**Beschreibung:** Dunkles UI-Theme für bessere Ergonomie.
-
-**Akzeptanzkriterien:**
-- Toggle-Switch in Header
-- Konsistente Farbanpassung aller Komponenten
-- Persistierung der Einstellung (LocalStorage)
-
-**Status:**  Nicht implementiert
-
-#### KK-8: Internationalisierung (i18n)
-**Beschreibung:** Unterstützung mehrerer Sprachen.
+#### KK-4: Erweiterte Fehlerbehandlung
+**Beschreibung:** Robuste Error-Handling-Strategie.
 
 **Akzeptanzkriterien:**
-- Sprachen: Deutsch (Standard), Englisch
-- Sprachumschaltung im UI
-- Übersetzung aller Labels, Buttons, Messages
+- Try-Catch-Blöcke für alle kritischen Operationen
+- Benutzerfreundliche Fehlermeldungen
+- Logging für Debugging
+- Fallback-Mechanismen bei API-Fehlern
 
-**Status:**  Nicht implementiert (aktuell nur Deutsch)
+**Status:** ✅ Vollständig implementiert
+
+#### KK-5: Logo-Navigation
+**Beschreibung:** Klick auf Logo führt zur Dashboard-Ansicht.
+
+**Akzeptanzkriterien:**
+- Klickbares Logo im Header
+- Navigation zum Dashboard
+- Visuelles Feedback (Cursor: pointer)
+
+**Status:** ✅ Vollständig implementiert
 
 ### 1.2.4. Abgrenzungs-Kriterien
 
@@ -629,6 +602,116 @@ Die folgenden Funktionalitäten sind **explizit nicht Teil** dieses Projekts und
 - Ein Nutzer pro Browser-Session
 - Keine Live-Updates bei Änderungen anderer Nutzer
 - Keine Presence-Indicators ("Max bearbeitet gerade...")
+
+#### AK-9: Benutzer-Authentifizierung
+**Beschreibung:** Login-System mit Rollen und Berechtigungen.
+
+**Begründung:**
+- Prototyp konzipiert als Single-User-Anwendung
+- Authentifizierung erhöht Komplexität erheblich
+- Fokus liegt auf Core-Funktionalität (Testfall-Generierung)
+- Feature für produktiven Einsatz in Unternehmen relevant
+
+**Abgrenzung:**
+- Keine Registrierung, Login, Logout
+- Keine Rollen (Admin, QA-Lead, Tester)
+- Keine projekt-spezifischen Zugriffsrechte
+- Keine Session-Management mit JWT-Tokens
+
+#### AK-10: Multi-Model-Support
+**Beschreibung:** Unterstützung mehrerer LLM-Provider (Claude, Llama, Mistral).
+
+**Begründung:**
+- Fokus auf OpenAI GPT-4 für konsistente Qualität
+- Multi-Model-Integration benötigt Abstraktionsschicht und Testing
+- Architektur ist vorbereitet, aber Implementierung außerhalb des Scopes
+- Zusätzliche API-Kosten und Komplexität
+
+**Abgrenzung:**
+- Nur OpenAI-Integration
+- LLMService-Architektur erlaubt zukünftige Erweiterung
+- Keine UI-Auswahl für verschiedene Modelle
+
+#### AK-11: Versionierung von Testfällen
+**Beschreibung:** Git-ähnliches Tracking von Änderungen an Testfällen.
+
+**Begründung:**
+- Versionierung benötigt komplexe Datenbank-Struktur
+- Für Prototyp nicht zwingend erforderlich
+- Manuelle Änderungen überschreiben direkt (kein History)
+
+**Abgrenzung:**
+- Keine Historie aller Änderungen pro Testfall
+- Keine Diff-Ansicht (alt vs. neu)
+- Kein Rollback zu früheren Versionen
+- Keine Audit-Logs
+
+#### AK-12: Kommentar- und Kollaborations-Funktionen
+**Beschreibung:** Diskussionen und Annotations zu Testfällen.
+
+**Begründung:**
+- Kommentar-System benötigt User-Management
+- Fokus liegt auf Testfall-Erstellung, nicht Kommunikation
+- Bestehende Tools (JIRA, Slack) decken Kollaboration ab
+
+**Abgrenzung:**
+- Keine Kommentar-Threads pro Testfall
+- Keine @-Mentions für Kollegen
+- Keine Markdown-Unterstützung in Kommentaren
+- Keine Benachrichtigungen
+
+#### AK-13: Test-Ausführungs-Tracking
+**Beschreibung:** Status-Management für tatsächliche Testdurchläufe.
+
+**Begründung:**
+- Projekt fokussiert auf **Testfall-Generierung**, nicht Ausführung
+- Test-Execution-Tools (TestRail, Xray) existieren bereits
+- Würde Scope erheblich erweitern
+
+**Abgrenzung:**
+- Keine Status-Felder (Passed, Failed, Blocked, Skipped)
+- Keine Test-Läufe mit Datum und Tester
+- Keine Statistiken (Pass Rate, Failure Rate)
+- Export ermöglicht Import in Execution-Tools
+
+#### AK-14: Automatische Akzeptanzkriterien-Extraktion
+**Beschreibung:** KI-gestützte Erkennung von ACs aus User Story-Text.
+
+**Begründung:**
+- ACs werden optional als Input akzeptiert
+- Automatische Extraktion aus Fließtext fehleranfällig
+- Fokus liegt auf Testfall-Generierung, nicht Requirements-Parsing
+
+**Abgrenzung:**
+- Kein automatisches Parsing von "Given-When-Then" Strukturen
+- Manuelle Eingabe der ACs im Formular möglich
+- Prompt-Engineering nutzt ACs, wenn vorhanden
+
+#### AK-15: Dark Mode
+**Beschreibung:** Dunkles UI-Theme für bessere Ergonomie bei Nachtarbeit.
+
+**Begründung:**
+- Feature hat geringe Priorität für Core-Funktionalität
+- Erfordert vollständiges Re-Design aller Komponenten
+- Zeitaufwand nicht gerechtfertigt für Prototyp
+
+**Abgrenzung:**
+- Nur Light Mode verfügbar
+- Kein Toggle-Switch in Header
+- Keine Theme-Persistierung
+
+#### AK-16: Internationalisierung (i18n)
+**Beschreibung:** Mehrsprachigkeit (Deutsch, Englisch).
+
+**Begründung:**
+- Projekt ist deutschsprachig (Hochschulkontext)
+- i18n-Implementierung erfordert vollständige Übersetzung
+- Zielgruppe spricht primär Deutsch
+
+**Abgrenzung:**
+- Nur deutsche Sprache
+- Keine Sprachumschaltung im UI
+- UI-Texte, Fehlermeldungen, Labels nur auf Deutsch
 
 ---
 

@@ -56,24 +56,6 @@
       "_globalIdx": 35
     },
     {
-      "title": "TC-4 Alternative Flow - Abbrechen des Hinzufügens",
-      "description": "Der Benutzer bricht den Vorgang des Hinzufügens einer neuen Abgasreinigungsanlage ab.",
-      "type": "functional",
-      "preconditions": [
-        "Der Benutzer hat den Vorgang des Hinzufügens gestartet"
-      ],
-      "steps": [
-        "Der Benutzer klickt auf 'Abbrechen' oder 'Zurück'",
-        "Der Benutzer bestätigt das Abbrechen",
-        "Der Vorgang des Hinzufügens wird abgebrochen"
-      ],
-      "expected_result": "Der Vorgang wird abgebrochen und keine neue Abgasreinigungsanlage wird hinzugefügt.",
-      "covers": [],
-      "priority": "Medium",
-      "user_story": "Umgebung: Step 4 - EEV",
-      "_globalIdx": 36
-    },
-    {
       "title": "TC-5 Alternative Flow - Ungültige Eingaben beim Hinzufügen",
       "description": "Der Benutzer gibt ungültige Daten beim Hinzufügen einer Abgasreinigungsanlage ein.",
       "type": "functional",
@@ -157,23 +139,6 @@
       "priority": "High",
       "user_story": "Umgebung: Step 4 - EEV",
       "_globalIdx": 41
-    },
-    {
-      "title": "TC-10 Datenvariation - Leere Felder beim Hinzufügen",
-      "description": "Der Benutzer versucht eine Abgasreinigungsanlage ohne alle erforderlichen Felder hinzuzufügen.",
-      "type": "functional",
-      "preconditions": [
-        "Der Benutzer ist im Prozess des Hinzufügens"
-      ],
-      "steps": [
-        "Der Benutzer lässt mindestens ein erforderliches Feld leer",
-        "Der Benutzer versucht die Abgasreinigungsanlage zu speichern"
-      ],
-      "expected_result": "Es wird eine Fehlermeldung angezeigt, dass alle Felder ausgefüllt werden müssen.",
-      "covers": [],
-      "priority": "Medium",
-      "user_story": "Umgebung: Step 4 - EEV",
-      "_globalIdx": 42
     },
     {
       "title": "TC-11 Performance - Laden großer Datenmenge",

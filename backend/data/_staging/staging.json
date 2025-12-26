@@ -471,6 +471,138 @@
       "expected_result": "Der RadioButton zeigt den Wert aus der Datenbank korrekt an.",
       "covers": [],
       "priority": "High"
+    },
+    {
+      "title": "TC-1 - Togglebar - Auswahl Jahr zeigt Jahr Datenfeld an",
+      "description": "Überprüfen, ob das Datenfeld \"Jahr\" angezeigt wird, wenn die Option \"Jahr\" in der Togglebar ausgewählt ist.",
+      "type": "functional",
+      "preconditions": [
+        "Togglebar ist sichtbar"
+      ],
+      "steps": [
+        "Klicke auf die Option \"Jahr\" in der Togglebar",
+        "Überprüfe, ob das Datenfeld \"Jahr\" angezeigt wird"
+      ],
+      "expected_result": "Das Datenfeld \"Jahr\" wird angezeigt.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC4"
+    },
+    {
+      "title": "TC-2 - Togglebar - Auswahl Jahr blendet Monatsdatenfelder aus",
+      "description": "Überprüfen, ob die Monatsdatenfelder ausgeblendet und geleert werden, wenn die Option \"Jahr\" in der Togglebar ausgewählt ist.",
+      "type": "functional",
+      "preconditions": [
+        "Togglebar ist sichtbar",
+        "Monatsdatenfelder sind sichtbar und ausgefüllt"
+      ],
+      "steps": [
+        "Klicke auf die Option \"Jahr\" in der Togglebar",
+        "Überprüfe, ob die Monatsdatenfelder ausgeblendet und geleert werden"
+      ],
+      "expected_result": "Die Monatsdatenfelder werden ausgeblendet und geleert.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC4"
+    },
+    {
+      "title": "TC-3 - Togglebar - Auswahl Monat zeigt Monatsdatenfelder an",
+      "description": "Überprüfen, ob die Monatsdatenfelder angezeigt werden, wenn die Option \"Monat\" in der Togglebar ausgewählt ist.",
+      "type": "functional",
+      "preconditions": [
+        "Togglebar ist sichtbar"
+      ],
+      "steps": [
+        "Klicke auf die Option \"Monat\" in der Togglebar",
+        "Überprüfe, ob die Monatsdatenfelder angezeigt werden"
+      ],
+      "expected_result": "Die Monatsdatenfelder werden angezeigt.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC4"
+    },
+    {
+      "title": "TC-4 - Togglebar - Auswahl Monat blendet Jahr Datenfeld aus",
+      "description": "Überprüfen, ob das Datenfeld \"Jahr\" ausgeblendet und geleert wird, wenn die Option \"Monat\" in der Togglebar ausgewählt ist.",
+      "type": "functional",
+      "preconditions": [
+        "Togglebar ist sichtbar",
+        "Jahr Datenfeld ist sichtbar und ausgefüllt"
+      ],
+      "steps": [
+        "Klicke auf die Option \"Monat\" in der Togglebar",
+        "Überprüfe, ob das Datenfeld \"Jahr\" ausgeblendet und geleert wird"
+      ],
+      "expected_result": "Das Datenfeld \"Jahr\" wird ausgeblendet und geleert.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC4"
+    },
+    {
+      "title": "TC-5 - Togglebar - Anzeige des Alerts je nach Auswahl",
+      "description": "Überprüfen, ob der korrekte Alert je nach Auswahl von \"Jahr\" oder \"Monat\" unter der Togglebar angezeigt wird.",
+      "type": "functional",
+      "preconditions": [
+        "Togglebar ist sichtbar"
+      ],
+      "steps": [
+        "Wähle die Option \"Jahr\" in der Togglebar",
+        "Überprüfe, ob der Alert \"Achtung: Eingabe in TBD pro Jahr\" angezeigt wird",
+        "Wähle die Option \"Monat\" in der Togglebar",
+        "Überprüfe, ob der Alert \"Achtung: Eingabe in TBD pro Monat\" angezeigt wird"
+      ],
+      "expected_result": "Der korrekte Alert wird entsprechend der Auswahl angezeigt.",
+      "covers": [],
+      "priority": "Medium",
+      "user_story": "UC4"
+    },
+    {
+      "title": "TC-6 - Togglebar - Modal bei Toggle auf Jahr/Monat Icon",
+      "description": "Überprüfen, ob das Modal mit der Frage \"Sind Sie sicher, dass Sie die bisherigen Eingaben verwerfen wollen\" und den Optionen \"Abbrechen\" und \"Fortfahren\" erscheint, wenn auf das Jahr/Monat Icon in der Togglebar getoggelt wird.",
+      "type": "functional",
+      "preconditions": [
+        "Togglebar ist sichtbar"
+      ],
+      "steps": [
+        "Klicke auf das Jahr/Monat Icon in der Togglebar",
+        "Überprüfe, ob das Modal mit der Frage und den Optionen erscheint"
+      ],
+      "expected_result": "Das Modal mit der Frage und den Optionen wird angezeigt.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC4"
+    },
+    {
+      "title": "TC-7 - Togglebar - Abbrechen im Modal",
+      "description": "Überprüfen, ob die Aktion \"Abbrechen\" im Modal bei der Frage nach dem Verwerfen der Eingaben korrekt funktioniert.",
+      "type": "functional",
+      "preconditions": [
+        "Togglebar ist sichtbar",
+        "Modal mit der Frage ist geöffnet"
+      ],
+      "steps": [
+        "Klicke auf die Option \"Abbrechen\" im Modal"
+      ],
+      "expected_result": "Die Aktion \"Abbrechen\" wird ausgeführt und das Modal wird geschlossen, ohne die Eingaben zu verwerfen.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC4"
+    },
+    {
+      "title": "TC-8 - Togglebar - Fortfahren im Modal",
+      "description": "Überprüfen, ob die Aktion \"Fortfahren\" im Modal bei der Frage nach dem Verwerfen der Eingaben korrekt funktioniert.",
+      "type": "functional",
+      "preconditions": [
+        "Togglebar ist sichtbar",
+        "Modal mit der Frage ist geöffnet"
+      ],
+      "steps": [
+        "Klicke auf die Option \"Fortfahren\" im Modal"
+      ],
+      "expected_result": "Die Aktion \"Fortfahren\" wird ausgeführt und das Modal wird geschlossen, wobei die Eingaben verworfen werden.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "UC4"
     }
   ]
 }

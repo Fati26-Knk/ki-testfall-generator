@@ -1188,7 +1188,7 @@ Projekt-Typ: Master Thesis
 
 **Kontakt:**  
 - GitHub: [Fati26-Knk](https://github.com/Fati26-Knk)
-- E-Mail: [Ihre E-Mail]
+- E-Mail: fadime.konuk@stud.hcw.ac.at
 
 ---
 
@@ -1201,7 +1201,8 @@ Alle Rechte vorbehalten © 2025 Fadime Konuk
 
 ##  Danksagungen
 
-- **Betreuende Professoren:** [Namen einfügen]
+- **1. Betreuende Professorin:** FH-Prof.in Mag.a Dr.in Sigrid Schefer-Wenzl, MSc BSc
+- **2. Betreuende Professor:** FH-Prof. DI Dr. Igor Miladinovic
 - **OpenAI:** Für GPT-4o-mini API
 - **Open-Source-Community:** React, FastAPI, Docker und alle verwendeten Bibliotheken
 
