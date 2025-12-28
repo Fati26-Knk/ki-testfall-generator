@@ -1,6 +1,8 @@
 ﻿import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import TestCaseCard from './TestCaseCard';
+import './TestCaseCard.css';
+import './TestPlan.css';
 import Toast from './Toast';
 import * as XLSX from 'xlsx';
 import ConfirmDialog from './ConfirmDialog';
@@ -8,6 +10,11 @@ import ConfirmDialog from './ConfirmDialog';
 function EditableTestCase({ testCase, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTc, setEditedTc] = useState(testCase);
+
+  const theme = typeof document !== 'undefined'
+    ? document.documentElement.getAttribute('data-theme')
+    : 'dark';
+  const isLightTheme = theme === 'light';
 
   const handleSave = () => {
     onUpdate(editedTc);
@@ -63,37 +70,37 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
 
   if (!isEditing) {
     return (
-      <div style={{ border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 6, padding: 12, background: 'rgba(30, 41, 59, 0.6)' }}>
+      <div style={{ border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 6, padding: 12, background: isLightTheme ? '#e5e7eb' : 'rgba(30, 41, 59, 0.6)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 8 }}>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4, color: '#e2e8f0' }}>{testCase.title}</div>
+            <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4, color: isLightTheme ? '#111827' : '#e2e8f0' }}>{testCase.title}</div>
             {testCase.description && (
-              <div style={{ fontSize: 13, color: '#cbd5e1', marginBottom: 8 }}>{testCase.description}</div>
+              <div style={{ fontSize: 13, color: isLightTheme ? '#4b5563' : '#cbd5e1', marginBottom: 8 }}>{testCase.description}</div>
             )}
             {testCase.preconditions && testCase.preconditions.length > 0 && (
               <div style={{ marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#93c5fd', marginBottom: 4 }}>Vorbedingungen:</div>
-                <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, color: '#e2e8f0' }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: isLightTheme ? '#1d4ed8' : '#93c5fd', marginBottom: 4 }}>Vorbedingungen:</div>
+                <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, color: isLightTheme ? '#111827' : '#e2e8f0' }}>
                   {testCase.preconditions.map((pc, i) => <li key={i}>{pc}</li>)}
                 </ul>
               </div>
             )}
             {testCase.steps && testCase.steps.length > 0 && (
               <div style={{ marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#93c5fd', marginBottom: 4 }}>Schritte:</div>
-                <ol style={{ margin: 0, paddingLeft: 20, fontSize: 13, color: '#e2e8f0' }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: isLightTheme ? '#1d4ed8' : '#93c5fd', marginBottom: 4 }}>Schritte:</div>
+                <ol style={{ margin: 0, paddingLeft: 20, fontSize: 13, color: isLightTheme ? '#111827' : '#e2e8f0' }}>
                   {testCase.steps.map((step, i) => <li key={i}>{step}</li>)}
                 </ol>
               </div>
             )}
             {testCase.expected_result && (
               <div style={{ marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#93c5fd', marginBottom: 4 }}>Erwartetes Ergebnis:</div>
-                <div style={{ fontSize: 13, color: '#e2e8f0' }}>{testCase.expected_result}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: isLightTheme ? '#1d4ed8' : '#93c5fd', marginBottom: 4 }}>Erwartetes Ergebnis:</div>
+                <div style={{ fontSize: 13, color: isLightTheme ? '#111827' : '#e2e8f0' }}>{testCase.expected_result}</div>
               </div>
             )}
             {testCase.priority && (
-              <div style={{ fontSize: 12, color: '#cbd5e1' }}>
+              <div style={{ fontSize: 12, color: isLightTheme ? '#4b5563' : '#cbd5e1' }}>
                 <strong>Priorität:</strong> {testCase.priority}
               </div>
             )}
@@ -120,7 +127,7 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
                 padding: '6px 12px', 
                 background: '#fee2e2', 
                 color: '#b91c1c', 
-                border: 'none', 
+                border: '1px solid #b91c1c', 
                 borderRadius: 4, 
                 cursor: 'pointer', 
                 fontSize: 13,
@@ -136,14 +143,14 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
   }
 
   return (
-    <div style={{ border: '2px solid #3b82f6', borderRadius: 6, padding: 16, background: 'rgba(30, 41, 59, 0.8)' }}>
+    <div style={{ border: '2px solid #3b82f6', borderRadius: 6, padding: 16, background: isLightTheme ? '#e5e7eb' : 'rgba(30, 41, 59, 0.8)' }}>
       <div style={{ marginBottom: 12 }}>
         <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 4, color: '#93c5fd' }}>Titel:</label>
         <input
           type="text"
           value={editedTc.title || ''}
           onChange={(e) => setEditedTc({ ...editedTc, title: e.target.value })}
-          style={{ width: '100%', padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
+          style={{ width: '100%', padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: isLightTheme ? '#f9fafb' : 'rgba(15, 23, 42, 0.5)', color: isLightTheme ? '#111827' : '#f1f5f9' }}
         />
       </div>
 
@@ -152,7 +159,7 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
         <textarea
           value={editedTc.description || ''}
           onChange={(e) => setEditedTc({ ...editedTc, description: e.target.value })}
-          style={{ width: '100%', padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, minHeight: 60, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
+          style={{ width: '100%', padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, minHeight: 60, background: isLightTheme ? '#f9fafb' : 'rgba(15, 23, 42, 0.5)', color: isLightTheme ? '#111827' : '#f1f5f9' }}
         />
       </div>
 
@@ -164,7 +171,7 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
               type="text"
               value={pc}
               onChange={(e) => updatePrecondition(idx, e.target.value)}
-              style={{ flex: 1, padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
+              style={{ flex: 1, padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: isLightTheme ? '#f9fafb' : 'rgba(15, 23, 42, 0.5)', color: isLightTheme ? '#111827' : '#f1f5f9' }}
             />
             <button
               onClick={() => deletePrecondition(idx)}
@@ -191,7 +198,7 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
               type="text"
               value={step}
               onChange={(e) => updateStep(idx, e.target.value)}
-              style={{ flex: 1, padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
+              style={{ flex: 1, padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: isLightTheme ? '#f9fafb' : 'rgba(15, 23, 42, 0.5)', color: isLightTheme ? '#111827' : '#f1f5f9' }}
             />
             <button
               onClick={() => deleteStep(idx)}
@@ -214,7 +221,7 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
         <textarea
           value={editedTc.expected_result || ''}
           onChange={(e) => setEditedTc({ ...editedTc, expected_result: e.target.value })}
-          style={{ width: '100%', padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, minHeight: 60, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
+          style={{ width: '100%', padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, minHeight: 60, background: isLightTheme ? '#f9fafb' : 'rgba(15, 23, 42, 0.5)', color: isLightTheme ? '#111827' : '#f1f5f9' }}
         />
       </div>
 
@@ -223,7 +230,7 @@ function EditableTestCase({ testCase, onUpdate, onDelete }) {
         <select
           value={editedTc.priority || 'medium'}
           onChange={(e) => setEditedTc({ ...editedTc, priority: e.target.value })}
-          style={{ padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: 'rgba(15, 23, 42, 0.5)', color: '#f1f5f9' }}
+          style={{ padding: '8px', border: '1px solid rgba(148, 163, 184, 0.2)', borderRadius: 4, fontSize: 14, background: isLightTheme ? '#f9fafb' : 'rgba(15, 23, 42, 0.5)', color: isLightTheme ? '#111827' : '#f1f5f9' }}
         >
           <option value="low">Niedrig</option>
           <option value="medium">Mittel</option>
@@ -740,17 +747,17 @@ export default function TestPlan() {
   }
 
   return (
-    <div>
-      <div style={{ padding: 16, maxWidth: 1400, margin: '0 auto' }}>
-        <h2 style={{ color: '#f1f5f9' }}>TestPlan - Globale User Stories verwalten</h2>
-        <p style={{ color: '#cbd5e1', marginBottom: 24, fontSize: 14 }}>
+    <div className="testplan-root">
+      <div className="testplan-shell">
+        <h2 className="testplan-title">TestPlan - Globale User Stories verwalten</h2>
+        <p className="testplan-subtitle">
           Hier siehst du alle gespeicherten User Stories. Wähle ein Projekt und übernimm ganze User Stories auf einmal.
         </p>
-        <div style={{ display: 'flex', gap: 16 }}>
-          <aside style={{ width: 220, borderRight: '1px solid rgba(71, 85, 105, 0.3)', paddingRight: 16 }}>
-          <h4 style={{ marginTop: 0, color: '#f1f5f9' }}>Ziel-Projekte</h4>
-          {loading && <div style={{ color: '#cbd5e1' }}>Loading...</div>}
-          {!loading && projects.length === 0 && <div style={{ color: '#cbd5e1', fontSize: 13 }}>Noch keine Projekte vorhanden</div>}
+        <div className="testplan-layout">
+          <aside className="testplan-sidebar">
+          <h4 className="testplan-sidebar-title">Ziel-Projekte</h4>
+          {loading && <div className="testplan-sidebar-text">Loading...</div>}
+          {!loading && projects.length === 0 && <div className="testplan-sidebar-text testplan-sidebar-text--muted">Noch keine Projekte vorhanden</div>}
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {projects.map((p) => (
               <li 
@@ -761,37 +768,10 @@ export default function TestPlan() {
               >
                 <button
                   onClick={() => setSelectedProject(p)}
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    textAlign: 'left',
-                    padding: '10px 14px',
-                    background: p === selectedProject 
-                      ? 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' 
-                      : 'rgba(71, 85, 105, 0.4)',
-                    border: p === selectedProject ? 'none' : '1px solid rgba(148, 163, 184, 0.2)',
-                    cursor: 'pointer',
-                    borderRadius: 8,
-                    fontWeight: 600,
-                    color: p === selectedProject ? 'white' : '#cbd5e1',
-                    fontSize: 14,
-                    transition: 'all 0.2s ease',
-                    boxShadow: p === selectedProject 
-                      ? '0 2px 8px rgba(59, 130, 246, 0.3)' 
-                      : '0 1px 3px rgba(0, 0, 0, 0.1)',
-                  }}
-                  onMouseOver={(e) => {
-                    if (p !== selectedProject) {
-                      e.currentTarget.style.background = '#e5e7eb';
-                      e.currentTarget.style.transform = 'translateX(2px)';
-                    }
-                  }}
-                  onMouseOut={(e) => {
-                    if (p !== selectedProject) {
-                      e.currentTarget.style.background = '#f3f4f6';
-                      e.currentTarget.style.transform = 'translateX(0)';
-                    }
-                  }}
+                  className={
+                    'testplan-project-button' +
+                    (p === selectedProject ? ' testplan-project-button--active' : '')
+                  }
                 >
                   {p}
                 </button>
@@ -835,8 +815,7 @@ export default function TestPlan() {
                       style={{
                         background: 'white',
                         color: '#ef4444',
-                        border: '2px solid #ef4444',
-                        borderRadius: 6,
+                        border: 'none',
                         padding: '4px 10px',
                         cursor: 'pointer',
                         fontSize: 13,
@@ -880,13 +859,13 @@ export default function TestPlan() {
           </button>
         </aside>
 
-        <main style={{ flex: 1 }}>
+        <main className="testplan-main">
           {/* Projektspezifische User Stories - NICHT auf Hauptseite anzeigen */}
           {selectedProject && selectedProject !== 'Hauptseite' && (
             <>
-              <div style={{ marginBottom: 24 }}>
+              <div className="testplan-section">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                  <h4 style={{ marginTop: 0, color: '#f1f5f9' }}>
+                  <h4 className="testplan-section-title">
                     Ausgewählte User Stories
                   </h4>
                   {/* Expand/Collapse All Toolbar */}
@@ -928,21 +907,21 @@ export default function TestPlan() {
                     </div>
                   )}
                 </div>
-                <div style={{ border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 8, padding: 12, minHeight: 150, background: 'rgba(30, 41, 59, 0.6)' }}>
+                <div className="testplan-card testplan-card--filled" style={{ minHeight: 150 }}>
                   {loadingProjectUs && (
-                    <div style={{ color: '#cbd5e1', textAlign: 'center', padding: 40 }}>
+                    <div className="testplan-muted" style={{ textAlign: 'center', padding: 40 }}>
                       Lade User Stories...
                     </div>
                   )}
                   {!loadingProjectUs && projectUserStories.length === 0 && (
-                    <div style={{ color: '#cbd5e1', textAlign: 'center', padding: 40 }}>
+                    <div className="testplan-muted" style={{ textAlign: 'center', padding: 40 }}>
                       Noch keine User Stories in diesem Projekt. Übernimm User Stories von der Hauptseite.
                     </div>
                   )}
                   {!loadingProjectUs && projectUserStories.length > 0 && (
                     <div>
                       {projectUserStories.map((us) => (
-                        <div key={us} style={{ marginBottom: 16, border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 6, background: 'rgba(15, 23, 42, 0.5)', overflow: 'hidden' }}>
+                        <div key={us} style={{ marginBottom: 16, border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 6, background: (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light') ? '#f3f4f6' : 'rgba(15, 23, 42, 0.5)', overflow: 'hidden' }}>
                           <div
                             style={{ 
                               cursor: 'pointer', 
@@ -952,7 +931,7 @@ export default function TestPlan() {
                               alignItems: 'center', 
                               justifyContent: 'space-between', 
                               fontSize: 16,
-                              background: 'rgba(30, 41, 59, 0.6)',
+                              background: (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light') ? '#e5e7eb' : 'rgba(30, 41, 59, 0.6)',
                               borderBottom: openProjectUsGroups[us] ? '1px solid rgba(71, 85, 105, 0.3)' : 'none',
                             }}
                             role="button"
@@ -965,8 +944,19 @@ export default function TestPlan() {
                               >
                                 {openProjectUsGroups[us] ? '▼' : '▶'}
                               </span>
-                              <strong style={{ color: '#e2e8f0' }}>📋 {us}</strong>
-                              <span style={{ color: '#93c5fd', fontWeight: 400, fontSize: 14, marginLeft: 8 }}>
+                              <strong style={{ color: (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light') ? '#111827' : '#f9fafb' }}>📋 {us}</strong>
+                              <span
+                                style={{
+                                  color:
+                                    typeof document !== 'undefined' &&
+                                    document.documentElement.getAttribute('data-theme') === 'light'
+                                      ? '#64748b'
+                                      : '#93c5fd',
+                                  fontWeight: 400,
+                                  fontSize: 14,
+                                  marginLeft: 8,
+                                }}
+                              >
                                 ({(projectUsTestCases[us] || []).length} Testfälle)
                               </span>
                             </span>
@@ -994,8 +984,8 @@ export default function TestPlan() {
                                 title="User Story aus Projekt löschen"
                                 style={{ 
                                   background: '#fee2e2', 
-                                  color: '#b91c1c', 
-                                  border: 'none', 
+                                  color: '#b91c1c',
+                                  border: 'none',
                                   borderRadius: 4, 
                                   padding: '6px 12px', 
                                   cursor: 'pointer', 
@@ -1041,15 +1031,15 @@ export default function TestPlan() {
           {/* Globale User Stories - NUR auf Hauptseite anzeigen */}
           {selectedProject === 'Hauptseite' && (
             <>
-              <h4 style={{ marginTop: 0, color: '#f1f5f9' }}>Globale User Stories</h4>
-              <div style={{ border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 8, padding: 12, minHeight: 200, background: 'rgba(30, 41, 59, 0.6)' }}>
+              <h4 className="testplan-section-title">Globale User Stories</h4>
+              <div className="testplan-card testplan-card--filled" style={{ minHeight: 200 }}>
                 {Object.keys(groupedGlobalTestCases).length === 0 && (
                   <div style={{ color: '#cbd5e1', textAlign: 'center', padding: 40 }}>
                     Keine User Stories vorhanden. Erstelle Testfälle im Dashboard und merke sie hier.
                   </div>
                 )}
                 {Object.entries(groupedGlobalTestCases).map(([us, tcs]) => (
-              <div key={us} style={{ marginBottom: 16, border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 6, background: 'rgba(15, 23, 42, 0.5)', overflow: 'hidden' }}>
+              <div key={us} style={{ marginBottom: 16, border: '1px solid rgba(71, 85, 105, 0.3)', borderRadius: 6, background: (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light') ? '#f3f4f6' : 'rgba(15, 23, 42, 0.5)', overflow: 'hidden' }}>
                 <div
                   style={{ 
                     cursor: 'pointer', 
@@ -1059,7 +1049,9 @@ export default function TestPlan() {
                     alignItems: 'center', 
                     justifyContent: 'space-between', 
                     fontSize: 16,
-                    background: selectedUserStory === us ? 'rgba(59, 130, 246, 0.2)' : 'rgba(30, 41, 59, 0.6)',
+                    background: selectedUserStory === us
+                      ? 'rgba(59, 130, 246, 0.2)'
+                      : ((typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light') ? '#e5e7eb' : 'rgba(30, 41, 59, 0.6)'),
                     borderBottom: openUsGroups[us] ? '1px solid rgba(71, 85, 105, 0.3)' : 'none',
                   }}
                   onClick={() => setSelectedUserStory(us)}
@@ -1074,8 +1066,33 @@ export default function TestPlan() {
                     >
                       {openUsGroups[us] ? '▼' : '▶'}
                     </span>
-                    <strong style={{ color: selectedUserStory === us ? '#60a5fa' : '#e2e8f0' }}>{us}</strong> 
-                    <span style={{ color: '#93c5fd', fontWeight: 400, fontSize: 14, marginLeft: 8 }}>({tcs.length} Testfälle)</span>
+                    <strong
+                      style={{
+                        color:
+                          selectedUserStory === us
+                            ? '#60a5fa'
+                            : typeof document !== 'undefined' &&
+                              document.documentElement.getAttribute('data-theme') === 'light'
+                              ? '#111827'
+                              : '#f9fafb',
+                      }}
+                    >
+                      {us}
+                    </strong>
+                    <span
+                      style={{
+                        color:
+                          typeof document !== 'undefined' &&
+                          document.documentElement.getAttribute('data-theme') === 'light'
+                            ? '#64748b'
+                            : '#93c5fd',
+                        fontWeight: 400,
+                        fontSize: 14,
+                        marginLeft: 8,
+                      }}
+                    >
+                      ({tcs.length} Testfälle)
+                    </span>
                   </span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <button
@@ -1103,7 +1120,7 @@ export default function TestPlan() {
                   <ul id={`us-group-${us}`} style={{ listStyle: 'none', margin: 0, padding: '12px 16px' }}>
                     {tcs.map((tc, idx) => (
                       <li key={tc.id || tc._globalIdx || idx} style={{ marginBottom: 12 }}>
-                        <TestCaseCard testCase={tc} index={tc._globalIdx} />
+                        <TestCaseCard testCase={tc} index={idx} />
                       </li>
                     ))}
                   </ul>
@@ -1114,11 +1131,11 @@ export default function TestPlan() {
           
           {/* Hilfe-Sektion - nur auf Hauptseite */}
           {selectedProject === 'Hauptseite' && Object.keys(groupedGlobalTestCases).length > 0 && (
-            <div style={{ marginTop: 16, padding: 16, background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: 8 }}>
-              <h5 style={{ margin: '0 0 8px 0', color: '#60a5fa' }}>So funktioniert's:</h5>
-              <div style={{ fontSize: 13, color: '#cbd5e1' }}>
-                1. ✓ Projekt ist ausgewählt: <strong style={{ color: '#60a5fa' }}>{selectedProject}</strong><br />
-                2. 📋 Wähle User Story im Dropdown unten<br />
+            <div className="testplan-help">
+              <h5 className="testplan-help-title">So funktioniert's:</h5>
+              <div className="testplan-help-text">
+                1. Projekt ist ausgewählt: <strong style={{ color: '#60a5fa' }}>{selectedProject}</strong><br />
+                2. Wähle User Story im Dropdown unten<br />
                 3. ✅ Klicke auf "In Projekt übernehmen"
               </div>
             </div>
@@ -1126,9 +1143,9 @@ export default function TestPlan() {
           
           {/* Dropdown-Bereich für Projekt- und User Story-Auswahl - nur auf Hauptseite */}
           {selectedProject === 'Hauptseite' && Object.keys(groupedGlobalTestCases).length > 0 && (
-            <div style={{ marginTop: 16, padding: 20, background: 'rgba(30, 41, 59, 0.8)', border: '2px solid #3b82f6', borderRadius: 8 }}>
-              <h4 style={{ margin: '0 0 16px 0', color: '#f1f5f9' }}>User Story in Projekt übernehmen</h4>
-              <div style={{ marginBottom: 16, color: '#64748b', fontSize: 14 }}>
+            <div className="testplan-card testplan-card--accent">
+              <h4 className="testplan-section-title">User Story in Projekt übernehmen</h4>
+              <div className="testplan-muted" style={{ marginBottom: 16, fontSize: 14 }}>
                 Wähle ein Ziel-Projekt und eine User Story aus, um sie zu übernehmen.
               </div>
               

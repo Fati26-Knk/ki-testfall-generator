@@ -157,15 +157,15 @@ export default function Dashboard({ setView, activeProject }) {
       fullUserStory += "💡 TIPP: Wenn Dokumente hochgeladen sind, nutze JEDES Detail daraus!\n";
       fullUserStory += "⚠️ WARNUNG: Weniger als " + Math.ceil(generated.length * 1.5) + " neue Tests = UNZUREICHEND!\n\n";
       
-      // Request 100% more tests (double the current amount)
+      // Request 100% mehr Tests (double the current amount)
       const requested = Math.ceil(generated.length * 2);
-      
+
       const res = await api.generateTestCases(fullUserStory, requested);
-      
-      // Merge with existing tests (avoid duplicates)
+
+      // Re‑Generierung ersetzt die bisherigen Tests vollständig
       const newTests = res.test_cases || [];
-      setGenerated([...generated, ...newTests]);
-      setToast(`${newTests.length} neue verbesserte Testfälle hinzugefügt!`);
+      setGenerated(newTests);
+      setToast(`${newTests.length} Testfälle wurden neu generiert und ersetzt.`);
       
       // reset selection
       setSelected({});
@@ -725,40 +725,168 @@ export default function Dashboard({ setView, activeProject }) {
         </div>
 
         <div className="test-cases">
-          {!generated && <div className="loading-state"><p style={{ color: '#6b7280' }}>Keine generierten Testfälle</p></div>}
+          {!generated && (
+            <div className="loading-state">
+              <p
+                style={{
+                  color:
+                    typeof document !== 'undefined' &&
+                    document.documentElement.getAttribute('data-theme') === 'light'
+                      ? '#4b5563'
+                      : '#6b7280',
+                }}
+              >
+                Keine generierten Testfälle
+              </p>
+            </div>
+          )}
           {generated && generated.map((tc, i) => (
             <div className="tc-card" key={i}>
               <div>
                 <h4>{tc.title}</h4>
-                <div style={{ color: '#6b7280' }}>{tc.description}</div>
+                <div
+                  style={{
+                    color:
+                      typeof document !== 'undefined' &&
+                      document.documentElement.getAttribute('data-theme') === 'light'
+                        ? '#111827'
+                        : '#e5e7eb',
+                  }}
+                >
+                  {tc.description}
+                </div>
                 {tc.preconditions && tc.preconditions.length > 0 && (
                   <div style={{ marginTop: 8 }}>
-                    <strong style={{ color: '#93c5fd', fontSize: '15px' }}>Preconditions:</strong>
+                    <strong
+                      style={{
+                        color:
+                          typeof document !== 'undefined' &&
+                          document.documentElement.getAttribute('data-theme') === 'light'
+                            ? '#1d4ed8'
+                            : '#93c5fd',
+                        fontSize: '15px',
+                      }}
+                    >
+                      Preconditions:
+                    </strong>
                     <ul style={{ marginTop: 4 }}>
                       {tc.preconditions.map((p, idx) => (
-                        <li key={idx} style={{ color: '#e2e8f0', fontSize: '15px', lineHeight: '1.7' }}>{p}</li>
+                        <li
+                          key={idx}
+                          style={{
+                            color:
+                              typeof document !== 'undefined' &&
+                              document.documentElement.getAttribute('data-theme') === 'light'
+                                ? '#111827'
+                                : '#e2e8f0',
+                            fontSize: '15px',
+                            lineHeight: '1.7',
+                          }}
+                        >
+                          {p}
+                        </li>
                       ))}
                     </ul>
                   </div>
                 )}
                 {tc.steps && tc.steps.length > 0 && (
                   <div style={{ marginTop: 8 }}>
-                    <strong style={{ color: '#93c5fd', fontSize: '15px' }}>Steps:</strong>
+                    <strong
+                      style={{
+                        color:
+                          typeof document !== 'undefined' &&
+                          document.documentElement.getAttribute('data-theme') === 'light'
+                            ? '#1d4ed8'
+                            : '#93c5fd',
+                        fontSize: '15px',
+                      }}
+                    >
+                      Steps:
+                    </strong>
                     <ol style={{ marginTop: 4 }}>
                       {tc.steps.map((s, idx) => (
-                        <li key={idx} style={{ color: '#e2e8f0', fontSize: '15px', lineHeight: '1.7', marginBottom: '4px' }}>{s}</li>
+                        <li
+                          key={idx}
+                          style={{
+                            color:
+                              typeof document !== 'undefined' &&
+                              document.documentElement.getAttribute('data-theme') === 'light'
+                                ? '#111827'
+                                : '#e2e8f0',
+                            fontSize: '15px',
+                            lineHeight: '1.7',
+                            marginBottom: '4px',
+                          }}
+                        >
+                          {s}
+                        </li>
                       ))}
                     </ol>
                   </div>
                 )}
                 {tc.expected_result && (
                   <div style={{ marginTop: 8 }}>
-                    <strong style={{ color: '#93c5fd', fontSize: '15px' }}>Expected result:</strong>
-                    <div style={{ color: '#a7f3d0', fontSize: '15px', lineHeight: '1.7', marginTop: '4px', padding: '8px', background: 'rgba(16, 185, 129, 0.2)', borderLeft: '3px solid #34d399', borderRadius: '4px' }}>{tc.expected_result}</div>
+                    <strong
+                      style={{
+                        color:
+                          typeof document !== 'undefined' &&
+                          document.documentElement.getAttribute('data-theme') === 'light'
+                            ? '#1d4ed8'
+                            : '#93c5fd',
+                        fontSize: '15px',
+                      }}
+                    >
+                      Expected result:
+                    </strong>
+                    <div
+                      style={{
+                        color:
+                          typeof document !== 'undefined' &&
+                          document.documentElement.getAttribute('data-theme') === 'light'
+                            ? '#065f46'
+                            : '#a7f3d0',
+                        fontSize: '15px',
+                        lineHeight: '1.7',
+                        marginTop: '4px',
+                        padding: '8px',
+                        background:
+                          typeof document !== 'undefined' &&
+                          document.documentElement.getAttribute('data-theme') === 'light'
+                            ? '#d1fae5'
+                            : 'rgba(16, 185, 129, 0.2)',
+                        borderLeft: '3px solid #34d399',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      {tc.expected_result}
+                    </div>
                   </div>
                 )}
                 {tc.priority && (
-                  <div style={{ marginTop: 8, fontSize: 14 }}><strong style={{ color: '#93c5fd' }}>Priority:</strong> <span style={{ color: '#e2e8f0' }}>{tc.priority}</span></div>
+                  <div style={{ marginTop: 8, fontSize: 14 }}>
+                    <strong
+                      style={{
+                        color:
+                          typeof document !== 'undefined' &&
+                          document.documentElement.getAttribute('data-theme') === 'light'
+                            ? '#1d4ed8'
+                            : '#93c5fd',
+                      }}
+                    >
+                      Priority:
+                    </strong>{' '}
+                    <span
+                      style={{
+                        color:
+                          typeof document !== 'undefined' &&
+                          document.documentElement.getAttribute('data-theme') === 'light'
+                            ? '#111827'
+                            : '#e2e8f0',
+                      }}
+                    >
+                      {tc.priority}
+                    </span>
+                  </div>
                 )}
               </div>
               <div className="controls">
@@ -774,7 +902,19 @@ export default function Dashboard({ setView, activeProject }) {
                       accentColor: '#3b82f6'
                     }}
                   />
-                  <span style={{ fontSize: 14, color: '#e2e8f0', fontWeight: '500' }}>Auswählen</span>
+                  <span
+                    style={{
+                      fontSize: 14,
+                      color:
+                        typeof document !== 'undefined' &&
+                        document.documentElement.getAttribute('data-theme') === 'light'
+                          ? '#111827'
+                          : '#e2e8f0',
+                      fontWeight: '500',
+                    }}
+                  >
+                    Auswählen
+                  </span>
                 </label>
               </div>
             </div>

@@ -1,0 +1,225 @@
+/* Shell & Layout */
+.testplan-root {
+  padding: 0 0 24px 0;
+}
+
+.testplan-shell {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 20px 20px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(15, 23, 42, 0.9);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.6);
+}
+
+[data-theme="light"] .testplan-shell {
+  background: #ffffff;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+.testplan-layout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.testplan-sidebar {
+  width: 220px;
+  border-right: 1px solid rgba(71, 85, 105, 0.4);
+  padding-right: 16px;
+}
+
+[data-theme="light"] .testplan-sidebar {
+  border-right-color: rgba(203, 213, 225, 0.9);
+}
+
+.testplan-main {
+  flex: 1;
+  /* explizit alle alten Scroll-Einstellungen aus App.css überschreiben */
+  max-height: none;
+  overflow: visible;
+  padding: 0;
+}
+
+/* Fallback: falls irgendwo noch alte Wrapper-Klassen genutzt werden, 
+   verhindern wir hier jede interne Scrollbox auf der Testplan-Seite. */
+.input-section.testplan,
+.input-section.testplan.expanded {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Intro */
+.testplan-title {
+  margin: 0 0 4px 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #e5e7eb;
+}
+
+[data-theme="light"] .testplan-title {
+  color: #0f172a;
+}
+
+.testplan-subtitle {
+  margin: 0 0 24px 0;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+[data-theme="light"] .testplan-subtitle {
+  color: #475569;
+}
+
+/* Sidebar */
+.testplan-sidebar-title {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+[data-theme="light"] .testplan-sidebar-title {
+  color: #0f172a;
+}
+
+.testplan-sidebar-text {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+}
+
+.testplan-sidebar-text--muted {
+  opacity: 0.9;
+}
+
+/* Projekt-Buttons links */
+.testplan-project-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(71, 85, 105, 0.45);
+  color: #cbd5e1;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.6);
+}
+
+.testplan-project-button:hover {
+  transform: translateX(2px);
+  background: rgba(55, 65, 81, 0.9);
+}
+
+.testplan-project-button--active {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="light"] .testplan-project-button {
+  background: #f3f4f6;
+  border-color: rgba(203, 213, 225, 0.9);
+  color: #374151;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .testplan-project-button:hover {
+  background: #e5e7eb;
+}
+
+[data-theme="light"] .testplan-project-button--active {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
+}
+
+/* Karten & Sektionen rechts */
+.testplan-section {
+  margin-bottom: 24px;
+}
+
+.testplan-section-title {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+[data-theme="light"] .testplan-section-title {
+  color: #0f172a;
+}
+
+.testplan-card {
+  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1px solid rgba(71, 85, 105, 0.45);
+}
+
+.testplan-card--filled {
+  background: rgba(30, 41, 59, 0.75);
+}
+
+[data-theme="light"] .testplan-card {
+  border-color: rgba(203, 213, 225, 0.9);
+}
+
+[data-theme="light"] .testplan-card--filled {
+  background: #f9fafb;
+}
+
+.testplan-card--accent {
+  margin-top: 16px;
+  padding: 20px;
+  border-width: 2px;
+  border-color: #3b82f6;
+  background: rgba(30, 64, 175, 0.75);
+}
+
+[data-theme="light"] .testplan-card--accent {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.testplan-muted {
+  color: #cbd5e1;
+}
+
+[data-theme="light"] .testplan-muted {
+  color: #4b5563;
+}
+
+/* Hilfe-Box */
+.testplan-help {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+[data-theme="light"] .testplan-help {
+  background: #eff6ff;
+}
+
+.testplan-help-title {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #60a5fa;
+}
+
+.testplan-help-text {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+}
+
+[data-theme="light"] .testplan-help-text {
+  color: #1f2937;
+}

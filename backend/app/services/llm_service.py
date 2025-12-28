@@ -233,7 +233,13 @@ class LLMService:
             }
         }]
 
-        def _call():
+        def _call(user_prompt: str):
+            """Wrapper für den eigentlichen LLM-Call.
+
+            Wir kapseln das in eine Funktion, damit wir bei Bedarf mit einem
+            leicht angepassten Prompt (z. B. weniger Testfälle) erneut aufrufen
+            können, falls das JSON der Tool-Arguments unvollständig ist.
+            """
             return self.client.chat.completions.create(
                 model=self.model,
                 temperature=self.temperature,
@@ -241,24 +247,57 @@ class LLMService:
                 seed=seed,
                 messages=[
                     {"role": "system", "content": system_msg},
-                    {"role": "user", "content": prompt},
+                    {"role": "user", "content": user_prompt},
                 ],
                 functions=functions,
                 function_call={"name": "return_testcases"},
-                max_tokens=self.max_tokens
+                max_tokens=self.max_tokens,
             )
 
-        try:
+        async def _invoke_and_parse(user_prompt: str) -> List[Dict[str, Any]]:
+            """Führt den Call aus und parst die Funktion-Argumente als JSON."""
             print(f"DEBUG: Calling OpenAI with model={self.model}")
-            resp = await asyncio.to_thread(_call)
+            resp = await asyncio.to_thread(_call, user_prompt)
             msg = resp.choices[0].message
             print(f"DEBUG: Response received, message={msg}")
-            args = msg.function_call and msg.function_call.arguments
-            print(f"DEBUG: Function call args={args[:200] if args else None}...")
+
+            # Support both function_call (deprecated) and tool_calls (new)
+            if hasattr(msg, "tool_calls") and msg.tool_calls:
+                args = msg.tool_calls[0].function.arguments
+            elif hasattr(msg, "function_call") and msg.function_call:
+                args = msg.function_call.arguments
+            else:
+                args = None
+
+            print(
+                "DEBUG: Function call args=",
+                (args[:200] + "...") if isinstance(args, str) and len(args) > 200 else args,
+            )
+
             data = json.loads(args) if args else {}
             test_cases = data.get("test_cases", [])
             print(f"DEBUG: Parsed {len(test_cases)} test cases")
             return test_cases
+
+        try:
+            try:
+                # Erster Versuch mit vollem Prompt
+                return await _invoke_and_parse(prompt)
+            except json.JSONDecodeError as e:
+                # Häufige Ursache: Antwort wurde wegen Token-Limit mitten im JSON
+                # abgeschnitten ("Unterminated string"). In diesem Fall versuchen
+                # wir einen zweiten, konservativeren Call mit weniger geforderten
+                # Testfällen, um die Antwortlänge zu reduzieren.
+                print(
+                    "WARN: JSON decode failed in _call_llm_returning_cases, retrying with reduced output:",
+                    e,
+                )
+                safe_prompt = (
+                    prompt
+                    + "\n\nWICHTIG (technischer Hinweis): Generiere diesmal MAXIMAL 6 Testfälle "
+                    "und achte streng darauf, dass das JSON der Funktion exakt dem Schema entspricht."
+                )
+                return await _invoke_and_parse(safe_prompt)
         except Exception as e:
             print(f"ERROR in _call_llm_returning_cases: {e}")
             traceback.print_exc()

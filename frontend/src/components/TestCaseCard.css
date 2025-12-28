@@ -1,0 +1,197 @@
+/* TestCaseCard Dark Mode (Default) */
+.tc-card {
+  background-color: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.tc-card:hover {
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.tc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
+.tc-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  flex: 1;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.tc-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+.tc-priority {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+  margin-left: 12px;
+  min-width: 60px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.tc-badge {
+  font-size: 14px;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-weight: 500;
+}
+
+.tc-badge-story {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+}
+
+.tc-badge-status {
+  color: #ddd6fe;
+  background: rgba(139, 92, 246, 0.25);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+}
+
+.tc-badge-source {
+  color: #99f6e4;
+  background: rgba(20, 184, 166, 0.25);
+  border: 1px solid rgba(20, 184, 166, 0.5);
+}
+
+.tc-description {
+  color: #e2e8f0;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 14px;
+  margin-top: 0;
+  font-weight: 400;
+}
+
+.tc-section {
+  margin-bottom: 14px;
+}
+
+.tc-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #93c5fd;
+  margin-bottom: 8px;
+  margin-top: 0;
+  letter-spacing: 0.3px;
+}
+
+.tc-list {
+  margin: 0;
+  padding-left: 24px;
+  color: #e2e8f0;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.tc-list-item {
+  margin-bottom: 6px;
+  line-height: 1.8;
+}
+
+.tc-expected-result {
+  margin: 0;
+  padding: 12px;
+  background-color: rgba(16, 185, 129, 0.2);
+  border-left: 4px solid #34d399;
+  border-radius: 6px;
+  color: #a7f3d0;
+  font-size: 15px;
+  line-height: 1.7;
+  font-weight: 500;
+}
+
+/* TestCaseCard Light Mode */
+[data-theme="light"] .tc-card {
+  background-color: white;
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), 0 1px 5px rgba(0, 0, 0, 0.05);
+  backdrop-filter: none;
+}
+
+[data-theme="light"] .tc-card:hover {
+  background-color: #f8fafc;
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(59, 130, 246, 0.15);
+}
+
+[data-theme="light"] .tc-title {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+[data-theme="light"] .tc-description {
+  color: #1e293b;
+  font-weight: 500;
+}
+
+[data-theme="light"] .tc-section-title {
+  color: #1e40af;
+  font-weight: 700;
+}
+
+[data-theme="light"] .tc-list {
+  color: #1e293b;
+  font-weight: 500;
+}
+
+[data-theme="light"] .tc-list-item {
+  color: #1e293b;
+}
+
+[data-theme="light"] .tc-expected-result {
+  background-color: rgba(34, 197, 94, 0.15);
+  border-left-color: #16a34a;
+  color: #14532d;
+  font-weight: 600;
+}
+
+[data-theme="light"] .tc-badge-story {
+  color: #1e40af;
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="light"] .tc-badge-status {
+  color: #5b21b6;
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+[data-theme="light"] .tc-badge-source {
+  color: #115e59;
+  background: rgba(20, 184, 166, 0.15);
+  border-color: rgba(20, 184, 166, 0.4);
+}

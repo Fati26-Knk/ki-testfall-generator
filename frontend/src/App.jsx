@@ -1,11 +1,24 @@
 import React from "react";
 import Dashboard from "./components/Dashboard";
 import TestPlan from "./components/TestPlan";
+import ThemeToggle from "./components/ThemeToggle";
 import "./App.css";
 
 function App() {
   const [view, setView] = React.useState('dashboard');
   const [activeProject, setActiveProject] = React.useState(null);
+  const [theme, setTheme] = React.useState(() => {
+    return localStorage.getItem('theme') || 'dark';
+  });
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+  };
 
   return (
     <div className="app">
@@ -32,6 +45,7 @@ function App() {
             >
               Testplan
             </button>
+            <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
           </div>
         </div>
       </header>
