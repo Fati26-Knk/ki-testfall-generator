@@ -818,7 +818,8 @@ export default function Dashboard({ setView, activeProject }) {
                             marginBottom: '4px',
                           }}
                         >
-                          {s}
+                          {/* Entferne führende Nummerierung wie "1. " oder "1) " */}
+                          {s.replace(/^\d+[\.\)]\s*/, '')}
                         </li>
                       ))}
                     </ol>
