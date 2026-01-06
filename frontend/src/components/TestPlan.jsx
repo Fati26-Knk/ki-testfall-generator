@@ -318,8 +318,8 @@ export default function TestPlan() {
       
       const grouped = {};
       arr.forEach((tc, idx) => {
-        const us = tc.user_story || tc.userStoryTitle || tc.us_title;
-        if (!us || us.trim() === '' || us.toLowerCase().includes('unbekannt')) return;
+        // User Story Titel aus dem Testfall
+        const us = tc.user_story || tc.userStoryTitle || tc.us_title || 'Ohne Titel';
         if (!grouped[us]) grouped[us] = [];
         grouped[us].push({ ...tc, _globalIdx: idx });
       });
@@ -343,9 +343,13 @@ export default function TestPlan() {
         const name = typeof p === 'string' ? p : p.name || p;
         return name === 'default' ? 'Hauptseite' : name;
       });
-      setProjects(projectList);
-      if (projectList.length > 0 && !selectedProject) {
-        setSelectedProject(projectList[0]);
+      // "Hauptseite" sollte immer als erste Option da sein für globale User Stories
+      const finalList = projectList.includes('Hauptseite') 
+        ? projectList 
+        : ['Hauptseite', ...projectList];
+      setProjects(finalList);
+      if (finalList.length > 0 && !selectedProject) {
+        setSelectedProject('Hauptseite');  // Standardmäßig Hauptseite auswählen
       }
     } catch (e) {
       console.error('loadProjects', e);
@@ -497,10 +501,16 @@ export default function TestPlan() {
       tone: 'danger',
       onConfirm: async () => {
         try {
-          const remaining = globalTestCases.filter(tc => {
-            const tcUs = tc.user_story || tc.userStoryTitle || tc.us_title;
-            return tcUs !== us;
-          });
+          // Verbleibende Testfälle MIT user_story Feld (wichtig für Titel-Erhaltung!)
+          const remaining = globalTestCases
+            .filter(tc => {
+              const tcUs = tc.user_story || tc.userStoryTitle || tc.us_title || 'Ohne Titel';
+              return tcUs !== us;
+            })
+            .map(tc => ({
+              ...tc,
+              user_story: tc.user_story || tc.userStoryTitle || tc.us_title  // Titel explizit setzen!
+            }));
           await api.putStaging(remaining);
           setToast({ message: 'User Story aus globaler Auswahl entfernt', type: 'info' });
           await loadGlobalTestCases();
@@ -540,10 +550,16 @@ export default function TestPlan() {
       
       await api.adoptSelectedToProject(apiProjectName, selectedUserStory, usTestCases, selectedUserStory);
       
-      const remaining = globalTestCases.filter(tc => {
-        const tcUs = tc.user_story || tc.userStoryTitle || tc.us_title;
-        return tcUs !== selectedUserStory;
-      });
+      // Verbleibende Testfälle MIT user_story Feld (wichtig für Titel-Erhaltung!)
+      const remaining = globalTestCases
+        .filter(tc => {
+          const tcUs = tc.user_story || tc.userStoryTitle || tc.us_title;
+          return tcUs !== selectedUserStory;
+        })
+        .map(tc => ({
+          ...tc,
+          user_story: tc.user_story || tc.userStoryTitle || tc.us_title  // Titel explizit setzen!
+        }));
       await api.putStaging(remaining);
       
       setToast({ message: `User Story "${selectedUserStory}" mit ${usTestCases.length} Testfällen erfolgreich zu "${dropdownProject}" übernommen`, type: 'success' });
@@ -581,10 +597,16 @@ export default function TestPlan() {
       
       await api.adoptSelectedToProject(apiProjectName, usTitle, usTestCases, usTitle);
       
-      const remaining = globalTestCases.filter(tc => {
-        const tcUs = tc.user_story || tc.userStoryTitle || tc.us_title;
-        return tcUs !== usTitle;
-      });
+      // Verbleibende Testfälle MIT user_story Feld (wichtig für Titel-Erhaltung!)
+      const remaining = globalTestCases
+        .filter(tc => {
+          const tcUs = tc.user_story || tc.userStoryTitle || tc.us_title;
+          return tcUs !== usTitle;
+        })
+        .map(tc => ({
+          ...tc,
+          user_story: tc.user_story || tc.userStoryTitle || tc.us_title  // Titel explizit setzen!
+        }));
       await api.putStaging(remaining);
       
       setToast({ message: `User Story "${usTitle}" mit ${usTestCases.length} Testfällen erfolgreich zu "${selectedProject}" übernommen`, type: 'success' });

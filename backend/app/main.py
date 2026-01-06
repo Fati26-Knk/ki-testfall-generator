@@ -9,6 +9,7 @@ import os
 from app.api.routes import router
 from app.services.llm_service import LLMService
 from app.services.storage_service import StorageService
+from app.database import init_db
 
 # Load environment variables
 load_dotenv()
@@ -61,6 +62,13 @@ async def _log_startup():
             print("DIAG: tasklist python.exe entries:\n" + out)
         except Exception as e:
             print("DIAG: failed to run tasklist:", e)
+
+        # Initialize database tables
+        try:
+            init_db()
+            print("APP EVENT: database tables initialized")
+        except Exception as e:
+            print("APP EVENT: failed to init database:", e)
 
         # Initialize services here (avoid import-time network calls)
         try:

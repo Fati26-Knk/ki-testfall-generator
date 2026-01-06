@@ -86,8 +86,14 @@ Das Dashboard dient als zentrale Steuerzentrale des Systems und bietet:
 - eine klare Übersicht über eingegebene **User Stories**
 - einen **Fortschrittsindikator** (*„in Bearbeitung“*, *„fertig generiert“*)
 - **einfache Bedienung** (Button-basiert)
-- **strukturierte Ansicht** der generierten Testfälle mit Checkboxen zur Auswahl
+- **strukturierte Ansicht** der generierten Testfälle mit Checkboxen zur Auswahl- **Dark/Light Mode Toggle** für individuelle Anpassung
 
+### FR-07a – Dark/Light Mode
+Die Anwendung bietet einen umschaltbaren Anzeigemodus:
+- **Dark Mode** (Standard): Dunkles Farbschema mit Glassmorphism-Design
+- **Light Mode**: Helles Farbschema für helle Arbeitsumgebungen
+- **Toggle-Button** im Header mit Sonne/Mond-Icon
+- **Persistierung** im localStorage (Präferenz bleibt erhalten)
 ---
 
 ### FR-08 – Erweiterte Projektstruktur
@@ -162,3 +168,30 @@ Der/die Nutzer:in kann:
 5. Nutzer:in kann Testfälle markieren, bearbeiten oder in Hauptordner verschieben.  
 6. Markierte User Stories erscheinen im Testplan.  
 7. Export in Jira/Azure ist möglich.
+
+---
+
+## 3) Datenhaltung & Persistenz
+
+### Datenbank-Architektur
+Die Anwendung verwendet **PostgreSQL 15** als relationale Datenbank für die Datenpersistenz.
+
+| Komponente | Technologie |
+|------------|-------------|
+| Datenbank | PostgreSQL 15 (Alpine) |
+| ORM | SQLAlchemy 2.0.23 |
+| Treiber | asyncpg, psycopg2-binary |
+| Container | Docker mit Volume-Mount |
+
+### Datenmodell
+| Tabelle | Beschreibung |
+|---------|--------------|
+| `projects` | Projektverwaltung (id, name, timestamp) |
+| `user_stories` | User Stories mit Titel und Beschreibung |
+| `test_cases` | Generierte Testfälle mit Schritten |
+| `staging_testcases` | Temporäre Testfälle vor Übernahme |
+
+### Daten-Speicherort
+- **Entwicklung:** Docker Volume `ki-testfall-generator_postgres_data_dev`
+- **Produktion:** Docker Volume `ki-testfall-generator_postgres_data`
+- **Backup-Möglichkeit:** `pg_dump` für SQL-Export

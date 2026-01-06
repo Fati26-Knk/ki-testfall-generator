@@ -1,6 +1,26 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: testcase-db
+    environment:
+      POSTGRES_USER: testgen
+      POSTGRES_PASSWORD: testgen_secret
+      POSTGRES_DB: testgen_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - testcase-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testgen -d testgen_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: ./backend
@@ -12,10 +32,13 @@ services:
       - ./backend/.env
     environment:
       - CORS_ORIGINS=http://localhost,http://localhost:80,http://localhost:5173,http://localhost:3000
+      - DATABASE_URL=postgresql://testgen:testgen_secret@db:5432/testgen_db
     volumes:
       - ./backend/app:/app/app
-      - ./backend/data:/app/data
       - ./backend/.env:/app/.env
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - testcase-network
@@ -39,3 +62,6 @@ services:
 networks:
   testcase-network:
     driver: bridge
+
+volumes:
+  postgres_data:

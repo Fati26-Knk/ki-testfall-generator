@@ -9,6 +9,7 @@ docker-compose up --build
 - **Frontend**: http://localhost (Port 80)
 - **Backend API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
+- **PostgreSQL**: localhost:5432
 
 ### Development Build (mit Hot-Reload)
 ```bash
@@ -17,6 +18,37 @@ docker-compose -f docker-compose.dev.yml up --build
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
+- **PostgreSQL**: localhost:5432
+
+## 🗄️ Datenbank
+
+Die Anwendung verwendet **PostgreSQL 15** als Datenbank:
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Frontend  │────▶│   Backend   │────▶│ PostgreSQL  │
+│   (React)   │     │  (FastAPI)  │     │  Database   │
+│   :5173     │     │   :8000     │     │   :5432     │
+└─────────────┘     └─────────────┘     └─────────────┘
+```
+
+### Datenbank-Verbindung
+| Parameter | Wert |
+|-----------|------|
+| Host | localhost (oder `db` im Container) |
+| Port | 5432 |
+| Datenbank | testgen_db |
+| Benutzer | testgen |
+| Passwort | testgen_secret |
+
+### Datenspeicherort
+Die Daten werden in einem Docker Volume gespeichert:
+- **Development**: `ki-testfall-generator_postgres_data_dev`
+- **Production**: `ki-testfall-generator_postgres_data`
+
+Windows-Pfad: `\\wsl$\docker-desktop-data\data\docker\volumes\...`
+
+Mehr Details: [DATENBANK.md](DATENBANK.md)
 
 ##  Voraussetzungen
 
@@ -104,13 +136,26 @@ docker-compose down -v --rmi all
 
 ##  Volumes
 
-### Development
+### PostgreSQL Daten (persistent)
+- `postgres_data_dev:/var/lib/postgresql/data` - Datenbank-Dateien (Development)
+- `postgres_data:/var/lib/postgresql/data` - Datenbank-Dateien (Production)
+
+⚠️ **Wichtig**: Die Daten bleiben erhalten auch wenn Container gestoppt werden!
+
+### Volume inspizieren
+```bash
+docker volume inspect ki-testfall-generator_postgres_data_dev
+```
+
+### Daten löschen
+```bash
+# Container UND Daten löschen
+docker-compose down -v
+```
+
+### Development Code-Mounting
 - `./backend:/app` - Backend-Code wird gemountet (Hot-Reload)
 - `./frontend:/app` - Frontend-Code wird gemountet (Hot-Reload)
-
-### Production
-- `./backend/app:/app/app` - Nur App-Code
-- `./backend/data:/app/data` - Persistente Daten
 
 ##  Netzwerk
 

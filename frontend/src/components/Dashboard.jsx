@@ -418,10 +418,22 @@ export default function Dashboard({ setView, activeProject }) {
     // send selected if any, otherwise all generated testcases to staging
     if (!generated || generated.length === 0) return alert('Keine generierten Testfälle');
     const selectedIndexes = Object.keys(selected).filter((k) => selected[k]).map((s) => parseInt(s, 10));
+    
+    // User Story Titel: Verwende eingegebenen Titel oder generiere einen aus der Beschreibung
+    const usTitle = title.trim() || description.substring(0, 80).trim() || `User Story vom ${new Date().toLocaleDateString('de-DE')}`;
+    
+    // DEBUG: Log title
+    console.log('DEBUG onMerken: title =', JSON.stringify(title));
+    console.log('DEBUG onMerken: usTitle =', JSON.stringify(usTitle));
+    
     // Füge user_story Feld hinzu
     const subset = (selectedIndexes.length > 0)
-      ? selectedIndexes.map((i) => ({ ...generated[i], user_story: title }))
-      : generated.map((tc) => ({ ...tc, user_story: title }));
+      ? selectedIndexes.map((i) => ({ ...generated[i], user_story: usTitle }))
+      : generated.map((tc) => ({ ...tc, user_story: usTitle }));
+    
+    // DEBUG: Log subset
+    console.log('DEBUG onMerken: subset[0].user_story =', subset[0]?.user_story);
+    
     setLoading(true);
     try {
       const resp = await api.postStaging(subset);
@@ -622,21 +634,28 @@ export default function Dashboard({ setView, activeProject }) {
                 </button>
               )}
 
-              {/* Success: Save Button */}
-              <button 
-                className="btn-primary" 
-                type="button" 
-                onClick={onMerken} 
-                disabled={loading}
-                style={{ 
-                  background: '#10b981',
-                  minWidth: 100,
-                  fontWeight: 600,
-                  boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.3)'
-                }}
-              >
-                💾 Merken
-              </button>
+              {/* Success: Save Button - nur anzeigen wenn Testfälle existieren */}
+              {generated && generated.length > 0 && (() => {
+                const selectedCount = Object.keys(selected).filter(k => selected[k]).length;
+                return (
+                  <button 
+                    className="btn-primary" 
+                    type="button" 
+                    onClick={onMerken} 
+                    disabled={loading}
+                    style={{ 
+                      background: '#10b981',
+                      minWidth: 100,
+                      fontWeight: 600,
+                      boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.3)'
+                    }}
+                  >
+                    {selectedCount > 0 
+                      ? `💾 Ausgewählte merken (${selectedCount})` 
+                      : '💾 Alle Testfälle merken'}
+                  </button>
+                );
+              })()}
 
               {/* Ghost: New User Story Button */}
               <button 

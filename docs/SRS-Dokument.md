@@ -132,8 +132,9 @@ Der Prototyp ist als **Standalone-Lösung** konzipiert, die sich jedoch in beste
 - Fehlerbehandlung und Fallback-Mechanismen bei API-Ausfällen
 
 **TZ-3: Datenmanagement**
-- JSON-basierte Datenpersistenz für Prototyp (Migration zu PostgreSQL geplant)
-- Strukturierte Ordnerstruktur: Projekte → User Stories → Testfälle
+- PostgreSQL 15 Datenbank mit SQLAlchemy 2.0 ORM
+- Docker Volume für persistente Datenspeicherung
+- Strukturierte Tabellen: projects → user_stories → test_cases
 - Metadaten-Tracking (Erstellungsdatum, Generator, Status)
 
 **TZ-4: Performance und Skalierbarkeit**
@@ -288,7 +289,7 @@ Die folgenden Anforderungen sind **zwingend erforderlich** für den Minimal Viab
 - "Merken"-Funktion: Ausgewählte Testfälle in Staging speichern
 - "Alle merken"-Funktion: Alle Testfälle einer User Story speichern
 - Testfälle bleiben nach Browser-Reload erhalten
-- Speicherung erfolgt im Backend (JSON-Dateien)
+- Speicherung erfolgt in PostgreSQL-Datenbank
 
 #### MK-6: TestPlan-Übersicht
 **Beschreibung:** Zentrale Ansicht aller gespeicherten Testfälle organisiert nach Projekten.
@@ -687,18 +688,20 @@ Die folgenden Funktionalitäten sind **explizit nicht Teil** dieses Projekts und
 - Manuelle Eingabe der ACs im Formular möglich
 - Prompt-Engineering nutzt ACs, wenn vorhanden
 
-#### AK-15: Dark Mode
-**Beschreibung:** Dunkles UI-Theme für bessere Ergonomie bei Nachtarbeit.
+#### AK-15: Dark/Light Mode ✅ IMPLEMENTIERT
+**Beschreibung:** Umschaltbares UI-Theme (Dark/Light) für bessere Ergonomie.
 
-**Begründung:**
-- Feature hat geringe Priorität für Core-Funktionalität
-- Erfordert vollständiges Re-Design aller Komponenten
-- Zeitaufwand nicht gerechtfertigt für Prototyp
+**Implementierung:**
+- ThemeToggle-Komponente im Header
+- Dark Mode als Standard (professioneller Look)
+- Light Mode für helle Umgebungen
+- CSS-Variablen für konsistentes Theming
 
-**Abgrenzung:**
-- Nur Light Mode verfügbar
-- Kein Toggle-Switch in Header
-- Keine Theme-Persistierung
+**Features:**
+- Toggle-Button mit Sonne/Mond-Icon
+- Theme-Persistierung im localStorage
+- Alle Komponenten unterstützen beide Modi
+- Glassmorphism-Design im Dark Mode
 
 #### AK-16: Internationalisierung (i18n)
 **Beschreibung:** Mehrsprachigkeit (Deutsch, Englisch).
@@ -982,7 +985,7 @@ Die funktionalen Anforderungen beschreiben **WAS** das System tun soll - die spe
 - Das Ziel-Projekt kann der Benutzer über ein Dropdown auswählen (Standard: "Hauptseite")
 - Gespeicherte Testfälle sind sofort in der TestPlan-Ansicht sichtbar
 - Eine Toast-Benachrichtigung informiert den Benutzer: "X Testfälle gespeichert"
-- Die Testfälle werden im Backend persistiert (JSON-Dateien)
+- Die Testfälle werden in der PostgreSQL-Datenbank persistiert
 
 **Status:**  Implementiert  
 **Traceability:** MK-5

@@ -91,8 +91,10 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
 | **Containerisierung** | Docker + Docker Compose | Entwicklungs- und Produktionsumgebungen |
 | **Web Server (Prod)** | nginx | Statisches Asset-Serving, Reverse Proxy |
 | **Dev Server** | Vite Dev Server | Hot Module Replacement (HMR) |
-| **Daten-Persistence** | JSON Files | Projektdaten, Testfälle, Metadaten |
-| **Umgebungsvariablen** | dotenv | Konfiguration (API Keys, Modelle) |
+| **Datenbank** | PostgreSQL 15 | Relationale Datenbank für Projekte, User Stories, Testfälle |
+| **ORM** | SQLAlchemy 2.0 | Object-Relational Mapping, Datenbankzugriff |
+| **Daten-Persistence** | Docker Volume | PostgreSQL-Daten persistent gespeichert |
+| **Umgebungsvariablen** | dotenv | Konfiguration (API Keys, Modelle, DB-URL) |
 
 ### KI & Machine Learning
 - **Model:** OpenAI GPT-4o-mini (optimiert für Kosten/Leistung)
@@ -128,8 +130,8 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
 ┌─────────────────────────────────────────────────────────────
 │               External Services & Storage                    │
 │  ┌──────────────  ┌──────────────  ┌──────────────     │
-│  │  OpenAI API  │  │ File System  │  │   Staging    │     │
-│  │  (GPT-4o)    │  │  (JSON)      │  │  (Temp)      │     │
+│  │  OpenAI API  │  │  PostgreSQL  │  │   Staging    │     │
+│  │  (GPT-4o)    │  │  (Database)  │  │  (DB Table)  │     │
 │  └──────────────┘  └──────────────┘  └──────────────┘     │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -147,15 +149,15 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
 
 2. **StorageService** (`storage_service.py`)
    - Projekt- und User Story-Verwaltung
-   - JSON-basierte Datenpersistenz
-   - Metadaten-Management (Erstellungsdatum, Status, Generator-Info)
-   - Ordnerstruktur: `data/{project}/{user-story}/`
+   - PostgreSQL-basierte Datenpersistenz via SQLAlchemy ORM
    - CRUD-Operationen für Projekte, User Stories und Testfälle
+   - Staging-Verwaltung für gemerkte Testfälle
+   - Metadaten-Management (Erstellungsdatum, Status)
 
-3. **DocumentService** (`document_service.py`)
-   - Word-Dokument (.docx) Parsing mit Mammoth
-   - Text-Extraktion aus hochgeladenen Dateien
-   - Formatierung für LLM-Kontext
+3. **Database** (`database.py`)
+   - SQLAlchemy Modelle: Project, UserStory, TestCase, StagingTestCase
+   - Datenbankverbindung und Session-Management
+   - Automatische Tabellenerstellung beim Start
 
 #### Frontend-Komponenten
 1. **Dashboard.jsx**
@@ -189,6 +191,12 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
    - Nicht-invasive Benachrichtigungen
    - Feedback für Benutzeraktionen
    - Auto-Dismiss mit Countdown
+
+6. **ThemeToggle.jsx**
+   - Umschalten zwischen Dark Mode und Light Mode
+   - Toggle-Button mit Sonne/Mond-Icon
+   - Theme-Persistierung im localStorage
+   - Alle Komponenten unterstützen beide Modi
 
 ---
 

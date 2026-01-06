@@ -307,23 +307,13 @@ async def adopt_selected_to_project(project: str, us: str, request: Request):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-def _staging_path(request: Request) -> str:
-    """Return path to staging file under backend data folder."""
-    _, storage = _get_services(request)
-    base = storage.base_path
-    staging_folder = os.path.join(base, '_staging')
-    os.makedirs(staging_folder, exist_ok=True)
-    return os.path.join(staging_folder, 'staging.json')
-
-
 @router.get('/staging')
 async def get_staging(request: Request):
+    """Get all test cases from staging area (database-backed)."""
     try:
-        path = _staging_path(request)
-        if not os.path.exists(path):
-            return {"test_cases": []}
-        with open(path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        _, storage = _get_services(request)
+        test_cases = storage.get_staging()
+        return {"test_cases": test_cases}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -336,49 +326,49 @@ async def post_staging_options():
 
 @router.post('/staging')
 async def post_staging(request: Request):
-    """Append provided test_cases to staging. Body: { test_cases: [...] }"""
+    """Append provided test_cases to staging (database-backed). Body: { test_cases: [...] }"""
     try:
         raw = await request.body()
         payload = json.loads(raw.decode('utf-8') if isinstance(raw, (bytes, bytearray)) else raw)
         tcs = payload.get('test_cases') or []
-        path = _staging_path(request)
-        existing = {"test_cases": []}
-        if os.path.exists(path):
-            try:
-                with open(path, 'r', encoding='utf-8') as f:
-                    existing = json.load(f)
-            except Exception:
-                existing = {"test_cases": []}
-        existing['test_cases'].extend(tcs)
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(existing, f, ensure_ascii=False, indent=2)
-        return {"status": "ok", "count": len(existing['test_cases'])}
+        user_story_text = payload.get('user_story')
+        
+        # Debug: Log incoming test cases
+        for i, tc in enumerate(tcs[:3]):  # Log first 3
+            print(f"DEBUG POST /staging: TC[{i}] user_story = '{tc.get('user_story', 'MISSING')}'")
+        
+        _, storage = _get_services(request)
+        # Get existing and add new
+        existing = storage.get_staging()
+        all_tcs = existing + tcs
+        storage.clear_staging()
+        count = storage.save_to_staging(all_tcs, user_story_text)
+        return {"status": "ok", "count": count}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.put('/staging')
 async def put_staging(request: Request):
-    """Replace staging with provided test_cases. Body: { test_cases: [...] }"""
+    """Replace staging with provided test_cases (database-backed). Body: { test_cases: [...] }"""
     try:
         raw = await request.body()
         payload = json.loads(raw.decode('utf-8') if isinstance(raw, (bytes, bytearray)) else raw)
         tcs = payload.get('test_cases') or []
-        path = _staging_path(request)
-        data = {"test_cases": tcs}
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        return {"status": "ok", "count": len(tcs)}
+        
+        _, storage = _get_services(request)
+        count = storage.update_staging(tcs)
+        return {"status": "ok", "count": count}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.delete('/staging')
 async def clear_staging(request: Request):
+    """Clear all test cases from staging (database-backed)."""
     try:
-        path = _staging_path(request)
-        if os.path.exists(path):
-            os.remove(path)
+        _, storage = _get_services(request)
+        storage.clear_staging()
         return {"status": "cleared"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
