@@ -74,7 +74,7 @@ class LLMService:
         roles = roles or []
         nfrs = nfrs or []
 
-        # 🧠 Dynamische Zielgröße abhängig von Länge und Komplexität
+        # Dynamische Zielgröße abhängig von Länge und Komplexität
         text_len = len(user_story)
         if num_cases == 0:
             # Wenn keine Anzahl angegeben, verwende sinnvolle Anzahl basierend auf Komplexität
@@ -88,17 +88,17 @@ class LLMService:
             # Verwende die angegebene Anzahl, aber mit vernünftigen Limits
             target_max = min(num_cases, 20)  # Maximal 20 Testfälle
 
-        # 🧩 Optional: Analyse der US
+        # Optional: Analyse der US
         analysis = {}
         try:
             analysis = await self._analyze_user_story(user_story)
         except Exception as e:
             print("Analysis failed:", e)
 
-        # 🧾 Prompt erstellen
+        # Prompt erstellen
         prompt = self._create_prompt(user_story, target_max, analysis, acceptance_criteria, roles, nfrs)
 
-        # 🚀 LLM-Aufruf
+        # LLM-Aufruf
         cases_raw = await self._call_llm_returning_cases(prompt, seed)
         print(f"DEBUG: After LLM call: {len(cases_raw)} raw cases")
 
@@ -109,12 +109,12 @@ class LLMService:
         unique_cases = self._deduplicate(relevant_cases)
         print(f"DEBUG: After dedup: {len(unique_cases)} unique cases")
 
-        # 🔢 Limit anwenden (wenn gesetzt)
+        # Limit anwenden (wenn gesetzt)
         if target_max > 0:
             unique_cases = unique_cases[:target_max]
         print(f"DEBUG: After limit: {len(unique_cases)} final cases")
 
-        # 🔢 IDs neu vergeben für konsistente Nummerierung (TC-1, TC-2, TC-3...)
+        # IDs neu vergeben für konsistente Nummerierung (TC-1, TC-2, TC-3...)
         for i, tc in enumerate(unique_cases, start=1):
             # Entferne alte TC-Nummer aus dem Titel
             title = tc.title
@@ -336,13 +336,13 @@ class LLMService:
         cap = f"Generate EXACTLY {target_max} relevant test cases." if target_max > 0 else "Generate 8-12 relevant test cases."
         rules = (
             f"{cap}\n\n"
-            "⚠️ KRITISCHE SPRACHREGEL:\n"
+            "KRITISCHE SPRACHREGEL:\n"
             "- Verwende IMMER dieselbe Sprache wie die User Story.\n"
             "- Ist die User Story auf Deutsch → ALLE Testfälle auf Deutsch.\n"
             "- Ist die User Story auf Englisch → ALLE Testfälle auf Englisch.\n"
             "- Verwende dieselbe Sprache in ALLEN Feldern (Titel, Beschreibung, Schritte, erwartetes Ergebnis).\n\n"
 
-            "⚠️ WICHTIG: QUALITÄT UND VOLLSTÄNDIGE ABDECKUNG SIND ENTSCHEIDEND.\n\n"
+            "WICHTIG: QUALITÄT UND VOLLSTÄNDIGE ABDECKUNG SIND ENTSCHEIDEND.\n\n"
 
             "1. VERPFLICHTENDE FACHLICHE ANALYSE (ZUERST):\n"
             "   ✓ Zerlege die User Story in ATOMARE, PRÜFBARE fachliche Regeln.\n"
@@ -391,7 +391,7 @@ class LLMService:
             "   ✓ Format: { \"test_cases\": [ ... ] }\n"
             "   ✓ Sprache MUSS exakt der Sprache der User Story entsprechen\n\n"
 
-            "⚠️ MERKSATZ:\n"
+            "MERKSATZ:\n"
             "Jeder Testfall muss fachlich begründbar und eindeutig aus der User Story ableitbar sein.\n"
         )
 

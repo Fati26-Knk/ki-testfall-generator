@@ -1,0 +1,103 @@
+{
+  "test_cases": [
+    {
+      "title": "TC-1 - Happy Path – Stammdaten Kind anlegen",
+      "description": "Überprüfung der Neuanlage von Stammdaten eines Kindes in FMI.",
+      "type": "functional",
+      "preconditions": [
+        "Der Leistungsnachweis enthält ein Kind, das in FMI noch nicht angelegt ist.",
+        "Zugriff auf die Schnittstelle zu KidData ist vorhanden."
+      ],
+      "steps": [
+        "Rufe die Methode GetKindInfo mit der Kunden_Nummer '12345' und dem Geburtsdatum '2018-01-01' auf.",
+        "Überprüfe, ob die Antwort die Kindernummer '06885/22/9' enthält.",
+        "Überprüfe, ob die Antwort das Bundeslandkind (NWK) als 'Ja' enthält.",
+        "Überprüfe, ob die Antwort das Integrationskind (EFB) als 'Nein' enthält.",
+        "Überprüfe, ob die Antwort das Datum der Inklusionsförderung gültig von als '2023-01-01' enthält.",
+        "Überprüfe, ob die Antwort das Datum der Inklusionsförderung gültig bis als '2023-12-31' enthält."
+      ],
+      "expected_result": "Die Stammdaten des Kindes sind erfolgreich in FMI als Kontakt angelegt.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "KidData: Stammdaten Kind anlegen",
+      "_globalIdx": 58
+    },
+    {
+      "title": "TC-2 - Validierung – Kindernummer fehlt",
+      "description": "Überprüfung der Validierung, wenn die Kindernummer in der Antwort fehlt.",
+      "type": "functional",
+      "preconditions": [
+        "Der Leistungsnachweis enthält ein Kind, das in FMI noch nicht angelegt ist.",
+        "Zugriff auf die Schnittstelle zu KidData ist vorhanden."
+      ],
+      "steps": [
+        "Rufe die Methode GetKindInfo mit der Kunden_Nummer '12345' und dem Geburtsdatum '2018-01-01' auf.",
+        "Simuliere eine Antwort ohne die Kindernummer.",
+        "Überprüfe, ob eine Fehlermeldung ausgegeben wird, dass die Kindernummer fehlt."
+      ],
+      "expected_result": "Es wird eine Fehlermeldung ausgegeben, dass die Kindernummer fehlt.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "KidData: Stammdaten Kind anlegen",
+      "_globalIdx": 59
+    },
+    {
+      "title": "TC-3 - Validierung – Ungültige Kunden_Nummer",
+      "description": "Überprüfung der Validierung bei einer ungültigen Kunden_Nummer.",
+      "type": "functional",
+      "preconditions": [
+        "Der Leistungsnachweis enthält ein Kind, das in FMI noch nicht angelegt ist.",
+        "Zugriff auf die Schnittstelle zu KidData ist vorhanden."
+      ],
+      "steps": [
+        "1. Rufe die Methode GetKindInfo mit einer ungültigen Kunden_Nummer 'invalid' und dem Geburtsdatum '2018-01-01' auf.",
+        "2. Überprüfe die Antwort auf Fehler.",
+        "3. Überprüfe, ob eine Fehlermeldung ausgegeben wird, dass die Kunden_Nummer ungültig ist."
+      ],
+      "expected_result": "Es wird eine Fehlermeldung ausgegeben, dass die Kunden_Nummer ungültig ist.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "KidData: Stammdaten Kind anlegen",
+      "_globalIdx": 60
+    },
+    {
+      "title": "TC-4 - Happy Path – Mehrere Kinder anlegen",
+      "description": "Überprüfung der Neuanlage von mehreren Kindern in FMI.",
+      "type": "functional",
+      "preconditions": [
+        "Der Leistungsnachweis enthält mehrere Kinder, die in FMI noch nicht angelegt sind.",
+        "Zugriff auf die Schnittstelle zu KidData ist vorhanden."
+      ],
+      "steps": [
+        "1. Rufe die Methode GetKinderInfos mit einem Array von Kunden_Nummern ['12345', '67890'] und dem Index 1 auf.",
+        "2. Überprüfe, ob die Antwort die Kindernummern '06885/22/9' und '06885/22/10' enthält.",
+        "3. Überprüfe, ob die Antwort das Bundeslandkind (NWK) für beide Kinder korrekt enthält.",
+        "4. Überprüfe, ob die Antwort das Integrationskind (EFB) für beide Kinder korrekt enthält."
+      ],
+      "expected_result": "Die Stammdaten der Kinder sind erfolgreich in FMI als Kontakte angelegt.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "KidData: Stammdaten Kind anlegen",
+      "_globalIdx": 61
+    },
+    {
+      "title": "TC-5 - Validierung – Inklusionsförderung fehlt",
+      "description": "Überprüfung der Validierung, wenn Informationen zur Inklusionsförderung fehlen.",
+      "type": "functional",
+      "preconditions": [
+        "Der Leistungsnachweis enthält ein Kind, das in FMI noch nicht angelegt ist.",
+        "Zugriff auf die Schnittstelle zu KidData ist vorhanden."
+      ],
+      "steps": [
+        "1. Rufe die Methode GetKindInfo mit der Kunden_Nummer '12345' und dem Geburtsdatum '2018-01-01' auf.",
+        "2. Simuliere eine Antwort ohne Informationen zur Inklusionsförderung.",
+        "3. Überprüfe, ob eine Fehlermeldung ausgegeben wird, dass die Informationen zur Inklusionsförderung fehlen."
+      ],
+      "expected_result": "Es wird eine Fehlermeldung ausgegeben, dass die Informationen zur Inklusionsförderung fehlen.",
+      "covers": [],
+      "priority": "High",
+      "user_story": "KidData: Stammdaten Kind anlegen",
+      "_globalIdx": 62
+    }
+  ]
+}
