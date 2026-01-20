@@ -1190,7 +1190,7 @@ pytest --cov=app tests/
 
 **Fadime Konuk**  
 Studiengang: Software Development & Engineering (SDE26)  
-Hochschule: [Ihre Hochschule]  
+Hochschule: Hochschule Campus Wien
 Semester: 3 (Master)  
 Projekt-Typ: Master Thesis  
 

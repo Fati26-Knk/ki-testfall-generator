@@ -195,3 +195,183 @@
   background: rgba(20, 184, 166, 0.15);
   border-color: rgba(20, 184, 166, 0.4);
 }
+
+/* ========================================
+   RESPONSIVE DESIGN - TABLET (768px - 1024px)
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .tc-card {
+    padding: 16px 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+
+  .tc-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tc-title {
+    font-size: 16px;
+  }
+
+  .tc-index {
+    min-width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .tc-priority {
+    padding: 3px 10px;
+    font-size: 12px;
+    margin-left: 8px;
+  }
+
+  .tc-description {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .tc-section {
+    margin-bottom: 12px;
+  }
+
+  .tc-section-title {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .tc-list {
+    font-size: 14px;
+    padding-left: 20px;
+  }
+
+  .tc-expected-result {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - MOBILE (< 768px)
+   ======================================== */
+
+@media (max-width: 768px) {
+  .tc-card {
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .tc-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .tc-title {
+    font-size: 15px;
+    order: 2;
+  }
+
+  .tc-index {
+    min-width: 28px;
+    height: 28px;
+    font-size: 12px;
+    border-radius: 6px;
+    order: 1;
+  }
+
+  .tc-priority {
+    padding: 2px 8px;
+    font-size: 11px;
+    margin-left: 0;
+    order: 3;
+    align-self: flex-start;
+  }
+
+  .tc-badge {
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .tc-description {
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .tc-section {
+    margin-bottom: 10px;
+  }
+
+  .tc-section-title {
+    font-size: 13px;
+    margin-bottom: 5px;
+  }
+
+  .tc-list {
+    font-size: 13px;
+    padding-left: 18px;
+    line-height: 1.7;
+  }
+
+  .tc-list-item {
+    margin-bottom: 4px;
+  }
+
+  .tc-expected-result {
+    font-size: 13px;
+    padding: 8px 10px;
+    line-height: 1.6;
+    border-left-width: 3px;
+  }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - SMALL MOBILE (< 480px)
+   ======================================== */
+
+@media (max-width: 480px) {
+  .tc-card {
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+
+  .tc-title {
+    font-size: 14px;
+  }
+
+  .tc-index {
+    min-width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+
+  .tc-priority {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  .tc-description {
+    font-size: 12px;
+  }
+
+  .tc-section-title {
+    font-size: 12px;
+  }
+
+  .tc-list {
+    font-size: 12px;
+    padding-left: 16px;
+  }
+
+  .tc-expected-result {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+}

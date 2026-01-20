@@ -223,3 +223,174 @@
 [data-theme="light"] .testplan-help-text {
   color: #1f2937;
 }
+
+/* ========================================
+   RESPONSIVE DESIGN - TABLET (768px - 1024px)
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .testplan-shell {
+    padding: 12px 16px 16px;
+    border-radius: 12px;
+  }
+
+  .testplan-layout {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .testplan-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.4);
+    padding-right: 0;
+    padding-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .testplan-sidebar-title {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .testplan-project-button {
+    flex: 1 1 auto;
+    min-width: 120px;
+    max-width: none;
+    text-align: center;
+  }
+
+  .testplan-title {
+    font-size: 1.2rem;
+  }
+
+  .testplan-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+  }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - MOBILE (< 768px)
+   ======================================== */
+
+@media (max-width: 768px) {
+  .testplan-root {
+    padding: 0 0 16px 0;
+  }
+
+  .testplan-shell {
+    padding: 10px 12px 14px;
+    border-radius: 10px;
+    margin: 0 4px;
+  }
+
+  .testplan-layout {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .testplan-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.4);
+    padding-right: 0;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .testplan-sidebar-title {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+
+  .testplan-project-button {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+  }
+
+  .testplan-title {
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+  }
+
+  .testplan-subtitle {
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+  }
+
+  .testplan-section {
+    margin-bottom: 16px;
+  }
+
+  .testplan-section-title {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .testplan-card {
+    padding: 10px 12px;
+    border-radius: 6px;
+  }
+
+  .testplan-card--accent {
+    padding: 14px;
+    margin-top: 12px;
+  }
+
+  .testplan-help {
+    margin-top: 12px;
+    padding: 12px;
+  }
+
+  .testplan-help-title {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  .testplan-help-text {
+    font-size: 0.75rem;
+  }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN - SMALL MOBILE (< 480px)
+   ======================================== */
+
+@media (max-width: 480px) {
+  .testplan-shell {
+    padding: 8px 10px 12px;
+    border-radius: 8px;
+  }
+
+  .testplan-sidebar {
+    gap: 4px;
+    padding-bottom: 8px;
+  }
+
+  .testplan-project-button {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  .testplan-title {
+    font-size: 1rem;
+  }
+
+  .testplan-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .testplan-section-title {
+    font-size: 0.85rem;
+  }
+
+  .testplan-card {
+    padding: 8px 10px;
+  }
+}

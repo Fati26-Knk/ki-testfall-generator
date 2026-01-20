@@ -177,3 +177,17 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
+
+# Persönliche Übersicht nicht ins Repo pushen
+/docs/IMPLEMENTIERUNG-UEBERSICHT.md
+
+# Python-Cache
+__pycache__/
+*.pyc
+
+# Umgebungsdateien
+.env
+
+# IDE und Editor
+.idea/
+.vscode/

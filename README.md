@@ -187,8 +187,8 @@ npm run dev
 │  │  API Routes  │  │   Services   │  │    Models    │      │
 │  └──────────────┘  └──────────────┘  └──────────────┘      │
 │         │                  │                  │              │
-│         ├─ LLM Service ────┼─ OpenAI GPT-4o-mini            │
-│         ├─ Storage ────────┼─ JSON File System              │
+│         ├─ LLM Service ────┼─ OpenAI GPT-4o                 │
+│         ├─ Storage ────────┼─ PostgreSQL 15 (SQLAlchemy)    │
 │         └─ Document ───────┴─ DOCX/TXT Parser               │
 └──────────────────────────────────────────────────────────────┘
 ```
@@ -204,9 +204,14 @@ npm run dev
 **Backend:**
 - Python 3.10+
 - FastAPI (Async API Framework)
-- OpenAI API (GPT-4o-mini)
+- OpenAI API (GPT-4o)
+- SQLAlchemy 2.0 (PostgreSQL ORM)
 - python-docx (DOCX Parsing)
 - Pydantic (Datenvalidierung)
+
+**Datenbank:**
+- PostgreSQL 15 (Alpine)
+- Docker Volume für Persistenz
 
 **Deployment:**
 - Docker & Docker Compose
@@ -231,14 +236,15 @@ ki-testfall-generator/
 │   ├── app/
 │   │   ├── api/         # REST Endpoints
 │   │   ├── services/    # Business Logic
-│   │   └── models/      # Pydantic Models
-│   ├── data/            # Testfall-Persistenz (JSON)
+│   │   ├── models/      # Pydantic Models
+│   │   └── database.py  # PostgreSQL ORM Models
 │   ├── Dockerfile       # Python Container
 │   └── requirements.txt
 │
 ├── docs/                # Dokumentation
 │   ├── SRS-Dokument.md  # Software Requirements Specification
-│   ├── SRS-Dokument.pdf # PDF-Version
+│   ├── DATENBANK.md     # PostgreSQL Dokumentation
+│   ├── PROJEKTSTRUKTUR.md
 │   ├── PROJEKTÜBERSICHT.md
 │   └── ANFORDERUNGEN.md
 │
@@ -246,6 +252,24 @@ ki-testfall-generator/
 ├── docker-compose.yml   # Multi-Container Setup
 └── README.md           # Diese Datei
 ```
+
+### 💾 Datenbank & Speicherort
+
+Die Anwendung verwendet **PostgreSQL 15** als Datenbank:
+
+| Einstellung | Wert |
+|-------------|------|
+| Host | `db` (Docker) / `localhost:5432` (extern) |
+| Datenbank | `testgen_db` |
+| Benutzer | `testgen` |
+| Passwort | `testgen_secret` |
+
+**Physischer Speicherort (Windows mit Docker Desktop):**
+```
+\\wsl$\docker-desktop-data\data\docker\volumes\ki-testfall-generator_postgres_data_dev\_data
+```
+
+> **Hinweis:** Die Daten bleiben in einem Docker Volume persistent, auch wenn Container neu gestartet werden.
 
 ---
 
