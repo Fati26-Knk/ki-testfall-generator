@@ -587,7 +587,9 @@ export default function Dashboard({ setView, activeProject }) {
             gap: 12, 
             marginTop: 20,
             flexWrap: 'wrap'
-          }}>
+          }}
+          className="dashboard__actions"
+          >
             {/* Comprehensive Checkbox */}
             <label style={{ 
               display: 'flex', 

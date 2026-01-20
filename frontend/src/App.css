@@ -1,3 +1,17 @@
+/* Responsive Button-Zeile nur für Dashboard */
+@media (max-width: 900px) {
+  .dashboard__actions {
+    display: flex;
+    flex-wrap: wrap !important;
+    justify-content: center;
+    gap: 12px;
+  }
+  .dashboard__actions > * {
+    flex: 1 1 100%;
+    min-width: 180px;
+    margin-bottom: 8px;
+  }
+}
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 * {
@@ -1207,4 +1221,28 @@ a:focus-visible {
 
 [data-theme="light"] a:hover {
   color: #1d4ed8;
+}
+/* Responsive Button-Zeile nur für Dashboard */
+@media (max-width: 900px) {
+  .dashboard__actions {
+    display: flex;
+    flex-wrap: wrap !important;
+    justify-content: center;
+    gap: 12px;
+  }
+  .dashboard__actions > * {
+    flex: 1 1 100%;
+    min-width: 180px;
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .testplan-sidebar button,
+  .testplan-sidebar .testplan-project-button,
+  .testplan-sidebar .btn-primary {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
 }
