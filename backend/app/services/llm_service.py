@@ -1,10 +1,11 @@
 """
 LLM Service for generating test cases using OpenAI API
 — Verbesserte Version mit dynamischer Abdeckung, gelockerten Filtern und mehr Varianz.
+— Unterstützt sowohl Standard OpenAI als auch Azure OpenAI.
 """
 import os, json, traceback, asyncio, re
 from typing import List, Dict, Any, Optional
-from openai import OpenAI
+from openai import OpenAI, AzureOpenAI
 from dotenv import load_dotenv
 from app.models.schemas import TestCase
 
@@ -35,6 +36,17 @@ class LLMService:
 
     def __init__(self):
         load_dotenv()
+        
+        # Provider-Auswahl: "azure" oder "openai"
+        self.provider = os.getenv("LLM_PROVIDER", "azure").lower()
+        
+        # Azure OpenAI Konfiguration
+        self.azure_api_key = os.getenv("AZURE_OPENAI_API_KEY", "")
+        self.azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT", "")
+        self.azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "")
+        self.azure_api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview")
+        
+        # Standard OpenAI Konfiguration
         self.api_key = os.getenv("OPENAI_API_KEY", "")
         self.model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
@@ -46,14 +58,37 @@ class LLMService:
         self.client = None
         self.client_available = False
         self.last_generation_source = "unknown"
+        self.using_azure = False
 
-        if self.api_key:
-            try:
-                self.client = OpenAI(api_key=self.api_key)
-                self.client_available = True
-                print(f"✅ OpenAI client configured, model={self.model}")
-            except Exception:
-                traceback.print_exc()
+        # Provider basierend auf LLM_PROVIDER Variable auswählen
+        if self.provider == "azure":
+            if self.azure_api_key and self.azure_endpoint and self.azure_deployment:
+                try:
+                    self.client = AzureOpenAI(
+                        api_key=self.azure_api_key,
+                        api_version=self.azure_api_version,
+                        azure_endpoint=self.azure_endpoint
+                    )
+                    self.client_available = True
+                    self.using_azure = True
+                    self.model = self.azure_deployment  # Bei Azure ist model = deployment name
+                    print(f"✅ Azure OpenAI client configured, deployment={self.azure_deployment}")
+                except Exception:
+                    traceback.print_exc()
+            else:
+                print("⚠️ LLM_PROVIDER=azure aber Azure-Konfiguration fehlt!")
+        elif self.provider == "openai":
+            if self.api_key:
+                try:
+                    self.client = OpenAI(api_key=self.api_key)
+                    self.client_available = True
+                    print(f"✅ OpenAI client configured, model={self.model}")
+                except Exception:
+                    traceback.print_exc()
+            else:
+                print("⚠️ LLM_PROVIDER=openai aber OPENAI_API_KEY fehlt!")
+        else:
+            print(f"⚠️ Unbekannter LLM_PROVIDER: {self.provider}. Verwende 'azure' oder 'openai'.")
 
     # ========= Public API =========
 
@@ -123,7 +158,10 @@ class LLMService:
             # Füge neue konsistente Nummer hinzu
             tc.title = f"TC-{i} - {title}"
 
-        self.last_generation_source = "openai" if self.client_available else "mock"
+        if self.client_available:
+            self.last_generation_source = "azure-openai" if self.using_azure else "openai"
+        else:
+            self.last_generation_source = "mock"
         return unique_cases
 
     # ========= Analysis =========
@@ -240,33 +278,70 @@ class LLMService:
             leicht angepassten Prompt (z. B. weniger Testfälle) erneut aufrufen
             können, falls das JSON der Tool-Arguments unvollständig ist.
             """
-            return self.client.chat.completions.create(
-                model=self.model,
-                temperature=self.temperature,
-                top_p=self.top_p,
-                seed=seed,
-                messages=[
-                    {"role": "system", "content": system_msg},
-                    {"role": "user", "content": user_prompt},
-                ],
-                functions=functions,
-                function_call={"name": "return_testcases"},
-                max_tokens=self.max_tokens,
-            )
+            # GPT-5.x und neuere Modelle benötigen max_completion_tokens statt max_tokens
+            # und tools statt functions
+            # Außerdem unterstützen sie KEINE temperature/top_p Parameter (nur Standardwert 1)
+            is_new_model = self.model.startswith("gpt-5") or self.model.startswith("o1") or self.model.startswith("o3")
+            token_param = "max_completion_tokens" if is_new_model else "max_tokens"
+            
+            if is_new_model:
+                # Neue Tools-API für GPT-5.x (ohne temperature/top_p - nicht unterstützt)
+                tools = [{
+                    "type": "function",
+                    "function": functions[0]
+                }]
+                return self.client.chat.completions.create(
+                    model=self.model,
+                    # GPT-5.x Reasoning-Modelle unterstützen keine temperature/top_p
+                    seed=seed,
+                    messages=[
+                        {"role": "system", "content": system_msg},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    tools=tools,
+                    tool_choice="required",
+                    **{token_param: self.max_tokens},
+                )
+            else:
+                # Legacy functions API für ältere Modelle
+                return self.client.chat.completions.create(
+                    model=self.model,
+                    temperature=self.temperature,
+                    top_p=self.top_p,
+                    seed=seed,
+                    messages=[
+                        {"role": "system", "content": system_msg},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    functions=functions,
+                    function_call={"name": "return_testcases"},
+                    **{token_param: self.max_tokens},
+                )
 
         async def _invoke_and_parse(user_prompt: str) -> List[Dict[str, Any]]:
             """Führt den Call aus und parst die Funktion-Argumente als JSON."""
-            print(f"DEBUG: Calling OpenAI with model={self.model}")
+            provider = "Azure OpenAI" if self.using_azure else "OpenAI"
+            print(f"DEBUG: Calling {provider} with model={self.model}")
+            print(f"DEBUG: max_tokens={self.max_tokens}, temperature={self.temperature}")
             resp = await asyncio.to_thread(_call, user_prompt)
-            msg = resp.choices[0].message
+            
+            # Debug: Vollständige Antwort-Informationen
+            choice = resp.choices[0]
+            msg = choice.message
+            print(f"DEBUG: finish_reason={choice.finish_reason}")
+            print(f"DEBUG: usage={resp.usage}")
             print(f"DEBUG: Response received, message={msg}")
 
             # Support both function_call (deprecated) and tool_calls (new)
             if hasattr(msg, "tool_calls") and msg.tool_calls:
+                print(f"DEBUG: tool_calls found, count={len(msg.tool_calls)}")
                 args = msg.tool_calls[0].function.arguments
             elif hasattr(msg, "function_call") and msg.function_call:
+                print("DEBUG: function_call found (legacy)")
                 args = msg.function_call.arguments
             else:
+                print("DEBUG: No tool_calls or function_call found!")
+                print(f"DEBUG: content={msg.content[:500] if msg.content else 'EMPTY'}")
                 args = None
 
             print(

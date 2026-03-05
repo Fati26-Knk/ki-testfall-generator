@@ -1,19 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as api from "../services/api";
 import Toast from "./Toast";
 import mammoth from "mammoth";
 
+// Hilfsfunktionen für localStorage-Persistenz
+const loadFromStorage = (key, defaultValue) => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : defaultValue;
+  } catch (e) {
+    return defaultValue;
+  }
+};
+
+const saveToStorage = (key, value) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.warn('localStorage save failed:', e);
+  }
+};
+
 export default function Dashboard({ setView, activeProject }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [acceptanceCriteria, setAcceptanceCriteria] = useState("");
-  const [generated, setGenerated] = useState(null);
-  const [selected, setSelected] = useState({});
+  // State mit localStorage-Persistenz initialisieren
+  const [title, setTitle] = useState(() => loadFromStorage('dashboard_title', ""));
+  const [description, setDescription] = useState(() => loadFromStorage('dashboard_description', ""));
+  const [acceptanceCriteria, setAcceptanceCriteria] = useState(() => loadFromStorage('dashboard_acceptanceCriteria', ""));
+  const [generated, setGenerated] = useState(() => loadFromStorage('dashboard_generated', null));
+  const [selected, setSelected] = useState(() => loadFromStorage('dashboard_selected', {}));
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [comprehensive, setComprehensive] = useState(true);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isRegenerate, setIsRegenerate] = useState(false);
+
+  // Speichere relevante States in localStorage bei Änderungen
+  useEffect(() => { saveToStorage('dashboard_title', title); }, [title]);
+  useEffect(() => { saveToStorage('dashboard_description', description); }, [description]);
+  useEffect(() => { saveToStorage('dashboard_acceptanceCriteria', acceptanceCriteria); }, [acceptanceCriteria]);
+  useEffect(() => { saveToStorage('dashboard_generated', generated); }, [generated]);
+  useEffect(() => { saveToStorage('dashboard_selected', selected); }, [selected]);
 
   async function onGenerate(e) {
     e.preventDefault();
@@ -581,14 +607,13 @@ export default function Dashboard({ setView, activeProject }) {
             )}
           </div>
 
-          <div className="form-row" style={{ 
+          <div className="dashboard__actions" style={{ 
             display: 'flex', 
             alignItems: 'center', 
             gap: 12, 
             marginTop: 20,
             flexWrap: 'wrap'
           }}
-          className="dashboard__actions"
           >
             {/* Comprehensive Checkbox */}
             <label style={{ 

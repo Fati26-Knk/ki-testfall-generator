@@ -32,14 +32,14 @@ Die folgenden Anforderungen sind **wünschenswert** und erhöhen den Wert des Pr
 
 | ID | Anforderung | Beschreibung | Status |
 |----|-------------|--------------|--------|
-| SK-1 | Dokument-Upload | Hochladen von Anforderungsdokumenten (.docx, .txt) zur erweiterten Kontextanalyse | ✅ Implementiert |
-| SK-2 | Umfassende Testfall-Generierung | Modus für erweiterte Testabdeckung ("Kompakt" vs. "Umfassend") | ✅ Implementiert |
-| SK-3 | Re-Generation mit Kontext | Erneute Generierung mit bisherigen Testfällen als Referenz | ✅ Implementiert |
-| SK-4 | Projekt-Umbenennung | Nachträgliche Änderung von Projektnamen | ✅ Implementiert |
-| SK-5 | Expand/Collapse All | Bulk-Steuerung für Auf-/Zuklappen von User Stories | ✅ Implementiert |
-| SK-6 | Custom Confirmation Dialogs | Benutzerdefinierte Bestätigungsdialoge statt Browser-Alerts | ✅ Implementiert |
-| SK-7 | Toast-Benachrichtigungen | Nicht-invasive Feedback-Messages für Benutzeraktionen | ✅ Implementiert |
-| SK-8 | JIRA/Azure DevOps-Export-Format | Export-Formate optimiert für gängige Test-Management-Tools | ✅ Implementiert |
+| SK-1 | Dokument-Upload | Hochladen von Anforderungsdokumenten (.docx, .txt) zur erweiterten Kontextanalyse | Implementiert |
+| SK-2 | Umfassende Testfall-Generierung | Modus für erweiterte Testabdeckung ("Kompakt" vs. "Umfassend") | Implementiert |
+| SK-3 | Re-Generation mit Kontext | Erneute Generierung mit bisherigen Testfällen als Referenz | Implementiert |
+| SK-4 | Projekt-Umbenennung | Nachträgliche Änderung von Projektnamen | Implementiert |
+| SK-5 | Expand/Collapse All | Bulk-Steuerung für Auf-/Zuklappen von User Stories | Implementiert |
+| SK-6 | Custom Confirmation Dialogs | Benutzerdefinierte Bestätigungsdialoge statt Browser-Alerts | Implementiert |
+| SK-7 | Toast-Benachrichtigungen | Nicht-invasive Feedback-Messages für Benutzeraktionen | Implementiert |
+| SK-8 | JIRA/Azure DevOps-Export-Format | Export-Formate optimiert für gängige Test-Management-Tools | Implementiert |
 
 ---
 
@@ -49,11 +49,11 @@ Die folgenden Anforderungen sind **optionale Erweiterungen**, die den Funktionsu
 
 | ID | Anforderung | Beschreibung | Status |
 |----|-------------|--------------|--------|
-| KK-1 | Docker-Containerisierung | Vollständige Container-basierte Deployment-Lösung | ✅ Implementiert |
-| KK-2 | API-Dokumentation | Automatisch generierte, interaktive API-Dokumentation (Swagger) | ✅ Implementiert |
-| KK-3 | Responsive Design | Optimierung für verschiedene Bildschirmgrößen (Desktop, Tablet, Mobile) | ✅ Implementiert |
-| KK-4 | Erweiterte Fehlerbehandlung | Robuste Error-Handling-Strategie | ✅ Implementiert |
-| KK-5 | Logo-Navigation | Klick auf Logo führt zur Dashboard-Ansicht | ✅ Implementiert |
+| KK-1 | Docker-Containerisierung | Vollständige Container-basierte Deployment-Lösung | Implementiert |
+| KK-2 | API-Dokumentation | Automatisch generierte, interaktive API-Dokumentation (Swagger) | Implementiert |
+| KK-3 | Responsive Design | Optimierung für verschiedene Bildschirmgrößen (Desktop, Tablet, Mobile) | Implementiert |
+| KK-4 | Erweiterte Fehlerbehandlung | Robuste Error-Handling-Strategie | Implementiert |
+| KK-5 | Logo-Navigation | Klick auf Logo führt zur Dashboard-Ansicht | Implementiert |
 
 ---
 
