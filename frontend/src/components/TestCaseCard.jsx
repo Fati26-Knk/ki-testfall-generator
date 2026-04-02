@@ -50,12 +50,37 @@ const TestCaseCard = ({ testCase, index }) => {
     color: isLightTheme ? '#1d4ed8' : styles.sectionTitle.color,
   };
 
+  // Text: von welcher KI / welchem Modell erzeugt
+  const rawProvider = testCase.llm_provider || (testCase.source ? String(testCase.source) : null);
+  const metaProvider = rawProvider;
+  const metaModel = testCase.llm_model;
+  let llmMetaText = null;
+  if (metaProvider && metaModel) {
+    llmMetaText = `Erstellt von ${metaProvider} (${metaModel})`;
+  } else if (metaProvider) {
+    llmMetaText = `Erstellt von ${metaProvider}`;
+  } else if (metaModel) {
+    llmMetaText = `Erstellt mit Modell ${metaModel}`;
+  }
+
   return (
     <div style={cardStyle}>
       <div style={styles.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, flexWrap: 'wrap' }}>
           <span style={styles.index} title="Testfall-Nummer">{typeof index === 'number' ? `#${index + 1}` : ''}</span>
           <span style={titleStyle}>{testCase.title}</span>
+          {llmMetaText && (
+            <span
+              style={{
+                fontSize: 12,
+                color: isLightTheme ? '#6b7280' : '#9ca3af',
+                fontStyle: 'italic',
+                marginLeft: 4,
+              }}
+            >
+              {llmMetaText}
+            </span>
+          )}
         </div>
         <span
           style={{
@@ -85,7 +110,8 @@ const TestCaseCard = ({ testCase, index }) => {
             📋 {testCase.status}
           </span>
         )}
-        {testCase.source && (
+        {/* Quelle-Badge nur verwenden, wenn kein spezieller LLM-Hinweis existiert */}
+        {testCase.source && !testCase.llm_provider && !testCase.llm_model && (
           <span
             style={{
               fontSize: 14,

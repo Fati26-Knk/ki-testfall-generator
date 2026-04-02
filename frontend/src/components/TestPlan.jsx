@@ -287,6 +287,23 @@ export default function TestPlan() {
     (projectUserStories || []).forEach(us => { next[us] = false; });
     setOpenProjectUsGroups(next);
   }
+
+  // Toolbar Aktionen: Globale User Stories auf-/zuklappen (Hauptseite)
+  function expandAllGlobalUs() {
+    const next = {};
+    Object.keys(groupedGlobalTestCases || {}).forEach(us => {
+      next[us] = true;
+    });
+    setOpenUsGroups(next);
+  }
+
+  function collapseAllGlobalUs() {
+    const next = {};
+    Object.keys(groupedGlobalTestCases || {}).forEach(us => {
+      next[us] = false;
+    });
+    setOpenUsGroups(next);
+  }
   
   // Separate state für Dropdown-Auswahl (unabhängig von selectedProject)
   const [dropdownProject, setDropdownProject] = useState('');
@@ -320,8 +337,14 @@ export default function TestPlan() {
       arr.forEach((tc, idx) => {
         // User Story Titel aus dem Testfall
         const us = tc.user_story || tc.userStoryTitle || tc.us_title || 'Ohne Titel';
+        // Quelle/Provider-Label für Anzeige vorbereiten (falls vorhanden)
+        const providerLabel = tc.llm_provider || null;
+        const modelName = tc.llm_model || null;
+        const source = (providerLabel || modelName)
+          ? `Erstellt von ${providerLabel || 'unbekanntem Provider'}${modelName ? ` (${modelName})` : ''}`
+          : tc.source;
         if (!grouped[us]) grouped[us] = [];
-        grouped[us].push({ ...tc, _globalIdx: idx });
+        grouped[us].push({ ...tc, _globalIdx: idx, source });
       });
       setGroupedGlobalTestCases(grouped);
       
@@ -929,7 +952,7 @@ export default function TestPlan() {
                     </div>
                   )}
                 </div>
-                <div className="testplan-card testplan-card--filled" style={{ minHeight: 150 }}>
+                <div className="testplan-card testplan-card--filled" style={{ minHeight: 150, marginTop: 12 }}>
                   {loadingProjectUs && (
                     <div className="testplan-muted" style={{ textAlign: 'center', padding: 40 }}>
                       Lade User Stories...
@@ -1053,8 +1076,50 @@ export default function TestPlan() {
           {/* Globale User Stories - NUR auf Hauptseite anzeigen */}
           {selectedProject === 'Hauptseite' && (
             <>
-              <h4 className="testplan-section-title">Globale User Stories</h4>
-              <div className="testplan-card testplan-card--filled" style={{ minHeight: 200 }}>
+              <div className="testplan-section">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                  <h4 className="testplan-section-title">Globale User Stories</h4>
+                  {Object.keys(groupedGlobalTestCases || {}).length > 0 && (
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button
+                        onClick={expandAllGlobalUs}
+                        style={{
+                          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: 24,
+                          padding: '8px 14px',
+                          cursor: 'pointer',
+                          fontSize: 13,
+                          fontWeight: 700,
+                          boxShadow: '0 2px 8px rgba(16,185,129,.3)'
+                        }}
+                        title="Alle ausklappen"
+                      >
+                        ▼ Alle ausklappen
+                      </button>
+                      <button
+                        onClick={collapseAllGlobalUs}
+                        style={{
+                          background: '#f3f4f6',
+                          color: '#374151',
+                          border: '2px solid #d1d5db',
+                          borderRadius: 24,
+                          padding: '8px 14px',
+                          cursor: 'pointer',
+                          fontSize: 13,
+                          fontWeight: 700
+                        }}
+                        title="Alle einklappen"
+                      >
+                        ▶ Alle einklappen
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="testplan-card testplan-card--filled" style={{ minHeight: 200, marginTop: 12 }}>
                 {Object.keys(groupedGlobalTestCases).length === 0 && (
                   <div style={{ color: '#cbd5e1', textAlign: 'center', padding: 40 }}>
                     Keine User Stories vorhanden. Erstelle Testfälle im Dashboard und merke sie hier.

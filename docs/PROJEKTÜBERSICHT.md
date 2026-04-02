@@ -5,7 +5,7 @@
 **Semester:** 3  
 **Projekt:** Master Thesis - KI-gestützte Testfall-Optimierung  
 **Version:** 1.0.0  
-**Stand:** November 2025
+**Stand:** März 2026
 
 ---
 
@@ -69,7 +69,7 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
 |------------|-------------|---------|-------|
 | **Framework** | FastAPI | 0.104.1 | REST API, asynchrone Request-Verarbeitung |
 | **Server** | Uvicorn | 0.24.0 | ASGI-Server mit Hot-Reload |
-| **LLM-Integration** | OpenAI API | 1.3.5 | GPT-4o-mini für Testfall-Generierung |
+| **LLM-Integration** | OpenAI + Azure OpenAI | openai>=1.50.0 | GPT-5.1-Modelle (z. B. gpt-5.1-chat-latest) mit Provider-Umschaltung |
 | **Datenvalidierung** | Pydantic | 2.5.0 | Schema-Validierung, Type Safety |
 | **HTTP Client** | httpx | 0.25.1 | Asynchrone HTTP-Anfragen |
 | **Testing** | pytest + pytest-asyncio | 7.4.3 / 0.21.1 | Unit- und Integrationstests |
@@ -97,11 +97,11 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
 | **Umgebungsvariablen** | dotenv | Konfiguration (API Keys, Modelle, DB-URL) |
 
 ### KI & Machine Learning
-- **Model:** OpenAI GPT-4o-mini (optimiert für Kosten/Leistung)
-- **Temperatur:** 0.6 (Balance zwischen Kreativität und Konsistenz)
-- **Top-P:** 0.9 (Nucleus Sampling für diverse Ergebnisse)
-- **Max Tokens:** 9000 (ausreichend für umfassende Testfälle)
-- **Function Calling:** Strukturierte JSON-Ausgabe für Testfälle
+- **Modelle:** OpenAI `gpt-5.1-chat-latest` und Azure-Deployment `gpt-5.1-chat`
+- **Provider-Modus:** Umschaltbar über `LLM_PROVIDER` (`openai` oder `azure`)
+- **Token-Handling:** Für GPT-5.x/o1/o3 wird `max_completion_tokens` verwendet (`OPENAI_MAX_TOKENS=16384`)
+- **Sampling-Regeln:** Bei GPT-5.x werden `temperature`/`top_p` nicht explizit gesetzt (Modell-Default)
+- **Tool-Interface:** Strukturierte JSON-Ausgabe über Tools/Function-Calling, kompatibel für alte und neue Modellfamilien
 
 ---
 
@@ -130,8 +130,8 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
 ┌─────────────────────────────────────────────────────────────
 │               External Services & Storage                    │
 │  ┌──────────────  ┌──────────────  ┌──────────────     │
-│  │  OpenAI API  │  │  PostgreSQL  │  │   Staging    │     │
-│  │  (GPT-4o)    │  │  (Database)  │  │  (DB Table)  │     │
+│  │ OpenAI / Azure│  │  PostgreSQL  │  │   Staging    │     │
+│  │   (GPT-5.1)   │  │  (Database)  │  │  (DB Table)  │     │
 │  └──────────────┘  └──────────────┘  └──────────────┘     │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -140,7 +140,8 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
 
 #### Backend-Services
 1. **LLMService** (`llm_service.py`)
-   - OpenAI API-Integration mit Function Calling
+   - OpenAI- und Azure-Integration mit providerabhängiger Initialisierung
+   - GPT-5.x-kompatible Tools-API (`tools`, `tool_choice`, `max_completion_tokens`)
    - Intelligente Prompt-Konstruktion mit detaillierten Qualitätsrichtlinien
    - User Story-Analyse und Komplexitätsbewertung
    - Dynamische Testfall-Anzahl basierend auf Komplexität
@@ -165,6 +166,7 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
    - Datei-Upload mit Drag & Drop
    - Testfall-Generierung (Kompakt vs. Umfassend)
    - Auswahl und Verwaltung generierter Testfälle
+   - Persistenz von Eingaben und generierten Testfällen via localStorage (kein Verlust beim Wechsel zu TestPlan)
    - Staging-Bereich für Zwischenspeicherung
    - Re-Generation mit erweiterten Optionen
 
@@ -203,7 +205,7 @@ Diese Anwendung automatisiert die Testfall-Generierung durch:
 ##  Hauptfunktionalitäten
 
 ### 1. KI-gestützte Testfall-Generierung
-**Beschreibung:** Automatische Erstellung von Testfällen aus User Stories mittels OpenAI GPT-4o-mini.
+**Beschreibung:** Automatische Erstellung von Testfällen aus User Stories mittels aktueller GPT-5.1-Modelle (OpenAI/Azure), mit kompatibler Fallback-Logik für ältere Modellfamilien.
 
 **Features:**
 -  **Intelligente Analyse:** Erkennt Komplexität, Entitäten, Akzeptanzkriterien
@@ -875,12 +877,23 @@ docker-compose up --build
 
 #### Backend (.env)
 ```env
-# OpenAI API
+# Provider-Auswahl
+LLM_PROVIDER=openai
+
+# OpenAI
 OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_TEMPERATURE=0.6
-OPENAI_TOP_P=0.9
-OPENAI_MAX_TOKENS=9000
+OPENAI_MODEL=gpt-5.1-chat-latest
+
+# Azure OpenAI (optional)
+AZURE_OPENAI_API_KEY=...
+AZURE_OPENAI_ENDPOINT=https://<resource>.cognitiveservices.azure.com/
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5.1-chat
+AZURE_OPENAI_API_VERSION=2024-12-01-preview
+
+# Gemeinsame Einstellungen
+OPENAI_TEMPERATURE=0.2
+OPENAI_TOP_P=1.0
+OPENAI_MAX_TOKENS=16384
 
 # CORS
 CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://localhost:80
@@ -895,56 +908,41 @@ environment:
   - VITE_API_URL=http://localhost:8000
 ```
 
-### Verzeichnisstruktur (Datenpersistenz)
+### Datenpersistenz (PostgreSQL)
 
-```
-backend/data/
-├── _staging/
-│   └── staging.json              # Temporäre Testfälle
-├── default/                       # Hauptseite (global)
-│   └── project.json
-├── {project-1}/
-│   ├── project.json
-│   └── {user-story-1}/
-│       ├── metadata.json          # Erstellungsdatum, Status
-│       └── testcases.json         # Testfall-Array
-├── {project-2}/
-│   └── ...
-```
+Die Anwendung verwendet eine relationale Persistenz statt dateibasierter JSON-Ablage.
 
-#### metadata.json (Beispiel)
-```json
-{
-  "us_title": "Als Benutzer möchte ich...",
-  "us_text": "Detaillierte Beschreibung...",
-  "created_at": "2025-11-24T14:30:00",
-  "status": "active",
-  "generated_by": "openai",
-  "model": "gpt-4o-mini"
-}
-```
+**Tabellenstruktur:**
+- `projects`
+- `user_stories`
+- `test_cases`
+- `staging_test_cases`
 
-#### testcases.json (Beispiel)
+**Eigenschaften:**
+- Persistente Speicherung über Container-Neustarts hinweg (Docker Volume)
+- Kaskadierendes Löschen von abhängigen Datensätzen
+- Trennung von temporärem Staging und dauerhaften Projekt-Testfällen
+
+#### Beispiel (API-Response für gespeicherte Testfälle)
 ```json
 {
   "test_cases": [
     {
-      "title": "TC-1 Teste erfolgreichen Login",
-      "description": "Validiert den Happy Path...",
+         "id": 1,
+         "title": "TC-1 - Erfolgreicher Login mit gültigen Zugangsdaten",
+         "description": "Validiert den Happy Path.",
       "type": "functional",
+         "priority": "High",
       "preconditions": [
-        "Benutzer existiert in Datenbank",
-        "Passwort ist korrekt gespeichert"
+            "Benutzer existiert in der Datenbank"
       ],
       "steps": [
-        "1. Navigiere zu /login",
-        "2. Gib E-Mail ein: test@example.com",
-        "3. Gib Passwort ein: Test1234!",
-        "4. Klicke auf 'Login'"
+            "1. Öffne die Login-Seite",
+            "2. Gib gültige Zugangsdaten ein",
+            "3. Klicke auf Login"
       ],
-      "expected_result": "Redirect zu /dashboard, Session Cookie gesetzt",
-      "priority": "High",
-      "covers": ["AC4"]
+         "expected_result": "Benutzer wird erfolgreich angemeldet.",
+         "covers": []
     }
   ]
 }
@@ -982,7 +980,7 @@ pytest --cov=app tests/
 **Test-Kategorien:**
 - Unit Tests: LLMService, StorageService
 - Integration Tests: API-Endpunkte
-- Mock Tests: OpenAI API (ohne echte Calls)
+- Mock Tests: OpenAI/Azure API (ohne echte Calls)
 
 #### Frontend-Tests
 - Manuelle UI-Tests
@@ -1013,7 +1011,7 @@ pytest --cov=app tests/
 #### Datensicherheit
 -  **API Key Management:** .env-Dateien (nicht im Git)
 -  **File Validation:** Größenlimit 50 MB
--  **SQL Injection:** N/A (keine SQL-Datenbank)
+-  **SQL Injection:** Risikominimierung durch SQLAlchemy ORM und parametrisierte Queries
 -  **XSS:** React automatisches Escaping
 
 ---
@@ -1022,8 +1020,8 @@ pytest --cov=app tests/
 
 ###  MVP (Minimum Viable Product)
 - [x] Basis-Frontend mit Dashboard und TestPlan
-- [x] OpenAI-Integration für Testfall-Generierung
-- [x] JSON-basierte Datenpersistenz
+- [x] OpenAI/Azure-Integration für Testfall-Generierung
+- [x] Migration auf PostgreSQL-basierte Datenpersistenz
 - [x] Projekt-Management (Erstellen, Löschen)
 - [x] Testfall-CRUD-Operationen
 
@@ -1152,7 +1150,7 @@ pytest --cov=app tests/
 
 ### Technische Erkenntnisse
 1. **Prompt-Engineering ist entscheidend:** Die Qualität der generierten Testfälle hängt stark von detaillierten System-Prompts ab.
-2. **Function Calling > Text Parsing:** Strukturierte JSON-Ausgabe reduziert Fehler drastisch.
+2. **Tools/Function Calling > Freitext Parsing:** Strukturierte JSON-Ausgabe reduziert Fehler drastisch.
 3. **Deduplication notwendig:** LLMs generieren oft ähnliche Tests → Algorithmus erforderlich.
 4. **Docker vereinfacht Deployment:** Dev/Prod-Parity durch Container.
 
@@ -1211,13 +1209,13 @@ Alle Rechte vorbehalten © 2025 Fadime Konuk
 
 - **1. Betreuende Professorin:** FH-Prof.in Mag.a Dr.in Sigrid Schefer-Wenzl, MSc BSc
 - **2. Betreuende Professor:** FH-Prof. DI Dr. Igor Miladinovic
-- **OpenAI:** Für GPT-4o-mini API
+- **OpenAI:** Für GPT-5.1-Modellzugang und API-Weiterentwicklung
 - **Open-Source-Community:** React, FastAPI, Docker und alle verwendeten Bibliotheken
 
 ---
 
 **Dokumentversion:** 1.0.0  
-**Letzte Aktualisierung:** 24. November 2025  
+**Letzte Aktualisierung:** 18. März 2026  
 **Status:**  Produktionsbereit (Prototyp)
 
 ---

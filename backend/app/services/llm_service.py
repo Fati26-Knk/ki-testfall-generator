@@ -48,7 +48,12 @@ class LLMService:
         
         # Standard OpenAI Konfiguration
         self.api_key = os.getenv("OPENAI_API_KEY", "")
-        self.model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        # Standard‑Modell für OpenAI ist gpt-5.1-chat-latest
+        self.model = os.getenv("OPENAI_MODEL", "gpt-5.1-chat-latest")
+        # Historische Werte wie "gpt-5.1-chat" automatisch auf "-latest" mappen,
+        # damit ältere .env-Konfigurationen weiter funktionieren.
+        if self.model == "gpt-5.1-chat":
+            self.model = "gpt-5.1-chat-latest"
 
         # 🟢 Mehr Kreativität für bessere Abdeckung
         self.temperature = float(os.getenv("OPENAI_TEMPERATURE", "0.6"))
@@ -58,6 +63,20 @@ class LLMService:
         self.client = None
         self.client_available = False
         self.last_generation_source = "unknown"
+        self.using_azure = False
+        # Initiale Konfiguration des LLM-Clients
+        self._configure_client()
+
+    # ========= Provider-Konfiguration =========
+
+    def _configure_client(self):
+        """(Re)konfiguriert den LLM-Client basierend auf self.provider und den Umgebungsvariablen.
+
+        Diese Methode wird beim Start und auch beim dynamischen Provider-Switch verwendet.
+        """
+        # Reset aktueller Client-Status
+        self.client = None
+        self.client_available = False
         self.using_azure = False
 
         # Provider basierend auf LLM_PROVIDER Variable auswählen
@@ -71,7 +90,8 @@ class LLMService:
                     )
                     self.client_available = True
                     self.using_azure = True
-                    self.model = self.azure_deployment  # Bei Azure ist model = deployment name
+                    # Bei Azure ist model = deployment name
+                    self.model = self.azure_deployment or self.model
                     print(f"✅ Azure OpenAI client configured, deployment={self.azure_deployment}")
                 except Exception:
                     traceback.print_exc()
@@ -80,6 +100,11 @@ class LLMService:
         elif self.provider == "openai":
             if self.api_key:
                 try:
+                    # Sicherstellen, dass wir beim Umschalten von Azure auf OpenAI
+                    # nicht am alten Azure-Deployment-Namen "gpt-5.1-chat" hängen bleiben.
+                    # Für OpenAI soll IMMER gpt-5.1-chat-latest verwendet werden.
+                    if self.model == "gpt-5.1-chat":
+                        self.model = "gpt-5.1-chat-latest"
                     self.client = OpenAI(api_key=self.api_key)
                     self.client_available = True
                     print(f"✅ OpenAI client configured, model={self.model}")
@@ -89,6 +114,36 @@ class LLMService:
                 print("⚠️ LLM_PROVIDER=openai aber OPENAI_API_KEY fehlt!")
         else:
             print(f"⚠️ Unbekannter LLM_PROVIDER: {self.provider}. Verwende 'azure' oder 'openai'.")
+
+    def set_provider(self, provider: str) -> dict:
+        """Setzt den aktiven LLM-Provider zur Laufzeit und konfiguriert den Client neu.
+
+        Erlaubt z.B. das Umschalten zwischen `openai` und `azure` ohne Neustart der App.
+        """
+        if not provider:
+            raise ValueError("provider must not be empty")
+        provider_norm = provider.strip().lower()
+        if provider_norm not in {"azure", "openai"}:
+            raise ValueError("provider must be 'azure' oder 'openai'")
+
+        # Setze neuen Provider sowohl im Objekt als auch in den Environment-Variablen,
+        # damit evtl. neu erstellte Instanzen konsistent sind.
+        self.provider = provider_norm
+        try:
+            os.environ["LLM_PROVIDER"] = provider_norm
+        except Exception:
+            # Falls das Setzen im Environment fehlschlägt, ist das nicht kritisch.
+            pass
+
+        # Re-konfiguriere Client
+        self._configure_client()
+
+        return {
+            "provider": self.provider,
+            "using_azure": self.using_azure,
+            "client_available": self.client_available,
+            "model": self.model,
+        }
 
     # ========= Public API =========
 
@@ -376,7 +431,10 @@ class LLMService:
         except Exception as e:
             print(f"ERROR in _call_llm_returning_cases: {e}")
             traceback.print_exc()
-            return []
+            # Fehler nach oben durchreichen, damit der API-Handler eine
+            # aussagekräftige Fehlermeldung (z.B. model_not_found) an den
+            # Client zurückgeben kann.
+            raise
 
     # ========= Prompt Creation =========
 

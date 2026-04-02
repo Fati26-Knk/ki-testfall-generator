@@ -70,6 +70,19 @@ export async function exportTestcasesCsvWithFormat(project, usFolder, format = '
   return resp.data;
 }
 
+export async function getLlmProvider() {
+  const resp = await api.get(`/llm/provider`);
+  return resp.data;
+}
+
+export async function setLlmProvider(provider) {
+  const payload = { provider };
+  const resp = await api.post(`/llm/provider`, JSON.stringify(payload), {
+    headers: { "Content-Type": "application/json" },
+  });
+  return resp.data;
+}
+
 // Save a provided subset of test cases into a specific project/user-story folder
 // Body matches backend route `/projects/{project}/{us}/adopt-selected`
 export async function adoptSelectedToProject(project, usFolder, testCases, userStoryText = null) {
@@ -97,5 +110,7 @@ api.deleteUserStory = deleteUserStory;
 api.exportTestcasesCsv = exportTestcasesCsv;
 api.exportTestcasesCsvWithFormat = exportTestcasesCsvWithFormat;
 api.adoptSelectedToProject = adoptSelectedToProject;
+api.getLlmProvider = getLlmProvider;
+api.setLlmProvider = setLlmProvider;
 
 export default api;

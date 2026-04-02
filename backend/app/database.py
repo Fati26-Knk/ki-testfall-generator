@@ -144,6 +144,10 @@ class StagingTestCase(Base):
     # Original User Story (für Kontext)
     user_story_text = Column(Text, nullable=True)
     
+    # LLM-Metadaten (optional): von welchem Provider/Modell generiert
+    llm_provider = Column(String(50), nullable=True)
+    llm_model = Column(String(200), nullable=True)
+    
     created_at = Column(DateTime, default=datetime.utcnow)
 
     def to_dict(self):
@@ -159,6 +163,8 @@ class StagingTestCase(Base):
             "expected_result": self.expected_result,
             "covers": self.covers or [],
             "user_story": self.user_story_text,
+            "llm_provider": self.llm_provider,
+            "llm_model": self.llm_model,
         }
 
 

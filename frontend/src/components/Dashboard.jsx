@@ -33,6 +33,10 @@ export default function Dashboard({ setView, activeProject }) {
   const [comprehensive, setComprehensive] = useState(true);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isRegenerate, setIsRegenerate] = useState(false);
+  const [llmProvider, setLlmProviderState] = useState('unknown');
+  const [llmClientAvailable, setLlmClientAvailable] = useState(true);
+  const [llmModel, setLlmModel] = useState(null);
+  const [llmModelError, setLlmModelError] = useState(null);
 
   // Speichere relevante States in localStorage bei Änderungen
   useEffect(() => { saveToStorage('dashboard_title', title); }, [title]);
@@ -40,6 +44,22 @@ export default function Dashboard({ setView, activeProject }) {
   useEffect(() => { saveToStorage('dashboard_acceptanceCriteria', acceptanceCriteria); }, [acceptanceCriteria]);
   useEffect(() => { saveToStorage('dashboard_generated', generated); }, [generated]);
   useEffect(() => { saveToStorage('dashboard_selected', selected); }, [selected]);
+
+  // Initialen LLM-Provider vom Backend laden
+  useEffect(() => {
+    (async () => {
+      try {
+        const info = await api.getLlmProvider();
+        setLlmProviderState(info.provider || 'unknown');
+        setLlmClientAvailable(!!info.client_available);
+        setLlmModel(info.model || null);
+        setLlmModelError(null);
+      } catch (e) {
+        console.error('Failed to fetch LLM provider', e);
+        setLlmClientAvailable(false);
+      }
+    })();
+  }, []);
 
   async function onGenerate(e) {
     e.preventDefault();
@@ -81,13 +101,34 @@ export default function Dashboard({ setView, activeProject }) {
       }
       
       const res = await api.generateTestCases(fullUserStory, requested);
-      setGenerated(res.test_cases || []);
+
+      const rawProvider = (res.meta && res.meta.generated_by) || llmProvider || "unknown";
+      const providerLabel = rawProvider === 'azure-openai'
+        ? 'Azure OpenAI'
+        : rawProvider === 'openai'
+          ? 'OpenAI'
+          : rawProvider;
+      const modelName = (res.meta && res.meta.model) || llmModel || null;
+
+      const enhanced = (res.test_cases || []).map(tc => ({
+        ...tc,
+        llm_provider: providerLabel,
+        llm_model: modelName,
+      }));
+
+      setGenerated(enhanced);
       // reset selection
       setSelected({});
+      // erfolgreicher Call -> evtl. alte Modellfehler zurücksetzen
+      setLlmModelError(null);
     } catch (err) {
       console.error('Generate error', err);
       // Try to extract a useful message from the axios error
       const msg = err?.response?.data?.detail || err?.response?.data || err?.message || JSON.stringify(err);
+      // Bei OpenAI: spezifischen Hinweis setzen, wenn Modell nicht verfügbar
+      if (llmProvider === 'openai' && typeof msg === 'string' && (msg.includes('model_not_found') || msg.includes('does not exist or you do not have access to it'))) {
+        setLlmModelError('Das konfigurierte OpenAI-Modell ist nicht verfügbar. Bitte OPENAI_MODEL in der .env auf ein freigeschaltetes Modell setzen.');
+      }
       alert(`Fehler beim Generieren: ${msg}`);
     } finally {
       setLoading(false);
@@ -188,16 +229,33 @@ export default function Dashboard({ setView, activeProject }) {
 
       const res = await api.generateTestCases(fullUserStory, requested);
 
+      const rawProvider = (res.meta && res.meta.generated_by) || llmProvider || "unknown";
+      const providerLabel = rawProvider === 'azure-openai'
+        ? 'Azure OpenAI'
+        : rawProvider === 'openai'
+          ? 'OpenAI'
+          : rawProvider;
+      const modelName = (res.meta && res.meta.model) || llmModel || null;
+
       // Re‑Generierung ersetzt die bisherigen Tests vollständig
-      const newTests = res.test_cases || [];
+      const newTests = (res.test_cases || []).map(tc => ({
+        ...tc,
+        llm_provider: providerLabel,
+        llm_model: modelName,
+      }));
+
       setGenerated(newTests);
       setToast(`${newTests.length} Testfälle wurden neu generiert und ersetzt.`);
       
       // reset selection
       setSelected({});
+      setLlmModelError(null);
     } catch (err) {
       console.error('Regenerate error', err);
       const msg = err?.response?.data?.detail || err?.response?.data || err?.message || JSON.stringify(err);
+      if (llmProvider === 'openai' && typeof msg === 'string' && (msg.includes('model_not_found') || msg.includes('does not exist or you do not have access to it'))) {
+        setLlmModelError('Das konfigurierte OpenAI-Modell ist nicht verfügbar. Bitte OPENAI_MODEL in der .env auf ein freigeschaltetes Modell setzen.');
+      }
       alert(`Fehler beim Re-Generieren: ${msg}`);
     } finally {
       setLoading(false);
@@ -425,8 +483,13 @@ export default function Dashboard({ setView, activeProject }) {
     if (!generated) return alert('Keine generierten Testfälle');
     const selectedIndexes = Object.keys(selected).filter((k) => selected[k]).map((s) => parseInt(s, 10));
     if (selectedIndexes.length === 0) return alert('Bitte mindestens einen Testfall auswählen');
-    // Füge user_story Feld hinzu
-    const subset = selectedIndexes.map((i) => ({ ...generated[i], user_story: title }));
+    // Füge user_story Feld und LLM-Metadaten hinzu
+    const subset = selectedIndexes.map((i) => ({
+      ...generated[i],
+      user_story: title,
+      llm_provider: generated[i].llm_provider,
+      llm_model: generated[i].llm_model,
+    }));
     setLoading(true);
     try {
       const resp = await api.postStaging(subset);
@@ -452,10 +515,20 @@ export default function Dashboard({ setView, activeProject }) {
     console.log('DEBUG onMerken: title =', JSON.stringify(title));
     console.log('DEBUG onMerken: usTitle =', JSON.stringify(usTitle));
     
-    // Füge user_story Feld hinzu
+    // Füge user_story Feld und LLM-Metadaten hinzu
     const subset = (selectedIndexes.length > 0)
-      ? selectedIndexes.map((i) => ({ ...generated[i], user_story: usTitle }))
-      : generated.map((tc) => ({ ...tc, user_story: usTitle }));
+      ? selectedIndexes.map((i) => ({
+          ...generated[i],
+          user_story: usTitle,
+          llm_provider: generated[i].llm_provider,
+          llm_model: generated[i].llm_model,
+        }))
+      : generated.map((tc) => ({
+          ...tc,
+          user_story: usTitle,
+          llm_provider: tc.llm_provider,
+          llm_model: tc.llm_model,
+        }));
     
     // DEBUG: Log subset
     console.log('DEBUG onMerken: subset[0].user_story =', subset[0]?.user_story);
@@ -486,10 +559,100 @@ export default function Dashboard({ setView, activeProject }) {
     setToast('Neue User Story bereit');
   }
 
+  async function handleSwitchProvider(provider) {
+    if (provider === llmProvider) return;
+    try {
+      setLoading(true);
+      const res = await api.setLlmProvider(provider);
+      setLlmProviderState(res.provider || provider);
+      setLlmClientAvailable(!!res.client_available);
+      setLlmModel(res.model || null);
+      setLlmModelError(null);
+      setToast(`LLM-Provider auf ${res.provider === 'azure' ? 'Azure OpenAI' : 'OpenAI'} umgeschaltet`);
+    } catch (e) {
+      console.error('Failed to switch LLM provider', e);
+      const msg = e?.response?.data?.detail || e.message || 'Unbekannter Fehler beim Umschalten des LLM-Providers';
+      setToast(msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="container">
       <div className="input-section card-subtle">
-        <h3>User Story</h3>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+          <h3>User Story</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 12, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: 0.05 }}>
+              KI-Provider:
+            </span>
+            <div style={{ display: 'flex', gap: 4, padding: 2, borderRadius: 9999, background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(148,163,184,0.4)' }}>
+              <button
+                type="button"
+                onClick={() => handleSwitchProvider('openai')}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 9999,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  background: llmProvider === 'openai' ? '#3b82f6' : 'transparent',
+                  color: llmProvider === 'openai' ? 'white' : '#e5e7eb',
+                  opacity: loading ? 0.7 : 1,
+                }}
+                disabled={loading}
+              >
+                OpenAI
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSwitchProvider('azure')}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 9999,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  background: llmProvider === 'azure' ? '#10b981' : 'transparent',
+                  color: llmProvider === 'azure' ? 'white' : '#e5e7eb',
+                  opacity: loading ? 0.7 : 1,
+                }}
+                disabled={loading}
+              >
+                Azure
+              </button>
+            </div>
+          </div>
+        </div>
+        {llmProvider !== 'unknown' && (
+          <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div style={{ fontSize: 12, color: '#9ca3af' }}>
+              Aktiver Provider:&nbsp;
+              <strong style={{ color: '#e5e7eb' }}>
+                {llmProvider === 'azure' ? 'Azure OpenAI' : 'OpenAI'}
+              </strong>
+              {llmModel && (
+                <>
+                  &nbsp;· Modell:&nbsp;
+                  <span style={{ color: '#93c5fd' }}>{llmModel}</span>
+                </>
+              )}
+            </div>
+            {!llmClientAvailable && (
+              <div style={{ fontSize: 12, color: '#f97373', fontWeight: 600 }}>
+                ⚠️ Aktuelle KI-Konfiguration ist nicht verfügbar (API-Key/Deployment prüfen).
+              </div>
+            )}
+          </div>
+        )}
+        {llmModelError && (
+          <div style={{ marginTop: 4, fontSize: 12, color: '#f97373', fontWeight: 500 }}>
+            ⚠️ {llmModelError}
+          </div>
+        )}
         <form onSubmit={onGenerate}>
           <div className="form-group">
             <label>Titel</label>

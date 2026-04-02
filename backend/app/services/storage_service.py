@@ -373,6 +373,8 @@ class StorageService:
                     expected_result=tc_data.get("expected_result", ""),
                     covers=tc_data.get("covers", []),
                     user_story_text=us_text,
+                    llm_provider=tc_data.get("llm_provider"),
+                    llm_model=tc_data.get("llm_model"),
                 )
                 db.add(staging)
             db.commit()
@@ -414,6 +416,8 @@ class StorageService:
                     expected_result=tc_data.get("expected_result", ""),
                     covers=tc_data.get("covers", []),
                     user_story_text=tc_data.get("user_story"),  # User Story Titel beibehalten!
+                    llm_provider=tc_data.get("llm_provider"),
+                    llm_model=tc_data.get("llm_model"),
                 )
                 db.add(staging)
             

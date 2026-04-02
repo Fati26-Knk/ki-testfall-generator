@@ -2,7 +2,7 @@
 API routes for the test case generator
 """
 from fastapi import APIRouter, HTTPException, Response
-from app.models.schemas import UserStoryRequest, TestCaseResponse, HealthResponse
+from app.models.schemas import UserStoryRequest, TestCaseResponse, HealthResponse, GenerationMeta
 from app.models.schemas import AdoptResponse, StoredMetadata, AdoptRequest
 from app.services.llm_service import LLMService
 from app.services.storage_service import StorageService
@@ -49,6 +49,44 @@ async def openai_test(request: Request):
         return res
     except Exception as e:
         return {"ok": False, "error": str(e)}
+
+
+@router.get("/llm/provider")
+async def get_llm_provider(request: Request):
+  """Gibt den aktuell konfigurierten LLM-Provider zurück (azure oder openai)."""
+  llm_service, _ = _get_services(request)
+  return {
+      "provider": getattr(llm_service, "provider", None),
+      "using_azure": getattr(llm_service, "using_azure", False),
+      "client_available": getattr(llm_service, "client_available", False),
+      "model": getattr(llm_service, "model", None),
+  }
+
+
+@router.post("/llm/provider")
+async def set_llm_provider(request: Request):
+  """Setzt den LLM-Provider zur Laufzeit (azure oder openai).
+
+  Body: { "provider": "azure" | "openai" }
+  """
+  try:
+      raw = await request.body()
+      payload = json.loads(raw.decode("utf-8") if isinstance(raw, (bytes, bytearray)) else raw)
+      provider = (payload.get("provider") or "").strip().lower()
+      if provider not in {"azure", "openai"}:
+          raise HTTPException(status_code=400, detail="provider must be 'azure' or 'openai'")
+
+      llm_service, _ = _get_services(request)
+      try:
+          info = llm_service.set_provider(provider)
+      except ValueError as e:
+          raise HTTPException(status_code=400, detail=str(e))
+
+      return {"status": "ok", **info}
+  except HTTPException:
+      raise
+  except Exception as e:
+      raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.options("/generate-test-cases")
@@ -122,13 +160,20 @@ async def generate_test_cases(request: Request):
                 status_code=500,
                 detail="Failed to generate test cases"
             )
-        
-        generated_by = getattr(llm_service, 'last_generation_source', None)
+
+        generated_by = getattr(llm_service, "last_generation_source", None)
+        model_used = getattr(llm_service, "model", None)
+
+        meta = GenerationMeta(
+            model=model_used,
+            generated_by=generated_by,
+        )
+
         return TestCaseResponse(
             user_story=body.user_story,
             test_cases=test_cases,
             generated_count=len(test_cases),
-            generated_by=generated_by,
+            meta=meta,
         )
         
     except Exception as e:
