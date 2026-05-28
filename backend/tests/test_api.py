@@ -4,8 +4,41 @@ Tests for API endpoints
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
+from app.models.schemas import TestCase
 
 client = TestClient(app)
+
+
+class FakeLLMService:
+    provider = "mock"
+    using_azure = False
+    client_available = True
+    model = "mock-model"
+    last_generation_source = "mock"
+
+    async def generate_test_cases(self, user_story, num_cases=5, **kwargs):
+        return [
+            TestCase(
+                title="TC-1 - Login works",
+                description="Verify that a user can log in successfully.",
+                steps=["Open the login page", "Enter valid credentials", "Submit the form"],
+                expected_result="The dashboard is displayed.",
+                preconditions=["User has a valid account"],
+                covers=["Authentication"],
+                priority="High",
+            )
+        ]
+
+
+@pytest.fixture(autouse=True)
+def fake_llm_service():
+    original_service = getattr(app.state, "llm_service", None)
+    app.state.llm_service = FakeLLMService()
+    yield
+    if original_service is None:
+        delattr(app.state, "llm_service")
+    else:
+        app.state.llm_service = original_service
 
 
 def test_root_endpoint():
@@ -19,7 +52,7 @@ def test_root_endpoint():
 
 def test_health_check():
     """Test the health check endpoint"""
-    response = client.get("/api/v1/health")
+    response = client.get("/health")
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "healthy"
@@ -33,7 +66,7 @@ def test_generate_test_cases():
         "num_test_cases": 3
     }
     
-    response = client.post("/api/v1/generate-test-cases", json=request_data)
+    response = client.post("/generate-test-cases", json=request_data)
     assert response.status_code == 200
     
     data = response.json()
@@ -58,5 +91,5 @@ def test_generate_test_cases_invalid_input():
         "num_test_cases": 3
     }
     
-    response = client.post("/api/v1/generate-test-cases", json=request_data)
+    response = client.post("/generate-test-cases", json=request_data)
     assert response.status_code == 422  # Validation error
