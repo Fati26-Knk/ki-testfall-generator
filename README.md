@@ -187,7 +187,7 @@ npm run dev
 │  │  API Routes  │  │   Services   │  │    Models    │      │
 │  └──────────────┘  └──────────────┘  └──────────────┘      │
 │         │                  │                  │              │
-│         ├─ LLM Service ────┼─ OpenAI GPT-4o                 │
+│         ├─ LLM Service ────┼─ OpenAI GPT-5.1-chat                 │
 │         ├─ Storage ────────┼─ PostgreSQL 15 (SQLAlchemy)    │
 │         └─ Document ───────┴─ DOCX/TXT Parser               │
 └──────────────────────────────────────────────────────────────┘
@@ -204,7 +204,7 @@ npm run dev
 **Backend:**
 - Python 3.10+
 - FastAPI (Async API Framework)
-- OpenAI API (GPT-4o)
+- OpenAI API (GPT-5.1-chat)
 - SQLAlchemy 2.0 (PostgreSQL ORM)
 - python-docx (DOCX Parsing)
 - Pydantic (Datenvalidierung)
