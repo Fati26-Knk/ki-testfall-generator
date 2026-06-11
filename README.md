@@ -39,7 +39,7 @@ Der **AI Test Case Generator** ist ein KI-gestütztes Tool zur automatischen Gen
 ### Voraussetzungen
 
 - **Docker** & **Docker Compose** installiert
-- **OpenAI API Key** (für GPT-4o-mini)
+- **OpenAI API Key** (für GPT-5.1-chat)
 - Optional: **Node.js** & **Python 3.10+** für lokale Entwicklung
 
 ###  Mit Docker (empfohlen)
