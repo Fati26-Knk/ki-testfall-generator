@@ -42,6 +42,12 @@ Der **AI Test Case Generator** ist ein KI-gestütztes Tool zur automatischen Gen
 - **OpenAI API Key** (für GPT-5.1-chat)
 - Optional: **Node.js** & **Python 3.10+** für lokale Entwicklung
 
+###  Umgebungsdateien
+
+- `backend/.env` für LLM-, CORS- und Datenbank-Konfiguration
+- `frontend/.env` für die API-URL des Frontends
+- Vorlagen liegen als `backend/.env.example` und `frontend/.env.example` bereit
+
 ###  Mit Docker (empfohlen)
 
 Die einfachste Methode zum Starten des Projekts mit dem **interaktiven Start-Menü**:
@@ -51,9 +57,9 @@ Die einfachste Methode zum Starten des Projekts mit dem **interaktiven Start-Men
 git clone https://github.com/Fati26-Knk/ki-testfall-generator.git
 cd ki-testfall-generator
 
-# 2. Umgebungsvariable setzen
-# Erstelle eine .env Datei im backend/ Ordner:
-echo "OPENAI_API_KEY=dein-api-key-hier" > backend/.env
+# 2. Umgebungsvariablen prüfen
+# Backend- und Frontend-.env sind bereits als Vorlagen im Repo vorhanden.
+# Trage deinen API-Key in backend/.env ein, bevor du die App startest.
 
 # 3. Start-Skript ausführen (Windows)
 .\start.bat

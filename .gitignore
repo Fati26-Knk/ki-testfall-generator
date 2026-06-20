@@ -187,6 +187,8 @@ __pycache__/
 
 # Umgebungsdateien
 .env
+!backend/.env
+!frontend/.env
 
 # IDE und Editor
 .idea/

@@ -53,11 +53,8 @@ Mehr Details: [DATENBANK.md](DATENBANK.md)
 ##  Voraussetzungen
 
 - Docker Desktop installiert
-- `.env` Datei im `/backend` Verzeichnis mit deinem OpenAI API Key:
-  ```
-  OPENAI_API_KEY=sk-...
-  OPENAI_MODEL=gpt-3.5-turbo
-  ```
+- `backend/.env` mit deinem OpenAI API Key und den Backend-Variablen
+- `frontend/.env` mit `VITE_API_URL=http://localhost:8000`
 
 ##  Verwendung
 
@@ -214,4 +211,3 @@ cat backend/.env
    ```bash
    docker-compose down -v
    ```
-
